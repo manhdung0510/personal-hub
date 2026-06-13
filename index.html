@@ -11,14 +11,12 @@
     <link class="apple-touch-icon" href="https://img.icons8.com/color/512/calendar.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@supabase/supabase-js@2.39.8/dist/umd/supabase.js"></script>
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
         .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .glass-card { background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .active-tab { background: rgba(99, 102, 241, 0.15); color: #818cf8 !important; border: 1px solid rgba(99, 102, 241, 0.3); }
         
-        /* Hiệu ứng chuyển động mượt mà cho Intro */
         .fade-in { animation: fadeIn 1.2s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
         .intro-hide { opacity: 0; pointer-events: none; transition: opacity 0.8s ease-in-out; }
@@ -28,20 +26,19 @@
 
     <div id="intro-screen" class="fixed inset-0 bg-[#090d16] z-[999] flex flex-col items-center justify-center text-center px-6">
         <div class="space-y-4 fade-in">
-            <div class="text-4xl animate-pulse">✨💖✨</div>
+            <div class="text-4xl animate-pulse">✨🔮✨</div>
             <h2 class="text-xl font-medium tracking-wide bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300 bg-clip-text text-transparent">
-                Chào mừng hai đứa về nhà...
+                Chào mừng bạn ghé thăm không gian riêng...
             </h2>
-            <p class="text-[11px] text-gray-500 font-mono tracking-widest uppercase">Connecting to our space</p>
+            <p class="text-[11px] text-gray-500 font-mono tracking-widest uppercase">Loading your personal hub</p>
         </div>
     </div>
 
     <header class="glass px-6 py-4 flex justify-between items-center z-10 sticky top-0">
         <div>
             <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Personal Hub ✨</h1>
-            <p id="current-key-display" class="text-[10px] text-gray-500 font-mono mt-0.5">Key: None</p>
+            <p class="text-[10px] text-gray-500 font-mono mt-0.5">Offline Secure Storage</p>
         </div>
-        <button onclick="openAuthModal()" class="text-xs bg-gray-900/80 px-3 py-2 rounded-xl border border-gray-800 active:scale-95 transition flex items-center gap-1">🔑 <span>Đồng bộ</span></button>
     </header>
 
     <main class="flex-1 overflow-y-auto px-4 py-6 space-y-6 pb-28">
@@ -91,20 +88,6 @@
         <button onclick="switchTab('milestones')" id="nav-milestones" class="nav-btn flex flex-col items-center justify-center text-gray-400 w-16 h-12 rounded-xl transition-all"><span class="text-lg">⏳</span><span class="text-[10px] font-semibold mt-0.5">Milestones</span></button>
     </nav>
 
-    <div id="modal-auth" class="fixed inset-0 bg-black/80 backdrop-blur-lg hidden items-center justify-center p-6 z-50">
-        <div class="glass-card w-full max-w-sm rounded-2xl p-6 space-y-4 shadow-2xl">
-            <div class="text-center space-y-1">
-                <h3 class="text-base font-semibold text-gray-100">Đồng Bộ Đám Mây ☁️</h3>
-                <p class="text-xs text-gray-400">Nhập mã bí mật tự chọn của hai người để kết nối dữ liệu.</p>
-            </div>
-            <input type="text" id="input-auth-key" placeholder="Ví dụ: dungchi1010..." class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-center outline-none focus:border-indigo-500 transition font-mono text-white">
-            <div class="flex gap-2 pt-2">
-                <button onclick="closeAuthModal()" class="w-1/2 bg-gray-900 border border-gray-800 py-2.5 rounded-xl text-sm font-medium">Hủy</button>
-                <button onclick="saveAuthKey()" class="w-1/2 bg-indigo-600 py-2.5 rounded-xl text-sm font-medium shadow-lg shadow-indigo-600/30">Lưu cấu hình</button>
-            </div>
-        </div>
-    </div>
-
     <div id="modal-form" class="fixed inset-0 bg-black/80 backdrop-blur-lg hidden items-center justify-center p-6 z-40">
         <div class="glass-card w-full max-w-sm rounded-2xl p-6 space-y-4 shadow-2xl">
             <div class="text-center space-y-1">
@@ -120,67 +103,54 @@
     </div>
 
     <script>
-        const SUPABASE_URL = "https://hhxqbvizloneptxkfljs.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_d0youqsK-CDj5KwDN54FXw_i_pyW43z"; 
+        // Khởi tạo các mảng lưu trữ cục bộ trong LocalStorage
+        let habits = JSON.parse(localStorage.getItem('local_habits')) || [];
+        let vaultItems = JSON.parse(localStorage.getItem('local_vault')) || [];
+        let milestones = JSON.parse(localStorage.getItem('local_milestones')) || [];
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        let currentAuthKey = localStorage.getItem('auth_key');
         let currentVaultCategory = 'wishlist';
         let countdownInterval;
         let currentFormType = '';
+        const currentYear = new Date().getFullYear();
+
+        function saveData(type) {
+            if (type === 'habits') localStorage.setItem('local_habits', JSON.stringify(habits));
+            if (type === 'vault') localStorage.setItem('local_vault', JSON.stringify(vaultItems));
+            if (type === 'milestones') localStorage.setItem('local_milestones', JSON.stringify(milestones));
+        }
 
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById(`tab-${tabName}`).classList.remove('hidden');
             document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active-tab'));
             document.getElementById(`nav-${tabName}`).classList.add('active-tab');
-            if (!currentAuthKey) { openAuthModal(); return; }
+            
             if (tabName === 'habits') loadHabits();
             if (tabName === 'vault') loadVault();
             if (tabName === 'milestones') loadMilestones();
         }
 
-        function openAuthModal() { 
-            document.getElementById('input-auth-key').value = localStorage.getItem('auth_key') || ''; 
-            document.getElementById('modal-auth').classList.replace('hidden', 'flex'); 
-        }
-        
-        function closeAuthModal() { document.getElementById('modal-auth').classList.replace('flex', 'hidden'); }
-        function saveAuthKey() { 
-            const key = document.getElementById('input-auth-key').value.trim(); 
-            if(key) { 
-                localStorage.setItem('auth_key', key); 
-                currentAuthKey = key; 
-                document.getElementById('current-key-display').innerText = `Key: ${key}`; 
-                closeAuthModal(); 
-                switchTab('habits'); 
-            } 
-        }
-
-        const currentYear = new Date().getFullYear();
-
         function openFormModal(type) {
-            if (!currentAuthKey) { openAuthModal(); return; }
             currentFormType = type;
             const fieldsContainer = document.getElementById('form-fields');
             fieldsContainer.innerHTML = '';
             
             if (type === 'habit') {
                 document.getElementById('form-title').innerText = "Thêm Thói Quen Mới 🔄";
-                document.getElementById('form-desc').innerText = "Tạo thói quen tốt cùng nhau cố gắng mỗi ngày.";
-                fieldsContainer.innerHTML = `<input type="text" id="add-habit-name" placeholder="Tên thói quen (ví dụ: Đọc sách, Đi ngủ sớm...)" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white">`;
+                document.getElementById('form-desc').innerText = "Tạo các mục tiêu nhỏ để duy trì mỗi ngày.";
+                fieldsContainer.innerHTML = `<input type="text" id="add-habit-name" placeholder="Tên thói quen (ví dụ: Đọc sách, Chạy bộ...)" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white">`;
             } else if (type === 'vault') {
                 document.getElementById('form-title').innerText = "Cất Giấu Kỷ Vật 📦";
-                document.getElementById('form-desc').innerText = "Lưu trữ món đồ yêu thích hoặc các thước phim kỷ niệm.";
+                document.getElementById('form-desc').innerText = "Lưu trữ món đồ yêu thích hoặc các liên kết cá nhân.";
                 fieldsContainer.innerHTML = `
                     <input type="text" id="add-vault-title" placeholder="Tiêu đề / Tên món đồ" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white mb-2">
-                    <input type="text" id="add-vault-url" placeholder="Dán link liên kết / Video (nếu có)" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white">
+                    <input type="text" id="add-vault-url" placeholder="Dán link liên kết (nếu có)" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white">
                 `;
             } else if (type === 'milestone') {
                 document.getElementById('form-title').innerText = "Tạo Sự Kiện Kỷ Niệm ⏳";
                 document.getElementById('form-desc').innerText = "Hệ thống tự động tính toán thời gian chạy từng giây.";
                 fieldsContainer.innerHTML = `
-                    <input type="text" id="add-ms-title" placeholder="Tên sự kiện (ví dụ: Ngày bên nhau)" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white mb-2">
+                    <input type="text" id="add-ms-title" placeholder="Tên sự kiện (ví dụ: Sinh nhật)" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white mb-2">
                     <input type="text" id="add-ms-date" placeholder="Mốc thời gian mẫu: YYYY-MM-DD HH:MM" value="${currentYear}-10-20 00:00" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition font-mono text-white">
                 `;
             }
@@ -189,35 +159,45 @@
 
         function closeFormModal() { document.getElementById('modal-form').classList.replace('flex', 'hidden'); }
 
-        async function submitForm() {
+        function submitForm() {
+            const uuid = () => Math.random().toString(36).substring(2, 15);
+            
             if (currentFormType === 'habit') {
                 const name = document.getElementById('add-habit-name').value.trim();
-                if (name) { await supabase.from('habits').insert({ auth_key: currentAuthKey, name: name }); loadHabits(); }
+                if (name) {
+                    habits.push({ id: uuid(), name: name, streak_count: 0, logs: [] });
+                    saveData('habits'); loadHabits();
+                }
             } else if (currentFormType === 'vault') {
                 const title = document.getElementById('add-vault-title').value.trim();
                 const url = document.getElementById('add-vault-url').value.trim();
-                if (title) { await supabase.from('vault_items').insert({ auth_key: currentAuthKey, title: title, url: url || null, category: currentVaultCategory }); loadVault(); }
+                if (title) {
+                    vaultItems.push({ id: uuid(), title: title, url: url || null, category: currentVaultCategory });
+                    saveData('vault'); loadVault();
+                }
             } else if (currentFormType === 'milestone') {
                 const title = document.getElementById('add-ms-title').value.trim();
                 const dateStr = document.getElementById('add-ms-date').value.trim();
                 if (title && dateStr) {
                     const date = new Date(dateStr.replace(/-/g, '/'));
-                    if(!isNaN(date.getTime())) { await supabase.from('milestones').insert({ auth_key: currentAuthKey, title: title, event_date: date.toISOString() }); loadMilestones(); }
-                    else { alert("Định dạng ngày chưa đúng mẫu!"); return; }
+                    if(!isNaN(date.getTime())) {
+                        milestones.push({ id: uuid(), title: title, event_date: date.toISOString() });
+                        saveData('milestones'); loadMilestones();
+                    } else { alert("Định dạng ngày chưa đúng mẫu!"); return; }
                 }
             }
             closeFormModal();
         }
 
-        async function loadHabits() {
-            const { data: habits, error } = await supabase.from('habits').select('*, habit_logs(completed_date)').eq('auth_key', currentAuthKey);
-            if (error) { console.error("Lỗi tải Habits:", error); return; }
+        function loadHabits() {
             const listContainer = document.getElementById('habit-list'); listContainer.innerHTML = '';
             const tzOffset = new Date().getTimezoneOffset() * 60000;
             const todayLocalStr = new Date(Date.now() - tzOffset).toISOString().split('T')[0];
-            if(!habits || habits.length === 0) { listContainer.innerHTML = `<p class="text-xs text-gray-500 text-center py-6">Trạm trống rỗng. Hãy thêm thói quen mới ✨</p>`; return; }
+            
+            if(habits.length === 0) { listContainer.innerHTML = `<p class="text-xs text-gray-500 text-center py-6">Trạm trống rỗng. Hãy thêm thói quen mới ✨</p>`; return; }
+            
             habits.forEach(habit => {
-                const isCompletedToday = habit.habit_logs ? habit.habit_logs.some(log => log.completed_date === todayLocalStr) : false;
+                const isCompletedToday = habit.logs ? habit.logs.includes(todayLocalStr) : false;
                 const card = document.createElement('div');
                 card.className = 'glass-card p-4 rounded-2xl flex justify-between items-center';
                 card.innerHTML = `
@@ -234,28 +214,32 @@
             });
         }
 
-        async function toggleHabit(habitId, isCompletedToday) {
+        function toggleHabit(habitId, isCompletedToday) {
             const tzOffset = new Date().getTimezoneOffset() * 60000;
             const todayLocalStr = new Date(Date.now() - tzOffset).toISOString().split('T')[0];
-            if (!isCompletedToday) {
-                await supabase.from('habit_logs').insert({ habit_id: habitId, completed_date: todayLocalStr });
-                const { data: habit } = await supabase.from('habits').select('streak_count').eq('id', habitId).single();
-                await supabase.from('habits').update({ streak_count: ((habit?.streak_count || 0) + 1), last_completed_at: new Date().toISOString() }).eq('id', habitId);
-            } else {
-                await supabase.from('habit_logs').delete().eq('habit_id', habitId).eq('completed_date', todayLocalStr);
-                const { data: habit } = await supabase.from('habits').select('streak_count').eq('id', habitId).single();
-                await supabase.from('habits').update({ streak_count: Math.max(0, ((habit?.streak_count || 1) - 1)) }).eq('id', habitId);
-            }
-            loadHabits();
-        }
-        async function deleteHabit(id) { if(confirm("Xóa thói quen này?")) { await supabase.from('habits').delete().eq('id', id); loadHabits(); } }
+            const habit = habits.find(h => h.id === habitId);
+            if (!habit) return;
 
-        async function loadVault() {
-            const { data: items, error } = await supabase.from('vault_items').select('*').eq('auth_key', currentAuthKey).eq('category', currentVaultCategory).order('created_at', { ascending: false });
-            if (error) { console.error("Lỗi tải Vault:", error); return; }
+            if (!habit.logs) habit.logs = [];
+
+            if (!isCompletedToday) {
+                habit.logs.push(todayLocalStr);
+                habit.streak_count = (habit.streak_count || 0) + 1;
+            } else {
+                habit.logs = habit.logs.filter(date => date !== todayLocalStr);
+                habit.streak_count = Math.max(0, (habit.streak_count || 1) - 1);
+            }
+            saveData('habits'); loadHabits();
+        }
+
+        function deleteHabit(id) { if(confirm("Xóa thói quen này?")) { habits = habits.filter(h => h.id !== id); saveData('habits'); loadHabits(); } }
+
+        function loadVault() {
             const container = document.getElementById('vault-list'); container.innerHTML = '';
-            if(!items || items.length === 0) { container.innerHTML = `<p class="text-xs text-gray-500 text-center py-8">Ngăn kéo trống rỗng 📦</p>`; return; }
-            items.forEach(item => {
+            const filteredItems = vaultItems.filter(item => item.category === currentVaultCategory);
+            
+            if(filteredItems.length === 0) { container.innerHTML = `<p class="text-xs text-gray-500 text-center py-8">Ngăn kéo trống rỗng 📦</p>`; return; }
+            filteredItems.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'glass-card p-3.5 rounded-xl flex justify-between items-center gap-3';
                 card.innerHTML = `
@@ -268,15 +252,22 @@
                 container.appendChild(card);
             });
         }
-        function filterVault(category) { currentVaultCategory = category; document.querySelectorAll('.vault-filter-btn').forEach(btn => btn.className = "vault-filter-btn bg-gray-900/60 border border-gray-800 py-2.5 rounded-xl text-gray-400 transition"); const activeBtn = document.getElementById(`vbtn-${category}`); if(activeBtn) activeBtn.className = "vault-filter-btn bg-pink-600 py-2.5 rounded-xl font-medium text-white transition shadow-lg shadow-pink-600/20"; loadVault(); }
-        async function deleteVaultItem(id) { if(confirm("Xóa món đồ này?")) { await supabase.from('vault_items').delete().eq('id', id); loadVault(); } }
 
-        async function loadMilestones() {
-            const { data: milestones, error } = await supabase.from('milestones').select('*').eq('auth_key', currentAuthKey).order('event_date', { ascending: true });
-            if (error) { console.error("Lỗi tải Milestones:", error); return; }
+        function filterVault(category) { 
+            currentVaultCategory = category; 
+            document.querySelectorAll('.vault-filter-btn').forEach(btn => btn.className = "vault-filter-btn bg-gray-900/60 border border-gray-800 py-2.5 rounded-xl text-gray-400 transition"); 
+            const activeBtn = document.getElementById(`vbtn-${category}`); 
+            if(activeBtn) activeBtn.className = "vault-filter-btn bg-pink-600 py-2.5 rounded-xl font-medium text-white transition shadow-lg shadow-pink-600/20"; 
+            loadVault(); 
+        }
+
+        function deleteVaultItem(id) { if(confirm("Xóa món đồ này?")) { vaultItems = vaultItems.filter(i => i.id !== id); saveData('vault'); loadVault(); } }
+
+        function loadMilestones() {
             const container = document.getElementById('milestone-list'); container.innerHTML = '';
             if(countdownInterval) clearInterval(countdownInterval);
-            if(!milestones || milestones.length === 0) { container.innerHTML = `<p class="text-xs text-gray-500 text-center py-8">Chưa lưu ngày kỷ niệm nào ⏳</p>`; return; }
+            if(milestones.length === 0) { container.innerHTML = `<p class="text-xs text-gray-500 text-center py-8">Chưa lưu ngày kỷ niệm nào ⏳</p>`; return; }
+            
             function runTimer() {
                 milestones.forEach(m => {
                     const diff = new Date(m.event_date).getTime() - new Date().getTime();
@@ -306,22 +297,17 @@
             }
             runTimer(); countdownInterval = setInterval(runTimer, 1000);
         }
-        async function deleteMilestone(id) { if(confirm("Xóa mốc kỷ niệm này?")) { await supabase.from('milestones').delete().eq('id', id); loadMilestones(); } }
+
+        function deleteMilestone(id) { if(confirm("Xóa mốc kỷ niệm này?")) { milestones = milestones.filter(m => m.id !== id); saveData('milestones'); loadMilestones(); } }
 
         window.addEventListener('DOMContentLoaded', () => { 
-            if(currentAuthKey) { 
-                document.getElementById('current-key-display').innerText = `Key: ${currentAuthKey}`; 
-                switchTab('habits'); 
-            } else { 
-                openAuthModal(); 
-            } 
+            switchTab('habits'); 
 
-            // HIỆU ỨNG INTRO: Chạy 2.5 giây rồi mờ dần và ẩn hẳn đi
+            // Hiển thị Intro trong 2.5 giây
             setTimeout(() => {
                 const intro = document.getElementById('intro-screen');
                 if (intro) {
                     intro.classList.add('intro-hide');
-                    // Xóa hẳn khỏi DOM sau khi hiệu ứng mờ kết thúc để không nặng máy
                     setTimeout(() => intro.remove(), 800);
                 }
             }, 2500);

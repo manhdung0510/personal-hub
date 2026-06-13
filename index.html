@@ -105,10 +105,8 @@
 
     <script>
         const SUPABASE_URL = "https://hhxqbizloneptxkfljs.supabase.co";
-        // ÔNG DÁN CÁI MÃ ANON KEY THẬT VỪA COPY Ở BƯỚC 1 VÀO TRONG DẤU NGOẶC KÉP DƯỚI ĐÂY NHÉ:
         const SUPABASE_ANON_KEY = "sb_publishable_d0youqsK-CDj5KwDN54FXw_i_pyW43z"; 
 
-        // Khởi tạo Supabase bằng biến window rõ ràng để tránh bị chặn
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let currentAuthKey = localStorage.getItem('auth_key');
         let currentVaultCategory = 'wishlist';
@@ -130,7 +128,6 @@
             document.getElementById('input-auth-key').value = localStorage.getItem('auth_key') || ''; 
             document.getElementById('modal-auth').classList.replace('hidden', 'flex'); 
         }
-        document.querySelector('header button').onclick = openAuthModal;
         
         function closeAuthModal() { document.getElementById('modal-auth').classList.replace('flex', 'hidden'); }
         function saveAuthKey() { 
@@ -196,7 +193,7 @@
 
         async function loadHabits() {
             const { data: habits, error } = await supabase.from('habits').select('*, habit_logs(completed_date)').eq('auth_key', currentAuthKey);
-            if (error) return;
+            if (error) { console.error("Lỗi tải Habits:", error); return; }
             const listContainer = document.getElementById('habit-list'); listContainer.innerHTML = '';
             const tzOffset = new Date().getTimezoneOffset() * 60000;
             const todayLocalStr = new Date(Date.now() - tzOffset).toISOString().split('T')[0];
@@ -236,7 +233,8 @@
         async function deleteHabit(id) { if(confirm("Xóa thói quen này?")) { await supabase.from('habits').delete().eq('id', id); loadHabits(); } }
 
         async function loadVault() {
-            const { data: items } = await supabase.from('vault_items').select('*').eq('auth_key', currentAuthKey).eq('category', currentVaultCategory).order('created_at', { ascending: false });
+            const { data: items, error } = await supabase.from('vault_items').select('*').eq('auth_key', currentAuthKey).eq('category', currentVaultCategory).order('created_at', { ascending: false });
+            if (error) { console.error("Lỗi tải Vault:", error); return; }
             const container = document.getElementById('vault-list'); container.innerHTML = '';
             if(!items || items.length === 0) { container.innerHTML = `<p class="text-xs text-gray-500 text-center py-8">Ngăn kéo trống rỗng 📦</p>`; return; }
             items.forEach(item => {
@@ -256,7 +254,8 @@
         async function deleteVaultItem(id) { if(confirm("Xóa món đồ này?")) { await supabase.from('vault_items').delete().eq('id', id); loadVault(); } }
 
         async function loadMilestones() {
-            const { data: milestones } = await supabase.from('milestones').select('*').eq('auth_key', currentAuthKey).order('event_date', { ascending: true });
+            const { data: milestones, error } = await supabase.from('milestones').select('*').eq('auth_key', currentAuthKey).order('event_date', { ascending: true });
+            if (error) { console.error("Lỗi tải Milestones:", error); return; }
             const container = document.getElementById('milestone-list'); container.innerHTML = '';
             if(countdownInterval) clearInterval(countdownInterval);
             if(!milestones || milestones.length === 0) { container.innerHTML = `<p class="text-xs text-gray-500 text-center py-8">Chưa lưu ngày kỷ niệm nào ⏳</p>`; return; }

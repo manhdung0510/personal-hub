@@ -188,48 +188,55 @@
         }
 
         // ĐOẠN NÀY ĐÃ ĐƯỢC CHỈNH SỬA ĐỂ HIỂN THỊ TEXT THEO TỪNG TAB VAULT
-        function openFormModal(type) {
-            currentFormType = type;
-            const fieldsContainer = document.getElementById('form-fields');
-            fieldsContainer.innerHTML = '';
-            
-            if (type === 'habit') {
-                document.getElementById('form-title').innerText = "Thêm Thói Quen Mới 🔄";
-                document.getElementById('form-desc').innerText = "Tạo các mục tiêu nhỏ để duy trì mỗi ngày.";
-                fieldsContainer.innerHTML = `<input type="text" id="add-habit-name" placeholder="Tên thói quen (ví dụ: Đọc sách, Chạy bộ...)" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white">`;
-            
-            } else if (type === 'vault') {
-                // Tùy chỉnh text dựa trên danh mục hiện tại (wishlist, media, study, braindump)
-                // ÔNG CÓ THỂ ĐỔI CHỮ BÊN TRONG NGOẶC KÉP Ở DƯỚI NÀY
-                if (currentVaultCategory === 'wishlist') {
-                    document.getElementById('form-title').innerText = "Thêm Wishlist 🛍️";
-                    document.getElementById('form-desc').innerText = "Lưu trữ món đồ yêu thích bạn muốn sở hữu.";
-                } else if (currentVaultCategory === 'media') {
-                    document.getElementById('form-title').innerText = "Lưu trữ Media 🎬";
-                    document.getElementById('form-desc').innerText = "Cất giữ link phim, nhạc, video yêu thích.";
-                } else if (currentVaultCategory === 'study') {
-                    document.getElementById('form-title').innerText = "Cất giữ Tài liệu 📚";
-                    document.getElementById('form-desc').innerText = "Lưu trữ tài liệu, bài viết, link học tập.";
-                } else if (currentVaultCategory === 'braindump') {
-                    document.getElementById('form-title').innerText = "Thêm Ý tưởng 🧠";
-                    document.getElementById('form-desc').innerText = "Ghi chú nhanh những ý tưởng xẹt qua đầu.";
-                }
+   function openFormModal(type) {
+    currentFormType = type;
+    const fieldsContainer = document.getElementById('form-fields');
+    fieldsContainer.innerHTML = '';
+    
+    if (type === 'habit') {
+        document.getElementById('form-title').innerText = "Thêm Thói Quen Mới 🔄";
+        document.getElementById('form-desc').innerText = "Tạo các mục tiêu nhỏ để duy trì mỗi ngày.";
+        fieldsContainer.innerHTML = `<input type="text" id="add-habit-name" placeholder="Tên thói quen (ví dụ: Đọc sách, Chạy bộ...)" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white">`;
+    
+    } else if (type === 'vault') {
+        // Tạo biến lưu placeholder mặc định
+        let vaultPlaceholder = "Tiêu đề / Tên món đồ"; 
 
-                fieldsContainer.innerHTML = `
-                    <input type="text" id="add-vault-title" placeholder="Tiêu đề / Tên món đồ" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white mb-2">
-                    <input type="text" id="add-vault-url" placeholder="Dán link liên kết (nếu có)" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white">
-                `;
-            
-            } else if (type === 'milestone') {
-                document.getElementById('form-title').innerText = "Tạo Sự Kiện Kỷ Niệm ⏳";
-                document.getElementById('form-desc').innerText = "Hệ thống tự động tính toán thời gian chạy từng giây.";
-                fieldsContainer.innerHTML = `
-                    <input type="text" id="add-ms-title" placeholder="Tên sự kiện (ví dụ: Sinh nhật)" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white mb-2">
-                    <input type="text" id="add-ms-date" placeholder="Mốc thời gian mẫu: YYYY-MM-DD HH:MM" value="${currentYear}-10-20 00:00" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition font-mono text-white">
-                `;
-            }
-            document.getElementById('modal-form').classList.replace('hidden', 'flex');
+        // Tự động đổi chữ placeholder tương ứng với từng Tab đang mở
+        if (currentVaultCategory === 'wishlist') {
+            document.getElementById('form-title').innerText = "Thêm Wishlist 🛍️";
+            document.getElementById('form-desc').innerText = "Lưu trữ món đồ yêu thích bạn muốn sở hữu.";
+            vaultPlaceholder = "Nhập tên món đồ bạn muốn mua... (Ví dụ: iPhone 15, Giày Nike)";
+        } else if (currentVaultCategory === 'media') {
+            document.getElementById('form-title').innerText = "Lưu trữ Media 🎬";
+            document.getElementById('form-desc').innerText = "Cất giữ link phim, nhạc, video yêu thích.";
+            vaultPlaceholder = "Nhập tên phim, bài hát, hoặc video...";
+        } else if (currentVaultCategory === 'study') {
+            document.getElementById('form-title').innerText = "Cất giữ Tài liệu 📚";
+            document.getElementById('form-desc').innerText = "Lưu trữ tài liệu, bài viết, link học tập.";
+            vaultPlaceholder = "Nhập tên tài liệu, bài học, cuốn sách...";
+        } else if (currentVaultCategory === 'braindump') {
+            document.getElementById('form-title').innerText = "Thêm Ý tưởng 🧠";
+            document.getElementById('form-desc').innerText = "Ghi chú nhanh những ý tưởng xẹt qua đầu.";
+            vaultPlaceholder = "Nhập tiêu đề ý tưởng hoặc ghi chú nhanh...";
         }
+
+        // Đưa biến vaultPlaceholder vào thuộc tính placeholder bên dưới
+        fieldsContainer.innerHTML = `
+            <input type="text" id="add-vault-title" placeholder="${vaultPlaceholder}" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white mb-2">
+            <input type="text" id="add-vault-url" placeholder="Dán link liên kết (nếu có)" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white">
+        `;
+    
+    } else if (type === 'milestone') {
+        document.getElementById('form-title').innerText = "Tạo Sự Kiện Kỷ Niệm ⏳";
+        document.getElementById('form-desc').innerText = "Hệ thống tự động tính toán thời gian chạy từng giây.";
+        fieldsContainer.innerHTML = `
+            <input type="text" id="add-ms-title" placeholder="Tên sự kiện (ví dụ: Sinh nhật)" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white mb-2">
+            <input type="text" id="add-ms-date" placeholder="Mốc thời gian mẫu: YYYY-MM-DD HH:MM" value="${currentYear}-10-20 00:00" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition font-mono text-white">
+        `;
+    }
+    document.getElementById('modal-form').classList.replace('hidden', 'flex');
+}
 
         function closeFormModal() { document.getElementById('modal-form').classList.replace('flex', 'hidden'); }
 

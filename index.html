@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Personal Hub</title>
+    <title>Không Gian Cá Nhân</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,33 +12,37 @@
 </head>
 <body class="bg-[#090d16] text-gray-100 h-full flex flex-col justify-between overflow-hidden select-none">
 
+    <!-- Intro Screen -->
     <div id="intro-screen" class="fixed inset-0 bg-[#090d16] z-[999] flex flex-col items-center justify-center text-center px-6">
         <div class="space-y-4 fade-in">
             <div class="text-4xl animate-pulse">✨🔮</div>
             <h2 class="text-xl font-medium tracking-wide bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300 bg-clip-text text-transparent">
                 Chào mừng bạn ghé thăm không gian riêng...
             </h2>
-            <p class="text-[11px] text-gray-500 font-mono tracking-widest uppercase">Loading your personal hub</p>
+            <p class="text-[11px] text-gray-500 font-mono tracking-widest uppercase">Đang tải dữ liệu cá nhân...</p>
         </div>
     </div>
 
+    <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed top-5 right-4 z-[1000] flex flex-col gap-2 pointer-events-none"></div>
 
+    <!-- Header -->
     <header class="glass px-6 py-4 flex justify-between items-center z-10 sticky top-0 shrink-0">
         <div>
-            <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Personal Hub ✨</h1>
-            <p class="text-[10px] text-gray-500 font-mono mt-0.5">Secure Local Storage</p>
+            <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Không Gian Cá Nhân ✨</h1>
+            <p class="text-[10px] text-gray-500 font-mono mt-0.5">Lưu trữ nội bộ an toàn</p>
         </div>
         <div class="flex gap-3 items-center">
-            <button onclick="exportData()" class="text-[10px] bg-gray-800/80 hover:bg-gray-700 px-3 py-2 rounded-lg text-gray-300 transition shadow-md">Export</button>
+            <button onclick="exportData()" class="text-[10px] bg-gray-800/80 hover:bg-gray-700 px-3 py-2 rounded-lg text-gray-300 transition shadow-md">Xuất file</button>
             <label class="text-[10px] bg-indigo-600/80 hover:bg-indigo-600 px-3 py-2 rounded-lg text-white transition cursor-pointer shadow-md shadow-indigo-600/20">
-                Import
+                Nhập file
                 <input type="file" accept=".json" onchange="importData(event)" class="hidden">
             </label>
         </div>
     </header>
 
     <main class="flex-1 overflow-y-auto scroll-container px-4 py-6 space-y-6 pb-32">
+        <!-- HABITS -->
         <section id="tab-habits" class="tab-content space-y-4">
             <div class="flex justify-between items-center">
                 <div>
@@ -50,28 +54,31 @@
             <div id="habit-list" class="space-y-3"></div>
         </section>
 
+        <!-- VAULT -->
         <section id="tab-vault" class="tab-content hidden space-y-4">
             <div class="flex justify-between items-center">
                 <div>
-                    <h2 class="text-lg font-semibold text-gray-200">The Infinite Vault</h2>
+                    <h2 class="text-lg font-semibold text-gray-200">Kho Lưu Trữ Vô Tận</h2>
                     <p class="text-xs text-gray-400">Kho lưu trữ vạn năng cá nhân</p>
                 </div>
                 <button onclick="openFormModal('vault')" class="text-xs bg-pink-600/90 hover:bg-pink-600 px-3.5 py-2 rounded-xl font-medium active:scale-95 transition shadow-lg shadow-pink-600/20">+ Cất giấu</button>
             </div>
             
+            <!-- Thanh Search -->
             <div class="relative">
                 <input type="text" id="vault-search" oninput="loadVault()" placeholder="🔍 Tìm kiếm nhanh trong kho..." class="w-full bg-gray-900/50 border border-gray-800 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-pink-500 transition text-gray-300 placeholder-gray-600">
             </div>
 
             <div class="grid grid-cols-4 gap-1.5 text-center text-[11px]">
-                <button onclick="filterVault('wishlist')" id="vbtn-wishlist" class="vault-filter-btn bg-pink-600 py-2.5 rounded-xl font-medium text-white transition">🛍️ Wishlist</button>
-                <button onclick="filterVault('media')" id="vbtn-media" class="vault-filter-btn bg-gray-900/60 border border-gray-800 py-2.5 rounded-xl text-gray-400 transition">🎬 Media</button>
-                <button onclick="filterVault('study')" id="vbtn-study" class="vault-filter-btn bg-gray-900/60 border border-gray-800 py-2.5 rounded-xl text-gray-400 transition">📚 Study</button>
-                <button onclick="filterVault('braindump')" id="vbtn-braindump" class="vault-filter-btn bg-gray-900/60 border border-gray-800 py-2.5 rounded-xl text-gray-400 transition">🧠 Dump</button>
+                <button onclick="filterVault('wishlist')" id="vbtn-wishlist" class="vault-filter-btn bg-pink-600 py-2.5 rounded-xl font-medium text-white transition">🛍️ Mong muốn</button>
+                <button onclick="filterVault('media')" id="vbtn-media" class="vault-filter-btn bg-gray-900/60 border border-gray-800 py-2.5 rounded-xl text-gray-400 transition">🎬 Giải trí</button>
+                <button onclick="filterVault('study')" id="vbtn-study" class="vault-filter-btn bg-gray-900/60 border border-gray-800 py-2.5 rounded-xl text-gray-400 transition">📚 Học tập</button>
+                <button onclick="filterVault('braindump')" id="vbtn-braindump" class="vault-filter-btn bg-gray-900/60 border border-gray-800 py-2.5 rounded-xl text-gray-400 transition">🧠 Ý tưởng</button>
             </div>
             <div id="vault-list" class="space-y-3"></div>
         </section>
 
+        <!-- MILESTONES -->
         <section id="tab-milestones" class="tab-content hidden space-y-4">
             <div class="flex justify-between items-center">
                 <div>
@@ -84,12 +91,14 @@
         </section>
     </main>
 
+    <!-- Navbar -->
     <nav class="glass fixed bottom-safe left-4 right-4 h-16 rounded-2xl flex justify-around items-center px-2 z-20 shadow-2xl mb-2">
-        <button onclick="switchTab('habits')" id="nav-habits" class="nav-btn flex flex-col items-center justify-center text-gray-400 w-16 h-12 rounded-xl transition-all"><span class="text-lg">🔄</span><span class="text-[10px] font-semibold mt-0.5">Habits</span></button>
-        <button onclick="switchTab('vault')" id="nav-vault" class="nav-btn flex flex-col items-center justify-center text-gray-400 w-16 h-12 rounded-xl transition-all"><span class="text-lg">📦</span><span class="text-[10px] font-semibold mt-0.5">Vault</span></button>
-        <button onclick="switchTab('milestones')" id="nav-milestones" class="nav-btn flex flex-col items-center justify-center text-gray-400 w-16 h-12 rounded-xl transition-all"><span class="text-lg">⏳</span><span class="text-[10px] font-semibold mt-0.5">Milestones</span></button>
+        <button onclick="switchTab('habits')" id="nav-habits" class="nav-btn flex flex-col items-center justify-center text-gray-400 w-16 h-12 rounded-xl transition-all"><span class="text-lg">🔄</span><span class="text-[10px] font-semibold mt-0.5">Thói quen</span></button>
+        <button onclick="switchTab('vault')" id="nav-vault" class="nav-btn flex flex-col items-center justify-center text-gray-400 w-16 h-12 rounded-xl transition-all"><span class="text-lg">📦</span><span class="text-[10px] font-semibold mt-0.5">Kho đồ</span></button>
+        <button onclick="switchTab('milestones')" id="nav-milestones" class="nav-btn flex flex-col items-center justify-center text-gray-400 w-16 h-12 rounded-xl transition-all"><span class="text-lg">⏳</span><span class="text-[10px] font-semibold mt-0.5">Kỷ niệm</span></button>
     </nav>
 
+    <!-- Modal Form Thêm/Sửa -->
     <div id="modal-form" class="fixed inset-0 bg-black/80 backdrop-blur-lg hidden items-center justify-center p-6 z-40">
         <div class="glass-card w-full max-w-sm rounded-2xl p-6 space-y-4 shadow-2xl scale-95 transition-transform duration-200" id="form-card">
             <div class="text-center space-y-1">
@@ -104,6 +113,7 @@
         </div>
     </div>
 
+    <!-- Custom Confirm Modal -->
     <div id="modal-confirm" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-6 z-50 transition-opacity opacity-0">
         <div class="glass-card w-full max-w-xs rounded-2xl p-5 space-y-4 text-center">
             <div class="text-3xl mb-2">⚠️</div>
@@ -123,10 +133,10 @@
         let currentVaultCategory = 'wishlist';
         let countdownInterval;
         let currentFormType = '';
-        let currentEditId = null; // Biến MỚI: Cờ đánh dấu đang thêm mới (null) hay sửa (có ID)
+        let currentEditId = null;
         const currentYear = new Date().getFullYear();
 
-        /* --- HỆ THỐNG TOAST & CONFIRM MỚI --- */
+        /* --- HỆ THỐNG TOAST & CONFIRM --- */
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -175,7 +185,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `personal_hub_backup_${new Date().toISOString().slice(0,10)}.json`;
+            a.download = `khong_gian_ca_nhan_backup_${new Date().toISOString().slice(0,10)}.json`;
             a.click();
             showToast("Đã xuất dữ liệu thành công!");
         }
@@ -240,13 +250,12 @@
         /* --- MODAL LƯU/SỬA DỮ LIỆU --- */
         function openFormModal(type, editId = null) {
             currentFormType = type;
-            currentEditId = editId; // Ghi nhận trạng thái Edit
+            currentEditId = editId;
             const fieldsContainer = document.getElementById('form-fields');
             fieldsContainer.innerHTML = '';
             const modal = document.getElementById('modal-form');
             const card = document.getElementById('form-card');
             
-            // Xử lý dữ liệu mồi nếu đang Edit
             let defaultName = '', defaultUrl = '', defaultDate = `${currentYear}-10-20 00:00`;
             if (editId) {
                 if (type === 'habit') defaultName = habits.find(h => h.id === editId)?.name || '';
@@ -272,11 +281,11 @@
             } else if (type === 'vault') {
                 let vaultPlaceholder = "Tiêu đề / Tên món đồ"; 
                 if (currentVaultCategory === 'wishlist') {
-                    document.getElementById('form-title').innerText = editId ? "Sửa Wishlist 📝" : "Thêm Wishlist 🛍️";
+                    document.getElementById('form-title').innerText = editId ? "Sửa Mong muốn 📝" : "Thêm Mong muốn 🛍️";
                     document.getElementById('form-desc').innerText = "Lưu trữ món đồ yêu thích bạn muốn sở hữu.";
                     vaultPlaceholder = "Nhập tên món đồ bạn muốn mua...";
                 } else if (currentVaultCategory === 'media') {
-                    document.getElementById('form-title').innerText = editId ? "Sửa Media 📝" : "Lưu trữ Media 🎬";
+                    document.getElementById('form-title').innerText = editId ? "Sửa Giải trí 📝" : "Lưu trữ Giải trí 🎬";
                     document.getElementById('form-desc').innerText = "Cất giữ link phim, nhạc, video yêu thích.";
                     vaultPlaceholder = "Nhập tên phim, bài hát, hoặc video...";
                 } else if (currentVaultCategory === 'study') {
@@ -403,7 +412,7 @@
             if (!isCompletedToday) {
                 habit.logs.push(todayLocalStr);
                 habit.streak_count = (habit.streak_count || 0) + 1;
-                showToast("Làm tốt lắm! +1 Streak 🔥");
+                showToast("Làm tốt lắm! +1 Chuỗi 🔥");
             } else {
                 habit.logs = habit.logs.filter(date => date !== todayLocalStr);
                 habit.streak_count = Math.max(0, (habit.streak_count || 1) - 1);
@@ -412,7 +421,7 @@
         }
 
         function deleteHabit(id) { 
-            customConfirm("Xóa thói quen này, toàn bộ chuỗi (Streak) sẽ mất trắng. Chắc chắn chứ?", () => {
+            customConfirm("Xóa thói quen này, toàn bộ chuỗi sẽ mất trắng. Chắc chắn chứ?", () => {
                 habits = habits.filter(h => h.id !== id); saveData('habits'); loadHabits(); showToast("Đã xóa thói quen.");
             });
         }
@@ -423,7 +432,6 @@
             
             let filteredItems = vaultItems.filter(item => item.category === currentVaultCategory);
             
-            // Xử lý Search
             if (searchTerm) {
                 filteredItems = filteredItems.filter(item => item.title.toLowerCase().includes(searchTerm));
             }

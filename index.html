@@ -17,9 +17,25 @@
         .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .glass-card { background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .active-tab { background: rgba(99, 102, 241, 0.15); color: #818cf8 !important; border: 1px solid rgba(99, 102, 241, 0.3); }
+        
+        /* Hiệu ứng chuyển động mượt mà cho Intro */
+        .fade-in { animation: fadeIn 1.2s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+        .intro-hide { opacity: 0; pointer-events: none; transition: opacity 0.8s ease-in-out; }
     </style>
 </head>
 <body class="bg-[#090d16] text-gray-100 h-full flex flex-col justify-between overflow-hidden select-none">
+
+    <div id="intro-screen" class="fixed inset-0 bg-[#090d16] z-[999] flex flex-col items-center justify-center text-center px-6">
+        <div class="space-y-4 fade-in">
+            <div class="text-4xl animate-pulse">✨💖✨</div>
+            <h2 class="text-xl font-medium tracking-wide bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300 bg-clip-text text-transparent">
+                Chào mừng hai đứa về nhà...
+            </h2>
+            <p class="text-[11px] text-gray-500 font-mono tracking-widest uppercase">Connecting to our space</p>
+        </div>
+    </div>
+
     <header class="glass px-6 py-4 flex justify-between items-center z-10 sticky top-0">
         <div>
             <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Personal Hub ✨</h1>
@@ -104,7 +120,6 @@
     </div>
 
     <script>
-        // ĐÃ SỬA CHÍNH XÁC: Thêm chữ 'v' vào đường dẫn hhxqbvizloneptxkfljs
         const SUPABASE_URL = "https://hhxqbvizloneptxkfljs.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_d0youqsK-CDj5KwDN54FXw_i_pyW43z"; 
 
@@ -142,7 +157,6 @@
             } 
         }
 
-        // Tự động điều chỉnh năm hiện tại theo thời gian thực tế
         const currentYear = new Date().getFullYear();
 
         function openFormModal(type) {
@@ -301,6 +315,16 @@
             } else { 
                 openAuthModal(); 
             } 
+
+            // HIỆU ỨNG INTRO: Chạy 2.5 giây rồi mờ dần và ẩn hẳn đi
+            setTimeout(() => {
+                const intro = document.getElementById('intro-screen');
+                if (intro) {
+                    intro.classList.add('intro-hide');
+                    // Xóa hẳn khỏi DOM sau khi hiệu ứng mờ kết thúc để không nặng máy
+                    setTimeout(() => intro.remove(), 800);
+                }
+            }, 2500);
         });
     </script>
 </body>

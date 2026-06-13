@@ -42,20 +42,12 @@
     </header>
 
     <main class="flex-1 overflow-y-auto scroll-container px-4 py-4 space-y-6 pb-32">
-        <section id="tab-habits" class="tab-content space-y-4">
+        <section id="tab-vault" class="tab-content space-y-4">
             <div class="flex justify-between items-center">
                 <div>
-                    <h2 class="text-base font-semibold text-gray-200">Trạm Thói Quen</h2>
-                    <p class="text-xs text-gray-400">Định dạng 24h chuẩn hệ thống</p>
+                    <h2 id="vault-title-text" class="text-base font-semibold text-gray-200">Kho Lưu Trữ Vô Tận</h2>
+                    <p id="vault-desc-text" class="text-xs text-gray-400">Nơi lưu trữ những món đồ riêng tư của bạn</p>
                 </div>
-                <button onclick="openFormModal('habit')" class="text-xs bg-indigo-600/90 hover:bg-indigo-600 px-3 py-2 rounded-xl font-medium active:scale-95 transition">+ Thêm</button>
-            </div>
-            <div id="habit-list" class="space-y-3"></div>
-        </section>
-
-        <section id="tab-vault" class="tab-content hidden space-y-4">
-            <div class="flex justify-between items-center">
-                <h2 class="text-base font-semibold text-gray-200">Kho Lưu Trữ Vô Tận</h2>
                 <button onclick="openFormModal('vault')" class="text-xs bg-pink-600/90 hover:bg-pink-600 px-3 py-2 rounded-xl font-medium active:scale-95 transition">+ Cất đồ</button>
             </div>
             <input type="text" id="vault-search" oninput="loadVault()" placeholder="🔍 Tìm kiếm nhanh trong kho..." class="w-full bg-gray-900/50 border border-gray-800 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-pink-500 text-gray-300">
@@ -63,28 +55,11 @@
                 <button onclick="filterVault('wishlist')" id="vbtn-wishlist" class="vault-filter-btn bg-pink-600 py-2 rounded-xl text-white font-medium">🛍️ Mua sắm</button>
                 <button onclick="filterVault('media')" id="vbtn-media" class="vault-filter-btn bg-gray-900/60 border border-gray-800 py-2 rounded-xl text-gray-400">🎬 Giải trí</button>
                 <button onclick="filterVault('study')" id="vbtn-study" class="vault-filter-btn bg-gray-900/60 border border-gray-800 py-2 rounded-xl text-gray-400">📚 Học tập</button>
-                <button onclick="filterVault('braindump')" id="vbtn-braindump" class="vault-filter-btn bg-gray-900/60 border border-gray-800 py-2 rounded-xl text-gray-400">🧠 Ý tưởng</button>
+                <button onclick="filterVault('braindump')" id="vbtn-braindump" class="vault-filter-btn bg-gray-900/60 border border-gray-800 py-2 rounded-xl text-gray-400">🤫 Bí mật</button>
             </div>
             <div id="vault-list" class="space-y-3"></div>
         </section>
-
-        <section id="tab-milestones" class="tab-content hidden space-y-4">
-            <div class="flex justify-between items-center">
-                <div>
-                    <h2 class="text-base font-semibold text-gray-200">Mốc Kỷ Niệm</h2>
-                    <p class="text-xs text-gray-400">Tính toán chính xác từng giây</p>
-                </div>
-                <button onclick="openFormModal('milestone')" class="text-xs bg-emerald-600/90 hover:bg-emerald-600 px-3 py-2 rounded-xl font-medium active:scale-95 transition">+ Tạo sự kiện</button>
-            </div>
-            <div id="milestone-list" class="space-y-4"></div>
-        </section>
     </main>
-
-    <nav class="glass fixed bottom-6 left-4 right-4 h-16 rounded-2xl flex justify-around items-center px-2 z-20 shadow-2xl">
-        <button onclick="switchTab('habits')" id="nav-habits" class="nav-btn flex flex-col items-center justify-center text-gray-400 w-16 h-12 rounded-xl"><span class="text-lg">🔄</span><span class="text-[10px] font-semibold mt-0.5">Thói quen</span></button>
-        <button onclick="switchTab('vault')" id="nav-vault" class="nav-btn flex flex-col items-center justify-center text-gray-400 w-16 h-12 rounded-xl"><span class="text-lg">📦</span><span class="text-[10px] font-semibold mt-0.5">Kho đồ</span></button>
-        <button onclick="switchTab('milestones')" id="nav-milestones" class="nav-btn flex flex-col items-center justify-center text-gray-400 w-16 h-12 rounded-xl"><span class="text-lg">⏳</span><span class="text-[10px] font-semibold mt-0.5">Kỷ niệm</span></button>
-    </nav>
 
     <div id="modal-settings" class="fixed inset-0 bg-black/80 backdrop-blur-lg hidden items-center justify-center p-6 z-[60]">
         <div class="glass-card w-full max-w-sm rounded-2xl p-6 space-y-4 shadow-2xl scale-95 transition-transform" id="settings-card">
@@ -96,14 +71,6 @@
                 <div>
                     <label class="text-[11px] text-gray-400 block mb-1">Thời gian hiển thị thông báo (giây)</label>
                     <input type="number" id="set-toast-time" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white">
-                </div>
-                <div class="p-3 bg-indigo-900/10 border border-indigo-500/20 rounded-xl space-y-2">
-                    <p class="text-[11px] text-indigo-300 font-medium flex justify-between items-center">
-                        <span>Kết nối Telegram điện thoại</span>
-                        <button onclick="testTelegram()" class="text-[10px] bg-indigo-600/50 hover:bg-indigo-600 px-2 py-0.5 rounded text-white transition">Gửi thử ⚡</button>
-                    </p>
-                    <input type="text" id="set-tele-token" placeholder="Telegram Bot Token" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-xs text-white">
-                    <input type="text" id="set-tele-chatid" placeholder="Telegram Chat ID" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-xs text-white">
                 </div>
             </div>
             <div class="flex gap-2 pt-2">
@@ -139,22 +106,47 @@
     </div>
 
     <script>
-        let appSettings = JSON.parse(localStorage.getItem('app_settings')) || { toastTime: 5, teleToken: '', teleChatId: '' };
-        let habits = JSON.parse(localStorage.getItem('local_habits')) || [];
+        let appSettings = JSON.parse(localStorage.getItem('app_settings')) || { toastTime: 5 };
         let vaultItems = JSON.parse(localStorage.getItem('local_vault')) || [];
-        let milestones = JSON.parse(localStorage.getItem('local_milestones')) || [];
-        let notifiedKeys = JSON.parse(localStorage.getItem('notified_keys')) || {};
 
         let currentVaultCategory = 'wishlist';
-        let countdownInterval, alarmInterval;
         let currentFormType = '', currentEditId = null;
-        const currentYear = new Date().getFullYear();
+
+        /* --- KÍCH HOẠT INDEXEDDB ĐỂ LƯU TRỮ KHÔNG GIỚI HẠN FILE --- */
+        let db;
+        const dbRequest = indexedDB.open("SecureMomentsDB", 1);
+        dbRequest.onupgradeneeded = function(e) {
+            let database = e.target.result;
+            if (!database.objectStoreNames.contains("mediaFiles")) {
+                database.createObjectStore("mediaFiles", { keyPath: "id" });
+            }
+        };
+        dbRequest.onsuccess = function(e) { db = e.target.result; loadVault(); };
+        dbRequest.onerror = function() { console.error("Không khởi động được IndexedDB"); };
+
+        function saveMediaToDB(id, blobData, callback) {
+            let transaction = db.transaction(["mediaFiles"], "readwrite");
+            let store = transaction.objectStore("mediaFiles");
+            let request = store.put({ id: id, data: blobData });
+            request.onsuccess = callback;
+        }
+
+        function getMediaFromDB(id, callback) {
+            let transaction = db.transaction(["mediaFiles"], "readonly");
+            let store = transaction.objectStore("mediaFiles");
+            let request = store.get(id);
+            request.onsuccess = function(e) { callback(e.target.result ? e.target.result.data : null); };
+        }
+
+        function deleteMediaFromDB(id) {
+            let transaction = db.transaction(["mediaFiles"], "readwrite");
+            let store = transaction.objectStore("mediaFiles");
+            store.delete(id);
+        }
 
         /* --- SETTINGS --- */
         function openSettings() {
             document.getElementById('set-toast-time').value = appSettings.toastTime;
-            document.getElementById('set-tele-token').value = appSettings.teleToken;
-            document.getElementById('set-tele-chatid').value = appSettings.teleChatId;
             const modal = document.getElementById('modal-settings');
             modal.classList.replace('hidden', 'flex');
             setTimeout(() => document.getElementById('settings-card').classList.replace('scale-95', 'scale-100'), 10);
@@ -165,13 +157,11 @@
         }
         function saveSettings() {
             appSettings.toastTime = parseInt(document.getElementById('set-toast-time').value) || 5;
-            appSettings.teleToken = document.getElementById('set-tele-token').value.trim();
-            appSettings.teleChatId = document.getElementById('set-tele-chatid').value.trim();
             localStorage.setItem('app_settings', JSON.stringify(appSettings));
             closeSettings(); showToast("Đã lưu cài đặt!");
         }
 
-        /* --- ALARMS & PUSH --- */
+        /* --- TOAST ALARMS --- */
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -187,109 +177,63 @@
             }, appSettings.toastTime * 1000);
         }
 
-        function triggerAlarm(title, body) {
-            showToast(`🔔 ${title}: ${body}`, 'success');
-            sendTelegramMessage(`🔔 *${title}*\n${body}`);
-        }
-
-        function sendTelegramMessage(textMsg) {
-            if (appSettings.teleToken && appSettings.teleChatId) {
-                const url = `https://api.telegram.org/bot${appSettings.teleToken}/sendMessage?chat_id=${appSettings.teleChatId}&text=${encodeURIComponent(textMsg)}&parse_mode=Markdown`;
-                fetch(url).catch(err => console.error("Lỗi Telegram:", err));
-            }
-        }
-
-        function testTelegram() {
-            const tok = document.getElementById('set-tele-token').value.trim();
-            const cid = document.getElementById('set-tele-chatid').value.trim();
-            if(!tok || !cid) return showToast("Điền đủ Token và ChatID đã ông ơi!", "error");
-            
-            const url = `https://api.telegram.org/bot${tok}/sendMessage?chat_id=${cid}&text=${encodeURIComponent("⚡ Kết nối thành công! Kênh thông báo của ông đã hoạt động mượt mà.")}`;
-            fetch(url)
-                .then(() => showToast("Đã gửi tin nhắn test! Check Telegram nhé."))
-                .catch(() => showToast("Gửi lỗi! Sai Token hoặc Chat ID.", "error"));
-        }
-
-        /* --- BACKEND CORE ALARM (24H CHECK) --- */
-        function checkAlarms() {
-            const now = new Date();
-            const todayStr = now.toISOString().split('T')[0];
-            // Ép hệ thống lấy chuỗi 24h (HH:mm) bất kể cài đặt vùng của thiết bị
-            const currentHHMM = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-            const currentSec = now.getSeconds();
-
-            if (currentSec === 0) {
-                habits.forEach(h => {
-                    if (h.startTime && currentHHMM === h.startTime) {
-                        const key = `start_${h.id}_${todayStr}`;
-                        if (!notifiedKeys[key]) { triggerAlarm("Bắt đầu thói quen", h.name); notifiedKeys[key] = true; }
-                    }
-                    if (h.endTime && currentHHMM === h.endTime) {
-                        const key = `end_${h.id}_${todayStr}`;
-                        if (!notifiedKeys[key]) { triggerAlarm("Kết thúc khung giờ", h.name); notifiedKeys[key] = true; }
-                    }
-                });
-                localStorage.setItem('notified_keys', JSON.stringify(notifiedKeys));
-            }
-
-            milestones.forEach(m => {
-                const diff = new Date(m.event_date).getTime() - now.getTime();
-                if (diff > 0 && diff <= 1000) {
-                    const key = `ms_${m.id}`;
-                    if (!notifiedKeys[key]) {
-                        triggerAlarm("Mốc kỷ niệm đã đến!", m.title);
-                        notifiedKeys[key] = true; localStorage.setItem('notified_keys', JSON.stringify(notifiedKeys));
-                    }
-                }
-            });
-        }
-        alarmInterval = setInterval(checkAlarms, 1000);
-
-        /* --- POPUP FORM BUILDER --- */
+        /* --- FORM MODAL BUILDER --- */
         function openFormModal(type, editId = null) {
             currentFormType = type; currentEditId = editId;
             const fields = document.getElementById('form-fields'); fields.innerHTML = '';
-            let defName = '', defUrl = '', defDate = `${currentYear}-10-20 00:00`, defStart = '', defEnd = '';
+            let defName = '', defUrl = '';
 
             if (editId) {
-                if (type === 'habit') { const h = habits.find(x => x.id === editId); defName = h?.name||''; defStart = h?.startTime||''; defEnd = h?.endTime||''; }
-                if (type === 'vault') { const v = vaultItems.find(x => x.id === editId); defName = v?.title||''; defUrl = v?.url||''; }
-                if (type === 'milestone') { 
-                    const m = milestones.find(x => x.id === editId); defName = m?.title||''; 
-                    if(m?.event_date) { const d = new Date(m.event_date); defDate = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
-                }
+                const v = vaultItems.find(x => x.id === editId); 
+                defName = v?.title || ''; 
+                defUrl = v?.url || '';
             }
 
-            if (type === 'habit') {
-                document.getElementById('form-title').innerText = editId ? "Sửa Thói Quen" : "Thêm Thói Quen";
-                document.getElementById('form-desc').innerText = "Thiết lập khoảng thời gian chạy (Hệ 24h).";
+            if (currentVaultCategory === 'wishlist') {
+                document.getElementById('form-title').innerText = editId ? "Sửa Mục Mua Sắm" : "Thêm Vào Wishlist 🛍️";
+                document.getElementById('form-desc').innerText = "Lưu trữ món đồ yêu thích bạn muốn sở hữu.";
                 fields.innerHTML = `
-                    <input type="text" id="add-habit-name" value="${defName}" placeholder="Tên thói quen..." class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white mb-2">
-                    <div class="flex gap-2">
-                        <div class="w-1/2">
-                            <label class="text-[10px] text-gray-500 block mb-1">Từ (Giờ:Phút)</label>
-                            <input type="time" id="add-habit-start" value="${defStart}" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2.5 text-sm text-white">
-                        </div>
-                        <div class="w-1/2">
-                            <label class="text-[10px] text-gray-500 block mb-1">Đến (Giờ:Phút)</label>
-                            <input type="time" id="add-habit-end" value="${defEnd}" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2.5 text-sm text-white">
-                        </div>
-                    </div>`;
-            } else if (type === 'vault') {
-                document.getElementById('form-title').innerText = editId ? "Sửa Vật Phẩm" : "Cất Vào Kho";
-                document.getElementById('form-desc').innerText = "Lưu thông tin bí mật hoặc link tài liệu.";
+                    <input type="text" id="add-vault-title" value="${defName}" placeholder="Tên món đồ cần mua..." class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white mb-2 outline-none focus:border-pink-500">
+                    <input type="text" id="add-vault-url" value="${defUrl}" placeholder="Link liên kết shop (nếu có)..." class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-pink-500">`;
+            } else if (currentVaultCategory === 'media') {
+                document.getElementById('form-title').innerText = editId ? "Sửa Mục Giải Trí" : "Lưu Trữ Media 🎬";
+                document.getElementById('form-desc').innerText = "Cất giữ phim ảnh, bài hát hoặc video hay.";
                 fields.innerHTML = `
-                    <input type="text" id="add-vault-title" value="${defName}" placeholder="Tiêu đề..." class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white mb-2">
-                    <input type="text" id="add-vault-url" value="${defUrl}" placeholder="Link liên kết (nếu có)..." class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white">`;
-            } else if (type === 'milestone') {
-                document.getElementById('form-title').innerText = editId ? "Sửa Kỷ Niệm" : "Tạo Sự Kiện";
-                document.getElementById('form-desc').innerText = "Đếm ngược thời gian thực.";
+                    <input type="text" id="add-vault-title" value="${defName}" placeholder="Tên phim / Tên bài hát..." class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white mb-2 outline-none focus:border-pink-500">
+                    <input type="text" id="add-vault-url" value="${defUrl}" placeholder="Link xem phim / Nghe nhạc..." class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-pink-500">`;
+            } else if (currentVaultCategory === 'study') {
+                document.getElementById('form-title').innerText = editId ? "Sửa Tài Liệu" : "Cất Giữ Tài Liệu 📚";
+                document.getElementById('form-desc').innerText = "Lưu trữ bài viết hoặc link học tập quan trọng.";
                 fields.innerHTML = `
-                    <input type="text" id="add-ms-title" value="${defName}" placeholder="Tên sự kiện..." class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white mb-2">
-                    <input type="text" id="add-ms-date" value="${defDate}" placeholder="YYYY-MM-DD HH:MM" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm font-mono text-white">`;
+                    <input type="text" id="add-vault-title" value="${defName}" placeholder="Tên tài liệu / Tên sách..." class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white mb-2 outline-none focus:border-pink-500">
+                    <input type="text" id="add-vault-url" value="${defUrl}" placeholder="Link Drive / Tài liệu tham khảo..." class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-pink-500">`;
+            } else if (currentVaultCategory === 'braindump') {
+                document.getElementById('form-title').innerText = editId ? "Sửa Khoảnh Khắc" : "Cất Giấu Khoảnh Khắc 🤫";
+                document.getElementById('form-desc').innerText = editId ? "Cập nhật ghi chú cho khoảnh khắc này" : "Tải ảnh hoặc video riêng tư (Lưu trữ không giới hạn dung lượng máy).";
+                
+                let fileUploadSection = '';
+                if (!editId) {
+                    fileUploadSection = `
+                        <div class="relative w-full bg-gray-950 border border-gray-800 border-dashed rounded-xl p-4 text-center cursor-pointer hover:border-pink-500 transition mb-2">
+                            <input type="file" id="add-vault-file" accept="image/*,video/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="updateFileNameDisplay(this)">
+                            <span id="file-upload-status" class="text-xs text-gray-400">📸 Chọn ảnh hoặc video gốc bất kỳ</span>
+                        </div>`;
+                }
+                fields.innerHTML = `
+                    <input type="text" id="add-vault-title" value="${defName}" placeholder="Ghi chú ngắn về khoảnh khắc này..." class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white mb-2 outline-none focus:border-pink-500">
+                    ${fileUploadSection}`;
             }
+
             const m = document.getElementById('modal-form'); m.classList.replace('hidden', 'flex');
             setTimeout(() => document.getElementById('form-card').classList.replace('scale-95', 'scale-100'), 10);
+        }
+
+        function updateFileNameDisplay(input) {
+            const status = document.getElementById('file-upload-status');
+            if (input.files && input.files[0]) {
+                status.innerText = `✅ Đã chọn: ${input.files[0].name.slice(0, 20)}...`;
+                status.classList.add('text-pink-400');
+            }
         }
 
         function closeFormModal() {
@@ -299,45 +243,49 @@
 
         function submitForm() {
             const uuid = () => Math.random().toString(36).substring(2, 15);
-            if (currentFormType === 'habit') {
-                const name = document.getElementById('add-habit-name').value.trim();
-                const start = document.getElementById('add-habit-start').value;
-                const end = document.getElementById('add-habit-end').value;
-                if (!name) return showToast("Vui lòng điền tên!", "error");
-                
+            const title = document.getElementById('add-vault-title').value.trim();
+            if (!title) return showToast("Thiếu tiêu đề rồi ông!", "error");
+
+            if (currentVaultCategory === 'braindump') {
                 if (currentEditId) {
-                    const idx = habits.findIndex(h => h.id === currentEditId);
-                    if (idx > -1) { habits[idx].name = name; habits[idx].startTime = start; habits[idx].endTime = end; }
-                } else { habits.push({ id: uuid(), name, startTime: start, endTime: end, streak_count: 0, logs: [] }); }
-                saveData('habits'); loadHabits();
-            }
-            else if (currentFormType === 'vault') {
-                const title = document.getElementById('add-vault-title').value.trim();
+                    const idx = vaultItems.findIndex(v => v.id === currentEditId);
+                    if (idx > -1) { vaultItems[idx].title = title; }
+                    saveData('vault'); loadVault(); closeFormModal(); showToast("Đã cập nhật ghi chú!");
+                } else {
+                    const fileInput = document.getElementById('add-vault-file');
+                    if (fileInput.files && fileInput.files[0]) {
+                        const file = fileInput.files[0];
+                        const itemId = uuid();
+                        
+                        // Lưu file gốc dưới dạng Blob trực tiếp vào IndexedDB (không lo giới hạn dung lượng)
+                        saveMediaToDB(itemId, file, function() {
+                            vaultItems.push({ 
+                                id: itemId, 
+                                title: title, 
+                                url: null, 
+                                isIndexedDB: true,
+                                fileType: file.type,
+                                category: 'braindump' 
+                            });
+                            saveData('vault'); loadVault(); closeFormModal(); showToast("Cất giấu thành công! 🤫");
+                        });
+                    } else {
+                        return showToast("Vui lòng chọn ảnh hoặc video!", "error");
+                    }
+                }
+            } else {
                 const url = document.getElementById('add-vault-url').value.trim();
-                if (!title) return showToast("Thiếu tiêu đề rồi ông!", "error");
                 if (currentEditId) {
                     const idx = vaultItems.findIndex(v => v.id === currentEditId);
                     if (idx > -1) { vaultItems[idx].title = title; vaultItems[idx].url = url; }
-                } else { vaultItems.push({ id: uuid(), title, url, category: currentVaultCategory }); }
-                saveData('vault'); loadVault();
+                } else { 
+                    vaultItems.push({ id: uuid(), title, url, category: currentVaultCategory }); 
+                }
+                saveData('vault'); loadVault(); closeFormModal(); showToast("Ghi nhận dữ liệu thành công!");
             }
-            else if (currentFormType === 'milestone') {
-                const title = document.getElementById('add-ms-title').value.trim();
-                const dateStr = document.getElementById('add-ms-date').value.trim();
-                if (!title || !dateStr) return showToast("Vui lòng nhập đủ!", "error");
-                const date = new Date(dateStr.replace(/-/g, '/'));
-                if(isNaN(date.getTime())) return showToast("Sai định dạng ngày!", "error");
-                
-                if (currentEditId) {
-                    const idx = milestones.findIndex(m => m.id === currentEditId);
-                    if (idx > -1) { milestones[idx].title = title; milestones[idx].event_date = date.toISOString(); }
-                } else { milestones.push({ id: uuid(), title, event_date: date.toISOString() }); }
-                saveData('milestones'); loadMilestones();
-            }
-            closeFormModal(); showToast("Ghi nhận dữ liệu thành công!");
         }
 
-        /* Các hàm hiển thị dữ liệu Render và Hủy bỏ (Giữ nguyên logic hoạt động mượt mà cũ) */
+        /* --- CONFIRM SYSTEM --- */
         let confirmActionCallback = null;
         function customConfirm(message, callback) {
             document.getElementById('confirm-msg').innerText = message;
@@ -353,17 +301,16 @@
         document.getElementById('btn-confirm-action').addEventListener('click', () => { if(confirmActionCallback) confirmActionCallback(); closeConfirmModal(); });
 
         function saveData(type) {
-            if (type === 'habits') localStorage.setItem('local_habits', JSON.stringify(habits));
             if (type === 'vault') localStorage.setItem('local_vault', JSON.stringify(vaultItems));
-            if (type === 'milestones') localStorage.setItem('local_milestones', JSON.stringify(milestones));
         }
 
+        // Xuất file text nhẹ nhàng cho cấu trúc danh mục
         function exportData() {
-            const data = { habits, vault: vaultItems, milestones, notifiedKeys, appSettings };
+            const data = { vault: vaultItems, appSettings };
             const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = `backup_data.json`; a.click();
-            showToast("Đã xuất file thành công!");
+            const a = document.createElement('a'); a.href = url; a.download = `infinite_vault_struct.json`; a.click();
+            showToast("Đã xuất cấu trúc file!");
         }
 
         function importData(event) {
@@ -372,120 +319,107 @@
             reader.onload = (e) => {
                 try {
                     const d = JSON.parse(e.target.result);
-                    if (d.habits) { habits = d.habits; saveData('habits'); }
                     if (d.vault) { vaultItems = d.vault; saveData('vault'); }
-                    if (d.milestones) { milestones = d.milestones; saveData('milestones'); }
                     if (d.appSettings) { appSettings = d.appSettings; localStorage.setItem('app_settings', JSON.stringify(appSettings)); }
-                    showToast("Đã nhập dữ liệu mới!"); setTimeout(() => location.reload(), 800);
+                    showToast("Đã nhập dữ liệu!"); setTimeout(() => location.reload(), 800);
                 } catch (err) { showToast("File không đúng chuẩn!", "error"); }
             };
             reader.readAsText(file);
         }
 
-        function renderEmptyState(msg, icon) { return `<div class="flex flex-col items-center justify-center py-12 text-gray-500 opacity-60"><div class="text-3xl mb-2">${icon}</div><p class="text-xs">${msg}</p></div>`; }
-
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`tab-${tab}`).classList.remove('hidden');
-            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active-tab'));
-            document.getElementById(`nav-${tab}`).classList.add('active-tab');
-            if (tab === 'habits') loadHabits();
-            if (tab === 'vault') loadVault();
-            if (tab === 'milestones') loadMilestones();
-        }
-
-        function loadHabits() {
-            const list = document.getElementById('habit-list'); list.innerHTML = '';
-            const todayStr = new Date(Date.now() - (new Date().getTimezoneOffset()*60000)).toISOString().split('T')[0];
-            if(habits.length === 0) return list.innerHTML = renderEmptyState('Trạm thói quen trống.', '✨');
-            
-            habits.forEach(h => {
-                const isDone = h.logs ? h.logs.includes(todayStr) : false;
-                let tDisp = '';
-                if (h.startTime && h.endTime) tDisp = `<span class="text-[10px] text-gray-400 bg-gray-900/60 px-2 py-0.5 rounded border border-gray-800 mt-1 inline-block">⏰ ${h.startTime} - ${h.endTime}</span>`;
-                else if (h.startTime) tDisp = `<span class="text-[10px] text-gray-400 bg-gray-900/60 px-2 py-0.5 rounded border border-gray-800 mt-1 inline-block">⏰ Từ ${h.startTime}</span>`;
-                else if (h.endTime) tDisp = `<span class="text-[10px] text-gray-400 bg-gray-900/60 px-2 py-0.5 rounded border border-gray-800 mt-1 inline-block">⏰ Đến ${h.endTime}</span>`;
-
-                const card = document.createElement('div'); card.className = 'glass-card p-4 rounded-2xl flex justify-between items-center';
-                card.innerHTML = `
-                    <div class="flex-1 pr-2">
-                        <div class="flex items-center gap-2">
-                            <h4 class="font-medium text-sm text-gray-100 truncate max-w-[150px]">${h.name}</h4>
-                            <div class="flex gap-1.5 shrink-0">
-                                <button onclick="openFormModal('habit', '${h.id}')" class="text-[10px] text-gray-500">✏️</button>
-                                <button onclick="deleteHabit('${h.id}')" class="text-[10px] text-gray-500">✕</button>
-                            </div>
-                        </div>
-                        ${tDisp}
-                        <p class="text-xs text-pink-400 font-medium mt-1">🔥 Chuỗi: ${h.streak_count || 0} ngày</p>
-                    </div>
-                    <button onclick="toggleHabit('${h.id}', ${isDone})" class="w-11 h-11 rounded-xl flex items-center justify-center border text-base transition-colors shrink-0 ${isDone ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-400' : 'bg-gray-900/50 border-gray-800 text-gray-600'}">${isDone ? '✨' : '✓'}</button>`;
-                list.appendChild(card);
-            });
-        }
-
-        function toggleHabit(id, isDone) {
-            const todayStr = new Date(Date.now() - (new Date().getTimezoneOffset()*60000)).toISOString().split('T')[0];
-            const h = habits.find(x => x.id === id); if(!h.logs) h.logs = [];
-            if(!isDone) { h.logs.push(todayStr); h.streak_count = (h.streak_count || 0) + 1; showToast("Tuyệt vời! +1 ngày chuỗi 🔥"); }
-            else { h.logs = h.logs.filter(d => d !== todayStr); h.streak_count = Math.max(0, (h.streak_count || 1) - 1); }
-            saveData('habits'); loadHabits();
-        }
-        function deleteHabit(id) { customConfirm("Xóa thói quen này?", () => { habits = habits.filter(h => h.id !== id); saveData('habits'); loadHabits(); }); }
-
         function loadVault() {
+            if (!db) return; // Đợi DB khởi động xong mới render
             const container = document.getElementById('vault-list'); container.innerHTML = '';
             const search = document.getElementById('vault-search').value.toLowerCase();
             let items = vaultItems.filter(i => i.category === currentVaultCategory);
             if(search) items = items.filter(i => i.title.toLowerCase().includes(search));
-            if(items.length === 0) return container.innerHTML = renderEmptyState('Ngăn kéo trống.', '📦');
-            items.forEach(item => {
-                const card = document.createElement('div'); card.className = 'glass-card p-3 rounded-xl flex justify-between items-center gap-2';
-                card.innerHTML = `
-                    <div class="overflow-hidden flex-1"><h4 class="font-medium text-xs text-gray-200 truncate">${item.title}</h4>
-                    ${item.url ? `<a href="${item.url}" target="_blank" class="text-[10px] text-indigo-400 block mt-0.5 truncate">🔗 Mở link liên kết</a>` : ''}</div>
-                    <div class="flex gap-2 shrink-0">
-                        <button onclick="openFormModal('vault', '${item.id}')" class="text-xs text-gray-500">✏️</button>
-                        <button onclick="deleteVaultItem('${item.id}')" class="text-xs text-gray-500">✕</button>
-                    </div>`;
-                container.appendChild(card);
-            });
-        }
-        function filterVault(cat) { currentVaultCategory = cat; document.querySelectorAll('.vault-filter-btn').forEach(b => b.className = "vault-filter-btn bg-gray-900/60 border border-gray-800 py-2 rounded-xl text-gray-400"); document.getElementById(`vbtn-${cat}`).className = "vault-filter-btn bg-pink-600 py-2 rounded-xl text-white font-medium"; loadVault(); }
-        function deleteVaultItem(id) { customConfirm("Xóa khỏi kho đồ?", () => { vaultItems = vaultItems.filter(i => i.id !== id); saveData('vault'); loadVault(); }); }
+            
+            if(items.length === 0) {
+                const emptyText = currentVaultCategory === 'braindump' ? 'Chưa có khoảnh khắc bí mật nào 🤫' : 'Ngăn kéo trống.';
+                return container.innerHTML = renderEmptyState(emptyText, currentVaultCategory === 'braindump' ? '🔒' : '📦');
+            }
 
-        function loadMilestones() {
-            const container = document.getElementById('milestone-list'); container.innerHTML = '';
-            if(countdownInterval) clearInterval(countdownInterval); if(milestones.length === 0) return container.innerHTML = renderEmptyState('Chưa có mốc thời gian.', '⏳');
-            function run() {
-                milestones.forEach(m => {
-                    const diff = new Date(m.event_date).getTime() - new Date().getTime();
-                    const isFuture = diff > 0; const abs = Math.abs(diff);
-                    const d = Math.floor(abs/86400000); const h = Math.floor((abs%86400000)/3600000); const min = Math.floor((abs%3600000)/60000); const s = Math.floor((abs%60000)/1000);
-                    let card = document.getElementById(`ms-card-${m.id}`);
-                    if(!card) { card = document.createElement('div'); card.id = `ms-card-${m.id}`; card.className = 'glass-card p-4 rounded-2xl mb-3'; container.appendChild(card); }
+            items.forEach(item => {
+                const card = document.createElement('div');
+                
+                if (item.category === 'braindump' && item.isIndexedDB) {
+                    card.className = 'glass-card p-4 rounded-2xl flex flex-col gap-3 fade-in';
+                    const mediaContainerId = `media-container-${item.id}`;
+                    
                     card.innerHTML = `
-                        <div class="flex justify-between items-start mb-2">
-                            <h4 class="font-semibold text-xs text-gray-100 truncate max-w-[160px]">🎯 ${m.title}</h4>
-                            <div class="flex items-center gap-2 shadow-sm">
-                                <span class="text-[9px] px-1.5 py-0.5 rounded-full ${isFuture?'bg-emerald-500/10 text-emerald-400':'bg-amber-500/10 text-amber-400'}">${isFuture?'Đếm ngược':'Đã qua'}</span>
-                                <button onclick="openFormModal('milestone', '${m.id}')" class="text-gray-500 text-xs">✏️</button>
-                                <button onclick="deleteMilestone('${m.id}')" class="text-gray-500 text-xs">✕</button>
+                        <div class="flex justify-between items-start gap-2">
+                            <div class="overflow-hidden flex-1"><h4 class="font-medium text-xs text-gray-200">${item.title}</h4></div>
+                            <div class="flex gap-2 shrink-0">
+                                <button onclick="openFormModal('vault', '${item.id}')" class="text-xs text-gray-500">✏️</button>
+                                <button onclick="deleteVaultItem('${item.id}')" class="text-xs text-gray-500">✕</button>
                             </div>
                         </div>
-                        <div class="grid grid-cols-4 gap-1.5 text-center text-xs">
-                            <div class="bg-black/20 py-1.5 rounded-xl font-mono"><b class="text-sm">${d}</b><br><span class="text-[8px] text-gray-500">Ngày</span></div>
-                            <div class="bg-black/20 py-1.5 rounded-xl font-mono"><b class="text-sm">${h}</b><br><span class="text-[8px] text-gray-500">Giờ</span></div>
-                            <div class="bg-black/20 py-1.5 rounded-xl font-mono"><b class="text-sm">${min}</b><br><span class="text-[8px] text-gray-500">Phút</span></div>
-                            <div class="bg-black/20 py-1.5 rounded-xl font-mono text-pink-400"><b class="text-sm">${s}</b><br><span class="text-[8px] text-gray-500">Giây</span></div>
-                        </div>`;
-                });
-            }
-            run(); countdownInterval = setInterval(run, 1000);
-        }
-        function deleteMilestone(id) { customConfirm("Xóa kỷ niệm này?", () => { milestones = milestones.filter(m => m.id !== id); saveData('milestones'); loadMilestones(); }); }
+                        <div id="${mediaContainerId}" class="w-full text-center py-4 text-xs text-gray-600">⌛ Đang giải mã...</div>`;
+                    
+                    container.appendChild(card);
 
-        window.addEventListener('DOMContentLoaded', () => { switchTab('habits'); setTimeout(() => { const intro = document.getElementById('intro-screen'); if(intro){ intro.classList.add('intro-hide'); setTimeout(()=>intro.remove(),600); } }, 1200); });
+                    // Lấy dữ liệu file nhị phân gốc từ IndexedDB ra để hiển thị mượt mà
+                    getMediaFromDB(item.id, function(blobFile) {
+                        const mediaBox = document.getElementById(mediaContainerId);
+                        if (mediaBox && blobFile) {
+                            const objectURL = URL.createObjectURL(blobFile);
+                            if (item.fileType && item.fileType.startsWith('video/')) {
+                                mediaBox.outerHTML = `<video src="${objectURL}" controls class="w-full max-h-64 rounded-xl object-contain bg-black/40 mt-1" playsinline></video>`;
+                            } else {
+                                mediaBox.outerHTML = `<img src="${objectURL}" class="w-full max-h-64 rounded-xl object-contain bg-black/40 mt-1" loading="lazy">`;
+                            }
+                        } else if (mediaBox) {
+                            mediaBox.innerText = "✕ Không tìm thấy file gốc trên thiết bị.";
+                        }
+                    });
+                } else {
+                    card.className = 'glass-card p-3 rounded-xl flex justify-between items-center gap-2 fade-in';
+                    card.innerHTML = `
+                        <div class="overflow-hidden flex-1"><h4 class="font-medium text-xs text-gray-200 truncate">${item.title}</h4>
+                        ${item.url ? `<a href="${item.url}" target="_blank" class="text-[10px] text-indigo-400 block mt-0.5 truncate">🔗 Mở link liên kết</a>` : ''}</div>
+                        <div class="flex gap-2 shrink-0">
+                            <button onclick="openFormModal('vault', '${item.id}')" class="text-xs text-gray-500">✏️</button>
+                            <button onclick="deleteVaultItem('${item.id}')" class="text-xs text-gray-500">✕</button>
+                        </div>`;
+                    container.appendChild(card);
+                }
+            });
+        }
+
+        function filterVault(cat) { 
+            currentVaultCategory = cat; 
+            document.querySelectorAll('.vault-filter-btn').forEach(b => b.className = "vault-filter-btn bg-gray-900/60 border border-gray-800 py-2 rounded-xl text-gray-400"); 
+            document.getElementById(`vbtn-${cat}`).className = "vault-filter-btn bg-pink-600 py-2 rounded-xl text-white font-medium"; 
+            
+            const titleEl = document.getElementById('vault-title-text');
+            const descEl = document.getElementById('vault-desc-text');
+            if (cat === 'wishlist') { titleEl.innerText = "Kho Lưu Trữ Vô Tận"; descEl.innerText = "Nơi lưu trữ những món đồ riêng tư của bạn"; }
+            else if (cat === 'media') { titleEl.innerText = "Media Hub 🎬"; descEl.innerText = "Cất giữ phim ảnh, bài hát hoặc video hay"; }
+            else if (cat === 'study') { titleEl.innerText = "Study Corner 📚"; descEl.innerText = "Lưu trữ bài viết hoặc link học tập quan trọng"; }
+            else if (cat === 'braindump') { titleEl.innerText = "Secret Moments 🤫"; descEl.innerText = "Không gian cất giấu hình ảnh & video thầm kín"; }
+            
+            loadVault(); 
+        }
+
+        function deleteVaultItem(id) { 
+            customConfirm("Xóa mục này khỏi kho lưu trữ?", () => { 
+                const item = vaultItems.find(i => i.id === id);
+                if (item && item.isIndexedDB) {
+                    deleteMediaFromDB(id); // Xóa file vật lý trong database ngầm
+                }
+                vaultItems = vaultItems.filter(i => i.id !== id); 
+                saveData('vault'); 
+                loadVault(); 
+            }); 
+        }
+
+        window.addEventListener('DOMContentLoaded', () => { 
+            filterVault('wishlist'); 
+            setTimeout(() => { 
+                const intro = document.getElementById('intro-screen'); 
+                if(intro){ intro.classList.add('intro-hide'); setTimeout(()=>intro.remove(),600); } 
+            }, 1200); 
+        });
     </script>
 </body>
 </html>

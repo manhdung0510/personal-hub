@@ -118,7 +118,6 @@
             if (type === 'milestones') localStorage.setItem('local_milestones', JSON.stringify(milestones));
         }
 
-        // HÀM EXPORT / IMPORT
         function exportData() {
             const data = { habits, vault: vaultItems, milestones };
             const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
@@ -153,7 +152,6 @@
             </div>`;
         }
 
-        // GIỮ NGUYÊN HOÀN TOÀN LOGIC CỦA ÔNG
         function checkAndResetHabits() {
             const tzOffset = new Date().getTimezoneOffset() * 60000;
             const todayLocalStr = new Date(Date.now() - tzOffset).toISOString().split('T')[0];
@@ -163,10 +161,8 @@
 
             habits.forEach(habit => {
                 if (!habit.logs) habit.logs = [];
-                
                 if (habit.logs.length > 0) {
                     const lastCompletedDate = habit.logs[habit.logs.length - 1];
-                    
                     if (lastCompletedDate !== todayLocalStr && lastCompletedDate !== yesterdayLocalStr) {
                         habit.streak_count = 0;
                         dataChanged = true;
@@ -177,9 +173,7 @@
                 }
             });
 
-            if (dataChanged) {
-                saveData('habits');
-            }
+            if (dataChanged) saveData('habits');
         }
 
         function switchTab(tabName) {
@@ -193,6 +187,7 @@
             if (tabName === 'milestones') loadMilestones();
         }
 
+        // ĐOẠN NÀY ĐÃ ĐƯỢC CHỈNH SỬA ĐỂ HIỂN THỊ TEXT THEO TỪNG TAB VAULT
         function openFormModal(type) {
             currentFormType = type;
             const fieldsContainer = document.getElementById('form-fields');
@@ -202,13 +197,29 @@
                 document.getElementById('form-title').innerText = "Thêm Thói Quen Mới 🔄";
                 document.getElementById('form-desc').innerText = "Tạo các mục tiêu nhỏ để duy trì mỗi ngày.";
                 fieldsContainer.innerHTML = `<input type="text" id="add-habit-name" placeholder="Tên thói quen (ví dụ: Đọc sách, Chạy bộ...)" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white">`;
+            
             } else if (type === 'vault') {
-                document.getElementById('form-title').innerText = "Cất Giấu Kỷ Vật 📦";
-                document.getElementById('form-desc').innerText = "Lưu trữ món đồ yêu thích hoặc các liên kết cá nhân.";
+                // Tùy chỉnh text dựa trên danh mục hiện tại (wishlist, media, study, braindump)
+                // ÔNG CÓ THỂ ĐỔI CHỮ BÊN TRONG NGOẶC KÉP Ở DƯỚI NÀY
+                if (currentVaultCategory === 'wishlist') {
+                    document.getElementById('form-title').innerText = "Thêm Wishlist 🛍️";
+                    document.getElementById('form-desc').innerText = "Lưu trữ món đồ yêu thích bạn muốn sở hữu.";
+                } else if (currentVaultCategory === 'media') {
+                    document.getElementById('form-title').innerText = "Lưu trữ Media 🎬";
+                    document.getElementById('form-desc').innerText = "Cất giữ link phim, nhạc, video yêu thích.";
+                } else if (currentVaultCategory === 'study') {
+                    document.getElementById('form-title').innerText = "Cất giữ Tài liệu 📚";
+                    document.getElementById('form-desc').innerText = "Lưu trữ tài liệu, bài viết, link học tập.";
+                } else if (currentVaultCategory === 'braindump') {
+                    document.getElementById('form-title').innerText = "Thêm Ý tưởng 🧠";
+                    document.getElementById('form-desc').innerText = "Ghi chú nhanh những ý tưởng xẹt qua đầu.";
+                }
+
                 fieldsContainer.innerHTML = `
                     <input type="text" id="add-vault-title" placeholder="Tiêu đề / Tên món đồ" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white mb-2">
                     <input type="text" id="add-vault-url" placeholder="Dán link liên kết (nếu có)" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white">
                 `;
+            
             } else if (type === 'milestone') {
                 document.getElementById('form-title').innerText = "Tạo Sự Kiện Kỷ Niệm ⏳";
                 document.getElementById('form-desc').innerText = "Hệ thống tự động tính toán thời gian chạy từng giây.";

@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="My Hub">
-    <link rel="apple-touch-icon" href="https://img.icons8.com/color/512/calendar.png">
+    <link class="apple-touch-icon" href="https://img.icons8.com/color/512/calendar.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@supabase/supabase-js@2.39.8/dist/umd/supabase.js"></script>
@@ -104,7 +104,8 @@
     </div>
 
     <script>
-        const SUPABASE_URL = "https://hhxqbizloneptxkfljs.supabase.co";
+        // ĐÃ SỬA CHÍNH XÁC: Thêm chữ 'v' vào đường dẫn hhxqbvizloneptxkfljs
+        const SUPABASE_URL = "https://hhxqbvizloneptxkfljs.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_d0youqsK-CDj5KwDN54FXw_i_pyW43z"; 
 
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -141,6 +142,9 @@
             } 
         }
 
+        // Tự động điều chỉnh năm hiện tại theo thời gian thực tế
+        const currentYear = new Date().getFullYear();
+
         function openFormModal(type) {
             if (!currentAuthKey) { openAuthModal(); return; }
             currentFormType = type;
@@ -163,7 +167,7 @@
                 document.getElementById('form-desc').innerText = "Hệ thống tự động tính toán thời gian chạy từng giây.";
                 fieldsContainer.innerHTML = `
                     <input type="text" id="add-ms-title" placeholder="Tên sự kiện (ví dụ: Ngày bên nhau)" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white mb-2">
-                    <input type="text" id="add-ms-date" placeholder="Mốc thời gian mẫu: YYYY-MM-DD HH:MM" value="${new Date().getFullYear()}-10-20 00:00" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition font-mono text-white">
+                    <input type="text" id="add-ms-date" placeholder="Mốc thời gian mẫu: YYYY-MM-DD HH:MM" value="${currentYear}-10-20 00:00" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition font-mono text-white">
                 `;
             }
             document.getElementById('modal-form').classList.replace('hidden', 'flex');

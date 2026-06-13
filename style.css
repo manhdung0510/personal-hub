@@ -47,6 +47,28 @@ body {
     pointer-events: none; 
     transition: opacity 0.8s ease-in-out; 
 }
+/* --- CÁC HIỆU ỨNG MỚI CHO TOAST & MODAL --- */
+.toast-enter {
+    animation: slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+.toast-leave {
+    animation: fadeOutRight 0.4s ease forwards;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes fadeOutRight {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+/* Scrollbar xịn xò cho thanh cuộn */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.5); }
 
 .scroll-container {
     -webkit-overflow-scrolling: touch;

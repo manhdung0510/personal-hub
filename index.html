@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+sb_publishable_d0youqsK-CDj5KwDN54FXw_i_pyW43z<!DOCTYPE html>
 <html lang="vi" class="h-full">
 <head>
     <meta charset="UTF-8">
@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" href="https://img.icons8.com/color/512/calendar.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2.39.8/dist/umd/supabase.js"></script>
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
         .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
@@ -95,8 +95,7 @@
                 <h3 id="form-title" class="text-base font-semibold text-gray-100">Thêm mục mới</h3>
                 <p id="form-desc" class="text-xs text-gray-400">Vui lòng điền thông tin bên dưới.</p>
             </div>
-            <div id="form-fields" class="space-y-3">
-                </div>
+            <div id="form-fields" class="space-y-3"></div>
             <div class="flex gap-2 pt-2">
                 <button onclick="closeFormModal()" class="w-1/2 bg-gray-900 border border-gray-800 py-2.5 rounded-xl text-sm font-medium">Hủy</button>
                 <button onclick="submitForm()" class="w-1/2 bg-indigo-600 py-2.5 rounded-xl text-sm font-medium shadow-lg shadow-indigo-600/30">Xác nhận</button>
@@ -106,14 +105,15 @@
 
     <script>
         const SUPABASE_URL = "https://hhxqbizloneptxkfljs.supabase.co";
+        // ÔNG DÁN CÁI MÃ ANON KEY THẬT VỪA COPY Ở BƯỚC 1 VÀO TRONG DẤU NGOẶC KÉP DƯỚI ĐÂY NHÉ:
         const SUPABASE_ANON_KEY = "sb_publishable_d0youqsK-CDj5KwDN54FXw_i_pyW43z"; 
-        // Hãy giữ nguyên mã ANON KEY thực tế ở file cũ của ông nhé!
 
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Khởi tạo Supabase bằng biến window rõ ràng để tránh bị chặn
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let currentAuthKey = localStorage.getItem('auth_key');
         let currentVaultCategory = 'wishlist';
         let countdownInterval;
-        let currentFormType = ''; // 'habit', 'vault', 'milestone'
+        let currentFormType = '';
 
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -130,6 +130,8 @@
             document.getElementById('input-auth-key').value = localStorage.getItem('auth_key') || ''; 
             document.getElementById('modal-auth').classList.replace('hidden', 'flex'); 
         }
+        document.querySelector('header button').onclick = openAuthModal;
+        
         function closeAuthModal() { document.getElementById('modal-auth').classList.replace('flex', 'hidden'); }
         function saveAuthKey() { 
             const key = document.getElementById('input-auth-key').value.trim(); 
@@ -142,7 +144,6 @@
             } 
         }
 
-        // ĐIỀU KHIỂN CUSTOM FORM MODAL (THAY PROMPT)
         function openFormModal(type) {
             if (!currentAuthKey) { openAuthModal(); return; }
             currentFormType = type;
@@ -193,7 +194,6 @@
             closeFormModal();
         }
 
-        // LOGIC LÀM VIỆC VỚI HỆ THỐNG SUPABASE
         async function loadHabits() {
             const { data: habits, error } = await supabase.from('habits').select('*, habit_logs(completed_date)').eq('auth_key', currentAuthKey);
             if (error) return;
@@ -291,7 +291,14 @@
         }
         async function deleteMilestone(id) { if(confirm("Xóa mốc kỷ niệm này?")) { await supabase.from('milestones').delete().eq('id', id); loadMilestones(); } }
 
-        window.addEventListener('DOMContentLoaded', () => { if(currentAuthKey) { document.getElementById('current-key-display').innerText = `Key: ${currentAuthKey}`; switchTab('habits'); } else { openAuthModal(); } });
+        window.addEventListener('DOMContentLoaded', () => { 
+            if(currentAuthKey) { 
+                document.getElementById('current-key-display').innerText = `Key: ${currentAuthKey}`; 
+                switchTab('habits'); 
+            } else { 
+                openAuthModal(); 
+            } 
+        });
     </script>
 </body>
 </html>

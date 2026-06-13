@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" class="h-full">
+<html lang="vi" class="h-full overflow-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -12,7 +12,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
         .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .glass-card { background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .active-tab { background: rgba(99, 102, 241, 0.15); color: #818cf8 !important; border: 1px solid rgba(99, 102, 241, 0.3); }
@@ -20,13 +25,19 @@
         .fade-in { animation: fadeIn 1.2s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
         .intro-hide { opacity: 0; pointer-events: none; transition: opacity 0.8s ease-in-out; }
+        
+        /* Tối ưu cuộn mượt mà trên iOS và chặn kéo nảy màn hình */
+        .scroll-container {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
+        }
     </style>
 </head>
 <body class="bg-[#090d16] text-gray-100 h-full flex flex-col justify-between overflow-hidden select-none">
 
     <div id="intro-screen" class="fixed inset-0 bg-[#090d16] z-[999] flex flex-col items-center justify-center text-center px-6">
         <div class="space-y-4 fade-in">
-            <div class="text-4xl animate-pulse">✨🔮✨</div>
+            <div class="text-4xl animate-pulse">✨🔮</div>
             <h2 class="text-xl font-medium tracking-wide bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300 bg-clip-text text-transparent">
                 Chào mừng bạn ghé thăm không gian riêng...
             </h2>
@@ -34,21 +45,21 @@
         </div>
     </div>
 
-    <header class="glass px-6 py-4 flex justify-between items-center z-10 sticky top-0">
+    <header class="glass px-6 py-4 flex justify-between items-center z-10 sticky top-0 shrink-0">
         <div>
             <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Personal Hub ✨</h1>
-            <p class="text-[10px] text-gray-500 font-mono mt-0.5">Offline Secure Storage</p>
+            <p class="text-[10px] text-gray-500 font-mono mt-0.5">Secure Local Storage</p>
         </div>
     </header>
 
-    <main class="flex-1 overflow-y-auto px-4 py-6 space-y-6 pb-28">
+    <main class="flex-1 overflow-y-auto scroll-container px-4 py-6 space-y-6 pb-32">
         <section id="tab-habits" class="tab-content space-y-4">
             <div class="flex justify-between items-center">
                 <div>
                     <h2 class="text-lg font-semibold text-gray-200">Trạm Thói Quen</h2>
-                    <p class="text-xs text-gray-400">Tự động reset trạng thái sau 12h đêm</p>
+                    <p class="text-xs text-gray-400">Tự động làm mới trạng thái sau 12h đêm</p>
                 </div>
-                <button onclick="openFormModal('habit')" class="text-xs bg-indigo-600/90 hover:bg-indigo-600 px-3 py-2 rounded-xl font-medium active:scale-95 transition shadow-lg shadow-indigo-600/20">+ Thêm mới</button>
+                <button onclick="openFormModal('habit')" class="text-xs bg-indigo-600/90 hover:bg-indigo-600 px-3.5 py-2 rounded-xl font-medium active:scale-95 transition shadow-lg shadow-indigo-600/20">+ Thêm mới</button>
             </div>
             <div id="habit-list" class="space-y-3"></div>
         </section>
@@ -59,7 +70,7 @@
                     <h2 class="text-lg font-semibold text-gray-200">The Infinite Vault</h2>
                     <p class="text-xs text-gray-400">Kho lưu trữ vạn năng cá nhân</p>
                 </div>
-                <button onclick="openFormModal('vault')" class="text-xs bg-pink-600/90 hover:bg-pink-600 px-3 py-2 rounded-xl font-medium active:scale-95 transition shadow-lg shadow-pink-600/20">+ Cất giấu</button>
+                <button onclick="openFormModal('vault')" class="text-xs bg-pink-600/90 hover:bg-pink-600 px-3.5 py-2 rounded-xl font-medium active:scale-95 transition shadow-lg shadow-pink-600/20">+ Cất giấu</button>
             </div>
             <div class="grid grid-cols-4 gap-1.5 text-center text-[11px]">
                 <button onclick="filterVault('wishlist')" id="vbtn-wishlist" class="vault-filter-btn bg-pink-600 py-2.5 rounded-xl font-medium text-white transition">🛍️ Wishlist</button>
@@ -74,15 +85,15 @@
             <div class="flex justify-between items-center">
                 <div>
                     <h2 class="text-lg font-semibold text-gray-200">Mốc Kỷ Niệm</h2>
-                    <p class="text-xs text-gray-400">Đếm xuôi quá khứ / Đếm ngược tương lai</p>
+                    <p class="text-xs text-gray-400">Tính toán chính xác thời gian thực</p>
                 </div>
-                <button onclick="openFormModal('milestone')" class="text-xs bg-emerald-600/90 hover:bg-emerald-600 px-3 py-2 rounded-xl font-medium active:scale-95 transition shadow-lg shadow-emerald-600/20">+ Tạo sự kiện</button>
+                <button onclick="openFormModal('milestone')" class="text-xs bg-emerald-600/90 hover:bg-emerald-600 px-3.5 py-2 rounded-xl font-medium active:scale-95 transition shadow-lg shadow-emerald-600/20">+ Tạo sự kiện</button>
             </div>
             <div id="milestone-list" class="space-y-4"></div>
         </section>
     </main>
 
-    <nav class="glass fixed bottom-5 left-4 right-4 h-16 rounded-2xl flex justify-around items-center px-2 z-20 shadow-2xl">
+    <nav class="glass fixed bottom-safe left-4 right-4 h-16 rounded-2xl flex justify-around items-center px-2 z-20 shadow-2xl mb-2">
         <button onclick="switchTab('habits')" id="nav-habits" class="nav-btn flex flex-col items-center justify-center text-gray-400 w-16 h-12 rounded-xl transition-all"><span class="text-lg">🔄</span><span class="text-[10px] font-semibold mt-0.5">Habits</span></button>
         <button onclick="switchTab('vault')" id="nav-vault" class="nav-btn flex flex-col items-center justify-center text-gray-400 w-16 h-12 rounded-xl transition-all"><span class="text-lg">📦</span><span class="text-[10px] font-semibold mt-0.5">Vault</span></button>
         <button onclick="switchTab('milestones')" id="nav-milestones" class="nav-btn flex flex-col items-center justify-center text-gray-400 w-16 h-12 rounded-xl transition-all"><span class="text-lg">⏳</span><span class="text-[10px] font-semibold mt-0.5">Milestones</span></button>
@@ -103,7 +114,6 @@
     </div>
 
     <script>
-        // Khởi tạo các mảng lưu trữ cục bộ trong LocalStorage
         let habits = JSON.parse(localStorage.getItem('local_habits')) || [];
         let vaultItems = JSON.parse(localStorage.getItem('local_vault')) || [];
         let milestones = JSON.parse(localStorage.getItem('local_milestones')) || [];
@@ -119,13 +129,45 @@
             if (type === 'milestones') localStorage.setItem('local_milestones', JSON.stringify(milestones));
         }
 
+        // HÀM TỰ ĐỘNG RESET THÓI QUEN SANG NGÀY MỚI (LƯU GIỮ STREAK KHÔNG BỊ MẤT)
+        function checkAndResetHabits() {
+            const tzOffset = new Date().getTimezoneOffset() * 60000;
+            const todayLocalStr = new Date(Date.now() - tzOffset).toISOString().split('T')[0];
+            const yesterdayLocalStr = new Date(Date.now() - tzOffset - 86400000).toISOString().split('T')[0];
+            
+            let dataChanged = false;
+
+            habits.forEach(habit => {
+                if (!habit.logs) habit.logs = [];
+                
+                // Nếu thói quen đã được check hoàn thành
+                if (habit.logs.length > 0) {
+                    const lastCompletedDate = habit.logs[habit.logs.length - 1];
+                    
+                    // Nếu ngày hoàn thành cuối cùng không phải hôm nay và cũng không phải hôm qua -> Đứt chuỗi!
+                    if (lastCompletedDate !== todayLocalStr && lastCompletedDate !== yesterdayLocalStr) {
+                        habit.streak_count = 0;
+                        dataChanged = true;
+                    }
+                } else if (habit.streak_count > 0) {
+                    // Trường hợp không có lịch sử logs mà streak > 0 (bất thường) -> đưa về 0
+                    habit.streak_count = 0;
+                    dataChanged = true;
+                }
+            });
+
+            if (dataChanged) {
+                saveData('habits');
+            }
+        }
+
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById(`tab-${tabName}`).classList.remove('hidden');
             document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active-tab'));
             document.getElementById(`nav-${tabName}`).classList.add('active-tab');
             
-            if (tabName === 'habits') loadHabits();
+            if (tabName === 'habits') { checkAndResetHabits(); loadHabits(); }
             if (tabName === 'vault') loadVault();
             if (tabName === 'milestones') loadMilestones();
         }
@@ -219,7 +261,6 @@
             const todayLocalStr = new Date(Date.now() - tzOffset).toISOString().split('T')[0];
             const habit = habits.find(h => h.id === habitId);
             if (!habit) return;
-
             if (!habit.logs) habit.logs = [];
 
             if (!isCompletedToday) {
@@ -302,8 +343,6 @@
 
         window.addEventListener('DOMContentLoaded', () => { 
             switchTab('habits'); 
-
-            // Hiển thị Intro trong 2.5 giây
             setTimeout(() => {
                 const intro = document.getElementById('intro-screen');
                 if (intro) {

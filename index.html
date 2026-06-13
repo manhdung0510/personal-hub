@@ -11,6 +11,7 @@
     <meta name="apple-mobile-web-app-title" content="Trợ Lý Nhỏ">
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -19,7 +20,7 @@
             -webkit-tap-highlight-color: transparent; 
             padding-top: env(safe-area-inset-top);
             padding-bottom: env(safe-area-inset-bottom);
-            font-size: 16px; /* Tăng cỡ chữ cơ bản */
+            font-size: 16px;
         }
 
         .glass { 
@@ -48,14 +49,12 @@
 
         .intro-hide { opacity: 0; pointer-events: none; transition: opacity 0.8s ease-in-out; }
 
-        /* Hiệu ứng Toast to rõ */
         .toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         .toast-leave { animation: fadeOut 0.3s ease forwards; }
 
         @keyframes slideInUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
 
-        /* Tối ưu thanh cuộn */
         ::-webkit-scrollbar { width: 0px; }
         
         .scroll-container {
@@ -63,7 +62,6 @@
             overscroll-behavior-y: contain;
         }
 
-        /* Đảm bảo input không bị bé trên iPhone */
         input, select, textarea {
             font-size: 16px !important;
         }
@@ -72,11 +70,12 @@
 <body class="bg-[#05070a] text-gray-100 h-full flex flex-col justify-between overflow-hidden select-none pt-safe pb-safe">
 
     <div id="intro-screen" class="fixed inset-0 bg-[#05070a] z-[999] flex flex-col items-center justify-center text-center px-6">
-        <div class="space-y-6 fade-in">
+        <div class="space-y-6 fade-in flex flex-col items-center">
             <div class="text-6xl animate-bounce">✨</div>
             <h2 class="text-2xl font-semibold tracking-wide bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300 bg-clip-text text-transparent">
                 Xin chào kho báu...
             </h2>
+            <p id="star-message" class="text-xs text-gray-400 max-w-xs font-medium italic opacity-80 leading-relaxed pt-2 border-t border-gray-900"></p>
         </div>
     </div>
 
@@ -129,7 +128,7 @@
             <div class="w-12 h-1.5 bg-gray-700 rounded-full mx-auto mb-2"></div>
             <div class="text-center space-y-2">
                 <h3 id="form-title" class="text-xl font-bold text-gray-100">Thêm mục mới</h3>
-                <p id="form-desc" class="text-sm text-gray-400"></p>
+                <p id="form-desc" class="text-xs text-gray-400"></p>
             </div>
             <div id="form-fields" class="space-y-4"></div>
             <div class="flex gap-3 pt-4">
@@ -141,10 +140,15 @@
 
     <div id="modal-settings" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-center justify-center p-6 z-[60]">
         <div class="glass-card w-full max-w-sm rounded-[32px] p-8 space-y-6 text-center shadow-2xl">
-            <div class="text-4xl">⚙️</div>
-            <h3 class="text-xl font-bold text-gray-100">Cài đặt</h3>
-            <p class="text-sm text-gray-400">Hệ thống đang hoạt động ổn định.</p>
-            <button onclick="closeSettings()" class="h-14 w-full bg-gray-900 border border-gray-800 rounded-2xl font-bold active:scale-95 transition">Đóng</button>
+            <div class="text-4xl animate-pulse">🔮</div>
+            <h3 class="text-xl font-bold text-gray-100">Trạm Trú Ẩn An Toàn</h3>
+            <p class="text-sm text-gray-400 leading-relaxed px-2">
+                Không gian lưu trữ này thuộc về bạn. Được hoàn thiện với tất cả sự trân trọng từ một người bạn phương xa. Mong bạn luôn bình yên mỗi ngày.
+            </p>
+            <div class="pt-2">
+                <button onclick="triggerConfetti()" class="h-14 w-full bg-gradient-to-r from-pink-500/20 to-indigo-500/20 border border-indigo-500/40 rounded-2xl font-bold text-indigo-300 active:scale-95 transition shadow-lg">Nhận một niềm vui nhỏ ✨</button>
+            </div>
+            <button onclick="closeSettings()" class="h-14 w-full bg-gray-900 border border-gray-800 rounded-2xl font-bold text-gray-400 active:scale-95 transition">Đóng</button>
         </div>
     </div>
 
@@ -163,6 +167,19 @@
         let vaultItems = JSON.parse(localStorage.getItem('local_vault')) || [];
         let currentVaultCategory = 'wishlist';
         let currentFormType = '', currentEditId = null;
+
+        const starMessages = [
+            "Mong ngày hôm nay sẽ dịu dàng với bạn.",
+            "Dù bận rộn đến đâu, cũng nhớ uống đủ nước nhé.",
+            "Bạn đã làm rất tốt rồi, hôm nay hãy nghỉ ngơi thôi.",
+            "Một ngày nhiều niềm vui nhỏ và ít deadline nha.",
+            "Mong bầu trời nơi bạn đang ở hôm nay thật đẹp.",
+            "Bất cứ lúc nào mệt mỏi, trạm trú ẩn này luôn ở đây.",
+            "Mong bạn luôn bình an dưới những cơn mưa.",
+            "Gửi một chút năng lượng tích cực qua màn hình này.",
+            "Hãy mỉm cười một cái, bạn cười trông xinh lắm đấy.",
+            "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."
+        ];
 
         /* --- INDEXEDDB STORAGE --- */
         let db;
@@ -194,9 +211,19 @@
             transaction.objectStore("mediaFiles").delete(id);
         }
 
-        /* --- UI HELPERS --- */
+        /* --- UI HELPERS & SETTINGS --- */
         function openSettings() { document.getElementById('modal-settings').classList.replace('hidden', 'flex'); }
         function closeSettings() { document.getElementById('modal-settings').classList.replace('flex', 'hidden'); }
+
+        function triggerConfetti() {
+            confetti({
+                particleCount: 120,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#f472b6', '#818cf8', '#c084fc', '#60a5fa']
+            });
+            showToast("Gửi đến bạn những điều may mắn! ✨");
+        }
 
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
@@ -325,6 +352,7 @@
                 
                 if (item.isIndexedDB) {
                     const mediaId = `media-${item.id}`;
+                    // GIỚI HẠN CHIỀU CAO MEDIA TỐI ĐA 65VH ĐỂ TRÁNH TRÀN MÀN HÌNH MÁY TÍNH
                     content += `<div id="${mediaId}" class="w-full aspect-video bg-black/20 rounded-2xl flex items-center justify-center text-xs text-gray-600 italic">⌛ Đang tải bí mật...</div>`;
                     container.appendChild(card);
                     card.innerHTML = content;
@@ -333,8 +361,8 @@
                         if (el && blob) {
                             const url = URL.createObjectURL(blob);
                             el.outerHTML = item.fileType.startsWith('video/') 
-                                ? `<video src="${url}" controls class="w-full rounded-2xl shadow-lg" playsinline></video>` 
-                                : `<img src="${url}" class="w-full rounded-2xl shadow-lg" loading="lazy">`;
+                                ? `<video src="${url}" controls class="w-full max-h-[65vh] rounded-2xl shadow-lg object-contain bg-black/30" playsinline></video>` 
+                                : `<img src="${url}" class="w-full max-h-[65vh] rounded-2xl shadow-lg object-contain bg-black/30" loading="lazy">`;
                         }
                     });
                 } else {
@@ -353,6 +381,14 @@
             const active = document.getElementById(`vbtn-${cat}`);
             active.classList.replace('bg-gray-900/60', 'bg-pink-600');
             active.classList.replace('text-gray-400', 'text-white');
+            
+            const titleEl = document.getElementById('vault-title-text');
+            const descEl = document.getElementById('vault-desc-text');
+            if (cat === 'wishlist') { titleEl.innerText = "Kho Lưu Trữ Vô Tận"; descEl.innerText = "Nơi lưu trữ những món đồ riêng tư của bạn"; }
+            else if (cat === 'media') { titleEl.innerText = "Media Hub 🎬"; descEl.innerText = "Cất giữ phim ảnh, bài hát hoặc video hay"; }
+            else if (cat === 'study') { titleEl.innerText = "Study Corner 📚"; descEl.innerText = "Lưu trữ bài viết hoặc link học tập quan trọng"; }
+            else if (cat === 'braindump') { titleEl.innerText = "Secret Moments 🤫"; descEl.innerText = "Không gian cất giấu hình ảnh & video thầm kín"; }
+            
             loadVault(); 
         }
 
@@ -379,10 +415,13 @@
         document.getElementById('btn-confirm-action').onclick = () => { confirmCallback?.(); closeConfirmModal(); };
 
         window.addEventListener('DOMContentLoaded', () => { 
+            const randomMsg = starMessages[Math.floor(Math.random() * starMessages.length)];
+            document.getElementById('star-message').innerText = randomMsg;
+
             setTimeout(() => { 
                 const intro = document.getElementById('intro-screen'); 
-                if(intro){ intro.classList.add('intro-hide'); setTimeout(()=>intro.remove(),800); } 
-            }, 1500); 
+                if(intro){ intro.classList.add('intro-hide'); setTimeout(()=>intro.remove(), 800); } 
+            }, 2000); 
         });
     </script>
 </body>

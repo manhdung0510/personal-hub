@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Personal Hub</title>
+    
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="My Hub">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        /* Hiệu ứng kính mờ Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-[#0b0f17] text-gray-100 h-full flex flex-col justify-between overflow-hidden select-none">
+
+    <header class="glass px-6 py-4 flex justify-between items-center z-10">
+        <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-pink-400 to-indigo-400 bg-clip-text text-transparent">Personal Hub ✨</h1>
+        <button onclick="openAuthModal()" class="text-xs bg-gray-800/80 px-3 py-1.5 rounded-full border border-gray-700 active:scale-95 transition-transform">
+            🔑 Đồng bộ
+        </button>
+    </header>
+
+    <main class="flex-1 overflow-y-auto px-4 py-6 space-y-6 pb-24">
+        
+        <section id="tab-habits" class="tab-content space-y-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-lg font-semibold text-gray-300">Thói Quen Hằng Ngày</h2>
+                <button onclick="openAddHabitModal()" class="text-xs bg-indigo-600/80 px-3 py-1.5 rounded-xl font-medium active:scale-95 transition">
+                    + Thêm mới
+                </button>
+            </div>
+            <div id="habit-list" class="space-y-3">
+                </div>
+        </section>
+
+        <section id="tab-vault" class="tab-content hidden space-y-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-lg font-semibold text-gray-300">The Infinite Vault</h2>
+                <button onclick="openAddVaultModal()" class="text-xs bg-pink-600/80 px-3 py-1.5 rounded-xl font-medium active:scale-95 transition">
+                    + Cất giấu
+                </button>
+            </div>
+            <div class="grid grid-cols-4 gap-1.5 text-center text-xs">
+                <button onclick="filterVault('wishlist')" class="vault-filter-btn bg-indigo-600 px-2 py-2 rounded-xl font-medium">🛍️ Wishlist</button>
+                <button onclick="filterVault('media')" class="vault-filter-btn bg-gray-800 px-2 py-2 rounded-xl">🎬 Media</button>
+                <button onclick="filterVault('study')" class="vault-filter-btn bg-gray-800 px-2 py-2 rounded-xl">📚 Study</button>
+                <button onclick="filterVault('braindump')" class="vault-filter-btn bg-gray-800 px-2 py-2 rounded-xl">🧠 Dump</button>
+            </div>
+            <div id="vault-list" class="space-y-3"></div>
+        </section>
+
+        <section id="tab-milestones" class="tab-content hidden space-y-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-lg font-semibold text-gray-300">Ngày Kỷ Niệm</h2>
+                <button onclick="openAddMilestoneModal()" class="text-xs bg-emerald-600/80 px-3 py-1.5 rounded-xl font-medium active:scale-95 transition">
+                    + Tạo sự kiện
+                </button>
+            </div>
+            <div id="milestone-list" class="space-y-3"></div>
+        </section>
+
+    </main>
+
+    <nav class="glass fixed bottom-4 left-4 right-4 h-16 rounded-2xl flex justify-around items-center px-2 z-10 shadow-2xl">
+        <button onclick="switchTab('habits')" id="nav-habits" class="nav-btn flex flex-col items-center justify-center text-indigo-400 w-16 h-12 rounded-xl transition">
+            <span class="text-xl">🔄</span>
+            <span class="text-[10px] font-medium mt-0.5">Habits</span>
+        </button>
+        <button onclick="switchTab('vault')" id="nav-vault" class="nav-btn flex flex-col items-center justify-center text-gray-400 w-16 h-12 rounded-xl transition">
+            <span class="text-xl">📦</span>
+            <span class="text-[10px] font-medium mt-0.5">Vault</span>
+        </button>
+        <button onclick="switchTab('milestones')" id="nav-milestones" class="nav-btn flex flex-col items-center justify-center text-gray-400 w-16 h-12 rounded-xl transition">
+            <span class="text-xl">⏳</span>
+            <span class="text-[10px] font-medium mt-0.5">Milestone</span>
+        </button>
+    </nav>
+
+    <div id="modal-auth" class="fixed inset-0 bg-black/70 backdrop-blur-md hidden items-center justify-center p-6 z-50">
+        <div class="glass-card w-full max-w-sm rounded-2xl p-6 space-y-4">
+            <h3 class="text-md font-semibold">Kết nối Cloud Supabase</h3>
+            <p class="text-xs text-gray-400">Nhập mã khóa cá nhân để đồng bộ và lưu trữ dữ liệu vĩnh viễn.</p>
+            <input type="text" id="input-auth-key" placeholder="Nhập mã bí mật của cô ấy..." class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-indigo-500">
+            <div class="flex gap-2">
+                <button onclick="closeAuthModal()" class="w-1/2 bg-gray-800 py-2 rounded-xl text-sm">Hủy</button>
+                <button onclick="saveAuthKey()" class="w-1/2 bg-indigo-600 py-2 rounded-xl text-sm font-medium">Lưu lại</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. KHỞI TẠO KẾT NỐI SUPABASE
+        const SUPABASE_URL = "https://hhxqbizloneptxkfljs.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_d0youqsK-CDj5KwDN54FXw_i_pyW43z";
+
+        let currentAuthKey = localStorage.getItem('auth_key') || 'demo_key_123';
+        let currentVaultCategory = 'wishlist';
+
+        // Đăng ký Service Worker cho PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js');
+        }
+
+        // 2. CHUYỂN TAB ĐIỀU HƯỚNG
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.replace('text-indigo-400', 'text-gray-400'));
+            document.getElementById(`nav-${tabName}`).classList.replace('text-gray-400', 'text-indigo-400');
+
+            if (tabName === 'habits') loadHabits();
+            if (tabName === 'vault') loadVault();
+            if (tabName === 'milestones') loadMilestones();
+        }
+
+        // 3. QUẢN LÝ AUTH KEY
+        function openAuthModal() {
+            document.getElementById('input-auth-key').value = localStorage.getItem('auth_key') || '';
+            document.getElementById('modal-auth').classList.replace('hidden', 'flex');
+        }
+        function closeAuthModal() {
+            document.getElementById('modal-auth').classList.replace('flex', 'hidden');
+        }
+        function saveAuthKey() {
+            const key = document.getElementById('input-auth-key').value.trim();
+            if(key) {
+                localStorage.setItem('auth_key', key);
+                currentAuthKey = key;
+                closeAuthModal();
+                switchTab('habits'); // reload dữ liệu theo key mới
+            }
+        }
+
+        // ================= LOGIC XỬ LÝ TAB 1: HABITS =================
+        async function loadHabits() {
+            const { data: habits, error } = await supabase
+                .from('habits')
+                .select('*, habit_logs(completed_date)')
+                .eq('auth_key', currentAuthKey);
+
+            if (error) return;
+
+            const listContainer = document.getElementById('habit-list');
+            listContainer.innerHTML = '';
+            
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            habits.forEach(habit => {
+                // Kiểm tra xem hôm nay thói quen này đã tích chọn chưa
+                const isCompletedToday = habit.habit_logs.some(log => log.completed_date === todayStr);
+
+                const card = document.createElement('div');
+                card.className = 'glass-card p-4 rounded-xl flex justify-between items-center';
+                card.innerHTML = `
+                    <div>
+                        <h4 class="font-medium text-sm text-gray-200">${habit.name}</h4>
+                        <p class="text-xs text-pink-400 font-medium mt-0.5">🔥 ${habit.streak_count} ngày liên tiếp</p>
+                    </div>
+                    <button onclick="toggleHabit('${habit.id}', ${isCompletedToday})" 
+                        class="w-10 h-10 rounded-xl flex items-center justify-center transition border ${
+                            isCompletedToday ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400' : 'bg-gray-800/50 border-gray-700 text-gray-400'
+                        }">
+                        ${isCompletedToday ? '✓' : ''}
+                    </button>
+                `;
+                listContainer.appendChild(card);
+            });
+        }
+
+        async function toggleHabit(habitId, isCompletedToday) {
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            if (!isCompletedToday) {
+                // Thêm log hoàn thành cho hôm nay
+                await supabase.from('habit_logs').insert({ habit_id: habitId, completed_date: todayStr });
+                
+                // Tính toán tăng streak (Đơn giản hóa: Tăng lên 1, logic tính streak sâu hơn có thể chạy bằng Postgres Trigger)
+                const { data: current } = await supabase.from('habits').select('streak_count').eq('id', habitId).single();
+                await supabase.from('habits').update({ 
+                    streak_count: (current.streak_count || 0) + 1,
+                    last_completed_at: new Date().toISOString()
+                }).eq('id', habitId);
+            } else {
+                // Hủy tích chọn hôm nay
+                await supabase.from('habit_logs').delete().eq('habit_id', habitId).eq('completed_date', todayStr);
+                const { data: current } = await supabase.from('habits').select('streak_count').eq('id', habitId).single();
+                await supabase.from('habits').update({ 
+                    streak_count: Math.max(0, (current.streak_count || 1) - 1) 
+                }).eq('id', habitId);
+            }
+            loadHabits();
+        }
+
+        async function openAddHabitModal() {
+            const name = prompt("Nhập tên thói quen mới của cô ấy:");
+            if (name) {
+                await supabase.from('habits').insert({ auth_key: currentAuthKey, name: name });
+                loadHabits();
+            }
+        }
+
+        // ================= LOGIC XỬ LÝ TAB 2: VAULT =================
+        async function loadVault() {
+            const { data: items } = await supabase
+                .from('vault_items')
+                .select('*')
+                .eq('auth_key', currentAuthKey)
+                .eq('category', currentVaultCategory);
+
+            const container = document.getElementById('vault-list');
+            container.innerHTML = '';
+
+            items?.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'glass-card p-3 rounded-xl flex justify-between items-center';
+                card.innerHTML = `
+                    <div class="overflow-hidden pr-2">
+                        <h4 class="font-medium text-xs text-gray-200 truncate">${item.title}</h4>
+                        ${item.url ? `<a href="${item.url}" target="_blank" class="text-[11px] text-blue-400 truncate block mt-0.5">${item.url}</a>` : ''}
+                    </div>
+                    <button onclick="deleteVaultItem('${item.id}')" class="text-xs text-gray-500 hover:text-red-400 px-2">✕</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterVault(category) {
+            currentVaultCategory = category;
+            document.querySelectorAll('.vault-filter-btn').forEach(btn => btn.classList.replace('bg-indigo-600', 'bg-gray-800'));
+            event.target.classList.replace('bg-gray-800', 'bg-indigo-600');
+            loadVault();
+        }
+
+        async function openAddVaultModal() {
+            const title = prompt("Nhập tiêu đề/ghi chú:");
+            if (!title) return;
+            const url = prompt("Dán link liên kết (nếu có, không thì bỏ trống):");
+            
+            await supabase.from('vault_items').insert({
+                auth_key: currentAuthKey,
+                title: title,
+                url: url || null,
+                category: currentVaultCategory
+            });
+            loadVault();
+        }
+
+        async function deleteVaultItem(id) {
+            if(confirm("Xóa mục này nhé?")) {
+                await supabase.from('vault_items').delete().eq('id', id);
+                loadVault();
+            }
+        }
+
+        // ================= LOGIC XỬ LÝ TAB 3: MILESTONES =================
+        let countdownInterval;
+        async function loadMilestones() {
+            const { data: milestones } = await supabase
+                .from('milestones')
+                .select('*')
+                .eq('auth_key', currentAuthKey);
+
+            const container = document.getElementById('milestone-list');
+            container.innerHTML = '';
+            
+            if(countdownInterval) clearInterval(countdownInterval);
+
+            function updateTimers() {
+                milestones?.forEach(m => {
+                    const eventTime = new Date(m.event_date).getTime();
+                    const now = new Date().getTime();
+                    const diff = eventTime - now;
+                    const isFuture = diff > 0;
+                    const absDiff = Math.abs(diff);
+
+                    const days = Math.floor(absDiff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((absDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const mins = Math.floor((absDiff % (1000 * 60 * 60)) / (1000 * 60));
+                    const secs = Math.floor((absDiff % (1000 * 60)) / 1000);
+
+                    let cardEl = document.getElementById(`ms-${m.id}`);
+                    if (!cardEl) {
+                        cardEl = document.createElement('div');
+                        cardEl.id = `ms-${m.id}`;
+                        cardEl.className = 'glass-card p-4 rounded-xl';
+                        container.appendChild(cardEl);
+                    }
+
+                    cardEl.innerHTML = `
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-medium text-sm text-gray-300">${m.title}</h4>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full ${isFuture ? 'bg-emerald-500/10 text-emerald-400' : 'bg-pink-500/10 text-pink-400'}">
+                                ${isFuture ? 'Đếm ngược' : 'Đã qua'}
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-2 text-center">
+                            <div class="bg-gray-900/40 p-2 rounded-lg"><span class="text-base font-bold text-gray-100">${days}</span><p class="text-[9px] text-gray-400">Ngày</p></div>
+                            <div class="bg-gray-900/40 p-2 rounded-lg"><span class="text-base font-bold text-gray-100">${hours}</span><p class="text-[9px] text-gray-400">Giờ</p></div>
+                            <div class="bg-gray-900/40 p-2 rounded-lg"><span class="text-base font-bold text-gray-100">${mins}</span><p class="text-[9px] text-gray-400">Phút</p></div>
+                            <div class="bg-gray-900/40 p-2 rounded-lg"><span class="text-base font-bold text-pink-400">${secs}</span><p class="text-[9px] text-gray-400">Giây</p></div>
+                        </div>
+                    `;
+                });
+            }
+
+            updateTimers();
+            countdownInterval = setInterval(updateTimers, 1000);
+        }
+
+        async function openAddMilestoneModal() {
+            const title = prompt("Tên ngày kỷ niệm:");
+            if (!title) return;
+            const dateStr = prompt("Nhập thời gian (Định dạng: YYYY-MM-DD HH:MM):");
+            if (!dateStr) return;
+
+            const date = new Date(dateStr);
+            if(isNaN(date.getTime())) return alert("Sai định dạng ngày!");
+
+            await supabase.from('milestones').insert({
+                auth_key: currentAuthKey,
+                title: title,
+                event_date: date.toISOString()
+            });
+            loadMilestones();
+        }
+
+        // Khởi động app: Tự động tải tab thói quen đầu tiên
+        window.addEventListener('DOMContentLoaded', () => {
+            // Thay bằng URL và Key thật của dự án ông bạn
+            supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            switchTab('habits');
+        });
+    </script>
+</body>
+</html>

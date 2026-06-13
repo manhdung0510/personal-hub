@@ -1,15 +1,17 @@
 {
   "name": "Personal Hub",
   "short_name": "My Hub",
-  "start_url": "/",
+  "start_url": "/index.html",
   "display": "standalone",
-  "background_color": "#0b0f17",
-  "theme_color": "#0b0f17",
+  "background_color": "#090d16",
+  "theme_color": "#090d16",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "https://img.icons8.com/color/512/calendar.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }

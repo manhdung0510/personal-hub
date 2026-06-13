@@ -12,7 +12,6 @@
 </head>
 <body class="bg-[#090d16] text-gray-100 h-full flex flex-col justify-between overflow-hidden select-none">
 
-    <!-- Intro Screen -->
     <div id="intro-screen" class="fixed inset-0 bg-[#090d16] z-[999] flex flex-col items-center justify-center text-center px-6">
         <div class="space-y-4 fade-in">
             <div class="text-4xl animate-pulse">✨🔮</div>
@@ -23,10 +22,8 @@
         </div>
     </div>
 
-    <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed top-5 right-4 z-[1000] flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- Header -->
     <header class="glass px-6 py-4 flex justify-between items-center z-10 sticky top-0 shrink-0">
         <div>
             <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Không Gian Cá Nhân ✨</h1>
@@ -42,19 +39,17 @@
     </header>
 
     <main class="flex-1 overflow-y-auto scroll-container px-4 py-6 space-y-6 pb-32">
-        <!-- HABITS -->
         <section id="tab-habits" class="tab-content space-y-4">
             <div class="flex justify-between items-center">
                 <div>
                     <h2 class="text-lg font-semibold text-gray-200">Trạm Thói Quen</h2>
-                    <p class="text-xs text-gray-400">Tự động làm mới trạng thái sau 12h đêm</p>
+                    <p class="text-xs text-gray-400">Tự động báo thức & làm mới sau 12h đêm</p>
                 </div>
                 <button onclick="openFormModal('habit')" class="text-xs bg-indigo-600/90 hover:bg-indigo-600 px-3.5 py-2 rounded-xl font-medium active:scale-95 transition shadow-lg shadow-indigo-600/20">+ Thêm mới</button>
             </div>
             <div id="habit-list" class="space-y-3"></div>
         </section>
 
-        <!-- VAULT -->
         <section id="tab-vault" class="tab-content hidden space-y-4">
             <div class="flex justify-between items-center">
                 <div>
@@ -64,7 +59,6 @@
                 <button onclick="openFormModal('vault')" class="text-xs bg-pink-600/90 hover:bg-pink-600 px-3.5 py-2 rounded-xl font-medium active:scale-95 transition shadow-lg shadow-pink-600/20">+ Cất giấu</button>
             </div>
             
-            <!-- Thanh Search -->
             <div class="relative">
                 <input type="text" id="vault-search" oninput="loadVault()" placeholder="🔍 Tìm kiếm nhanh trong kho..." class="w-full bg-gray-900/50 border border-gray-800 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-pink-500 transition text-gray-300 placeholder-gray-600">
             </div>
@@ -78,7 +72,6 @@
             <div id="vault-list" class="space-y-3"></div>
         </section>
 
-        <!-- MILESTONES -->
         <section id="tab-milestones" class="tab-content hidden space-y-4">
             <div class="flex justify-between items-center">
                 <div>
@@ -91,14 +84,12 @@
         </section>
     </main>
 
-    <!-- Navbar -->
     <nav class="glass fixed bottom-safe left-4 right-4 h-16 rounded-2xl flex justify-around items-center px-2 z-20 shadow-2xl mb-2">
         <button onclick="switchTab('habits')" id="nav-habits" class="nav-btn flex flex-col items-center justify-center text-gray-400 w-16 h-12 rounded-xl transition-all"><span class="text-lg">🔄</span><span class="text-[10px] font-semibold mt-0.5">Thói quen</span></button>
         <button onclick="switchTab('vault')" id="nav-vault" class="nav-btn flex flex-col items-center justify-center text-gray-400 w-16 h-12 rounded-xl transition-all"><span class="text-lg">📦</span><span class="text-[10px] font-semibold mt-0.5">Kho đồ</span></button>
         <button onclick="switchTab('milestones')" id="nav-milestones" class="nav-btn flex flex-col items-center justify-center text-gray-400 w-16 h-12 rounded-xl transition-all"><span class="text-lg">⏳</span><span class="text-[10px] font-semibold mt-0.5">Kỷ niệm</span></button>
     </nav>
 
-    <!-- Modal Form Thêm/Sửa -->
     <div id="modal-form" class="fixed inset-0 bg-black/80 backdrop-blur-lg hidden items-center justify-center p-6 z-40">
         <div class="glass-card w-full max-w-sm rounded-2xl p-6 space-y-4 shadow-2xl scale-95 transition-transform duration-200" id="form-card">
             <div class="text-center space-y-1">
@@ -113,7 +104,6 @@
         </div>
     </div>
 
-    <!-- Custom Confirm Modal -->
     <div id="modal-confirm" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-6 z-50 transition-opacity opacity-0">
         <div class="glass-card w-full max-w-xs rounded-2xl p-5 space-y-4 text-center">
             <div class="text-3xl mb-2">⚠️</div>
@@ -129,14 +119,21 @@
         let habits = JSON.parse(localStorage.getItem('local_habits')) || [];
         let vaultItems = JSON.parse(localStorage.getItem('local_vault')) || [];
         let milestones = JSON.parse(localStorage.getItem('local_milestones')) || [];
+        let notifiedKeys = JSON.parse(localStorage.getItem('notified_keys')) || {}; // Biến lưu lịch sử thông báo
 
         let currentVaultCategory = 'wishlist';
         let countdownInterval;
+        let alarmInterval;
         let currentFormType = '';
         let currentEditId = null;
         const currentYear = new Date().getFullYear();
 
-        /* --- HỆ THỐNG TOAST & CONFIRM --- */
+        /* --- XIN QUYỀN THÔNG BÁO TRÌNH DUYỆT --- */
+        if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
+            Notification.requestPermission();
+        }
+
+        /* --- HỆ THỐNG TOAST & ALARM --- */
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -150,7 +147,15 @@
             setTimeout(() => {
                 toast.classList.replace('toast-enter', 'toast-leave');
                 setTimeout(() => toast.remove(), 400);
-            }, 2000);
+            }, 3000); // Tăng thời gian hiển thị lên 3s để dễ đọc
+        }
+
+        function triggerAlarm(title, body) {
+            showToast(`🔔 ${title}: ${body}`, 'success');
+            // Bắn thông báo hệ thống ra ngoài trình duyệt (nếu đã cấp quyền)
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification(title, { body: body, icon: '✨' });
+            }
         }
 
         let confirmActionCallback = null;
@@ -180,7 +185,7 @@
         }
 
         function exportData() {
-            const data = { habits, vault: vaultItems, milestones };
+            const data = { habits, vault: vaultItems, milestones, notifiedKeys };
             const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -200,6 +205,7 @@
                     if (data.habits) { habits = data.habits; saveData('habits'); }
                     if (data.vault) { vaultItems = data.vault; saveData('vault'); }
                     if (data.milestones) { milestones = data.milestones; saveData('milestones'); }
+                    if (data.notifiedKeys) { notifiedKeys = data.notifiedKeys; localStorage.setItem('notified_keys', JSON.stringify(notifiedKeys)); }
                     showToast("Phục hồi dữ liệu thành công!");
                     setTimeout(() => location.reload(), 1000);
                 } catch (err) { 
@@ -257,8 +263,15 @@
             const card = document.getElementById('form-card');
             
             let defaultName = '', defaultUrl = '', defaultDate = `${currentYear}-10-20 00:00`;
+            let defaultStart = '', defaultEnd = '';
+
             if (editId) {
-                if (type === 'habit') defaultName = habits.find(h => h.id === editId)?.name || '';
+                if (type === 'habit') {
+                    const h = habits.find(x => x.id === editId);
+                    defaultName = h?.name || '';
+                    defaultStart = h?.startTime || '';
+                    defaultEnd = h?.endTime || '';
+                }
                 if (type === 'vault') {
                     const item = vaultItems.find(v => v.id === editId);
                     defaultName = item?.title || ''; defaultUrl = item?.url || '';
@@ -275,8 +288,20 @@
 
             if (type === 'habit') {
                 document.getElementById('form-title').innerText = editId ? "Sửa Thói Quen 📝" : "Thêm Thói Quen Mới 🔄";
-                document.getElementById('form-desc').innerText = "Tạo các mục tiêu nhỏ để duy trì mỗi ngày.";
-                fieldsContainer.innerHTML = `<input type="text" id="add-habit-name" value="${defaultName}" placeholder="Tên thói quen (ví dụ: Đọc sách, Chạy bộ...)" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white">`;
+                document.getElementById('form-desc').innerText = "Tạo các mục tiêu nhỏ và khung giờ thực hiện.";
+                fieldsContainer.innerHTML = `
+                    <input type="text" id="add-habit-name" value="${defaultName}" placeholder="Tên thói quen (ví dụ: Đọc sách, Chạy bộ...)" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-500 transition text-white mb-2">
+                    <div class="flex gap-2">
+                        <div class="w-1/2">
+                            <label class="text-[10px] text-gray-500 block mb-1">Giờ bắt đầu</label>
+                            <input type="time" id="add-habit-start" value="${defaultStart}" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-indigo-500 transition text-white">
+                        </div>
+                        <div class="w-1/2">
+                            <label class="text-[10px] text-gray-500 block mb-1">Giờ kết thúc</label>
+                            <input type="time" id="add-habit-end" value="${defaultEnd}" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-indigo-500 transition text-white">
+                        </div>
+                    </div>
+                `;
             
             } else if (type === 'vault') {
                 let vaultPlaceholder = "Tiêu đề / Tên món đồ"; 
@@ -327,13 +352,20 @@
             
             if (currentFormType === 'habit') {
                 const name = document.getElementById('add-habit-name').value.trim();
+                const startTime = document.getElementById('add-habit-start').value;
+                const endTime = document.getElementById('add-habit-end').value;
+
                 if (!name) return showToast("Vui lòng nhập tên!", "error");
                 if (currentEditId) {
                     const idx = habits.findIndex(h => h.id === currentEditId);
-                    if (idx > -1) habits[idx].name = name;
+                    if (idx > -1) {
+                        habits[idx].name = name;
+                        habits[idx].startTime = startTime;
+                        habits[idx].endTime = endTime;
+                    }
                     showToast("Đã cập nhật thói quen!");
                 } else {
-                    habits.push({ id: uuid(), name: name, streak_count: 0, logs: [] });
+                    habits.push({ id: uuid(), name: name, startTime: startTime, endTime: endTime, streak_count: 0, logs: [] });
                     showToast("Đã thêm thói quen mới!");
                 }
                 saveData('habits'); loadHabits();
@@ -373,6 +405,54 @@
             closeFormModal();
         }
 
+        /* --- BACKGROUND ALARM CHECKER --- */
+        function checkAlarms() {
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
+            const currentHHMM = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+            const currentSec = now.getSeconds();
+
+            // Check thói quen mỗi khi bắt đầu qua phút mới để không bị spam báo nhiều lần
+            if (currentSec === 0) {
+                habits.forEach(h => {
+                    // Check giờ bắt đầu
+                    if (h.startTime && currentHHMM === h.startTime) {
+                        const key = `start_${h.id}_${todayStr}`;
+                        if (!notifiedKeys[key]) {
+                            triggerAlarm("Đã đến giờ bắt đầu", h.name);
+                            notifiedKeys[key] = true;
+                        }
+                    }
+                    // Check giờ kết thúc
+                    if (h.endTime && currentHHMM === h.endTime) {
+                        const key = `end_${h.id}_${todayStr}`;
+                        if (!notifiedKeys[key]) {
+                            triggerAlarm("Đã hết giờ làm", h.name);
+                            notifiedKeys[key] = true;
+                        }
+                    }
+                });
+                localStorage.setItem('notified_keys', JSON.stringify(notifiedKeys));
+            }
+
+            // Check mốc kỷ niệm (Mỗi giây, vì nó đếm tới giây)
+            milestones.forEach(m => {
+                const diff = new Date(m.event_date).getTime() - now.getTime();
+                // Khi thời gian đếm ngược về đúng 0 (nằm trong khoảng 0 -> 1 giây)
+                if (diff > 0 && diff <= 1000) {
+                    const key = `ms_${m.id}`;
+                    if (!notifiedKeys[key]) {
+                        triggerAlarm("Đã đến mốc sự kiện!", m.title);
+                        notifiedKeys[key] = true;
+                        localStorage.setItem('notified_keys', JSON.stringify(notifiedKeys));
+                    }
+                }
+            });
+        }
+        // Khởi động trình theo dõi ngầm (chạy mỗi 1 giây)
+        alarmInterval = setInterval(checkAlarms, 1000);
+
+
         /* --- RENDERING --- */
         function loadHabits() {
             const listContainer = document.getElementById('habit-list'); listContainer.innerHTML = '';
@@ -383,6 +463,17 @@
             
             habits.forEach(habit => {
                 const isCompletedToday = habit.logs ? habit.logs.includes(todayLocalStr) : false;
+                
+                // Chuỗi hiển thị thời gian
+                let timeDisplay = '';
+                if (habit.startTime && habit.endTime) {
+                    timeDisplay = `<span class="text-[10px] text-gray-400 bg-gray-900/50 px-2 py-0.5 rounded-md mt-1 inline-block border border-gray-800">⏰ ${habit.startTime} - ${habit.endTime}</span>`;
+                } else if (habit.startTime) {
+                    timeDisplay = `<span class="text-[10px] text-gray-400 bg-gray-900/50 px-2 py-0.5 rounded-md mt-1 inline-block border border-gray-800">⏰ Từ ${habit.startTime}</span>`;
+                } else if (habit.endTime) {
+                    timeDisplay = `<span class="text-[10px] text-gray-400 bg-gray-900/50 px-2 py-0.5 rounded-md mt-1 inline-block border border-gray-800">⏰ Đến ${habit.endTime}</span>`;
+                }
+
                 const card = document.createElement('div');
                 card.className = 'glass-card p-4 rounded-2xl flex justify-between items-center';
                 card.innerHTML = `
@@ -394,9 +485,10 @@
                                 <button onclick="deleteHabit('${habit.id}')" class="text-[10px] text-gray-500 hover:text-red-400">✕ Xóa</button>
                             </div>
                         </div>
-                        <p class="text-xs text-pink-400 font-medium mt-1">🔥 Chuỗi: <span class="font-bold text-sm">${habit.streak_count || 0}</span> ngày</p>
+                        ${timeDisplay}
+                        <p class="text-xs text-pink-400 font-medium mt-1.5">🔥 Chuỗi: <span class="font-bold text-sm">${habit.streak_count || 0}</span> ngày</p>
                     </div>
-                    <button onclick="toggleHabit('${habit.id}', ${isCompletedToday})" class="w-12 h-12 rounded-xl flex items-center justify-center border text-lg transition-colors ${isCompletedToday ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-400 font-bold' : 'bg-gray-900/50 border-gray-800 text-gray-600'}">${isCompletedToday ? '✨' : '✓'}</button>
+                    <button onclick="toggleHabit('${habit.id}', ${isCompletedToday})" class="w-12 h-12 rounded-xl flex items-center justify-center border text-lg transition-colors shrink-0 ${isCompletedToday ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-400 font-bold' : 'bg-gray-900/50 border-gray-800 text-gray-600'}">${isCompletedToday ? '✨' : '✓'}</button>
                 `;
                 listContainer.appendChild(card);
             });

@@ -12,7 +12,84 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .glass { 
+            background: rgba(255, 255, 255, 0.02); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05); 
+        }
+
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.06); 
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover { 
+            border-color: rgba(99, 102, 241, 0.3); 
+            background: rgba(255, 255, 255, 0.05); 
+        }
+
+        .active-tab { 
+            background: rgba(99, 102, 241, 0.15); 
+            color: #818cf8 !important; 
+            border: 1px solid rgba(99, 102, 241, 0.3); 
+        }
+
+        .tab-content { 
+            transition: opacity 0.3s ease; 
+        }
+
+        .fade-in { animation: fadeIn 1.2s ease-out forwards; }
+
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: scale(0.96); } 
+            to { opacity: 1; transform: scale(1); } 
+        }
+
+        .intro-hide { 
+            opacity: 0; 
+            pointer-events: none; 
+            transition: opacity 0.8s ease-in-out; 
+        }
+
+        .toast-enter {
+            animation: slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        .toast-leave {
+            animation: fadeOutRight 0.4s ease forwards;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.5); }
+
+        .scroll-container {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
+        }
+    </style>
 </head>
 <body class="bg-[#090d16] text-gray-100 h-full flex flex-col justify-between overflow-hidden select-none pt-safe pb-safe">
 
@@ -48,15 +125,18 @@
                     <h2 id="vault-title-text" class="text-base font-semibold text-gray-200">Kho Lưu Trữ Vô Tận</h2>
                     <p id="vault-desc-text" class="text-xs text-gray-400">Nơi lưu trữ những món đồ riêng tư của bạn</p>
                 </div>
-                <button onclick="openFormModal('vault')" class="text-xs bg-pink-600/90 hover:bg-pink-600 px-3 py-2 rounded-xl font-medium active:scale-95 transition">+ Cất đồ</button>
+                <button onclick="openFormModal('vault')" class="text-xs bg-pink-600/90 hover:bg-pink-600 px-3 py-2 rounded-xl font-medium active:scale-95 transition shadow-lg shadow-pink-600/20">+ Cất đồ</button>
             </div>
+            
             <input type="text" id="vault-search" oninput="loadVault()" placeholder="🔍 Tìm kiếm nhanh trong kho..." class="w-full bg-gray-900/50 border border-gray-800 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-pink-500 text-gray-300">
+            
             <div class="grid grid-cols-4 gap-1.5 text-center text-[10px]">
                 <button onclick="filterVault('wishlist')" id="vbtn-wishlist" class="vault-filter-btn bg-pink-600 py-2 rounded-xl text-white font-medium">🛍️ Mua sắm</button>
                 <button onclick="filterVault('media')" id="vbtn-media" class="vault-filter-btn bg-gray-900/60 border border-gray-800 py-2 rounded-xl text-gray-400">🎬 Giải trí</button>
                 <button onclick="filterVault('study')" id="vbtn-study" class="vault-filter-btn bg-gray-900/60 border border-gray-800 py-2 rounded-xl text-gray-400">📚 Học tập</button>
                 <button onclick="filterVault('braindump')" id="vbtn-braindump" class="vault-filter-btn bg-gray-900/60 border border-gray-800 py-2 rounded-xl text-gray-400">🤫 Bí mật</button>
             </div>
+            
             <div id="vault-list" class="space-y-3"></div>
         </section>
     </main>
@@ -112,7 +192,7 @@
         let currentVaultCategory = 'wishlist';
         let currentFormType = '', currentEditId = null;
 
-        /* --- KÍCH HOẠT INDEXEDDB ĐỂ LƯU TRỮ KHÔNG GIỚI HẠN FILE --- */
+        /* --- INDEXEDDB STORAGE SYSTEM --- */
         let db;
         const dbRequest = indexedDB.open("SecureMomentsDB", 1);
         dbRequest.onupgradeneeded = function(e) {
@@ -122,7 +202,7 @@
             }
         };
         dbRequest.onsuccess = function(e) { db = e.target.result; loadVault(); };
-        dbRequest.onerror = function() { console.error("Không khởi động được IndexedDB"); };
+        dbRequest.onerror = function() { console.error("IndexedDB Error"); };
 
         function saveMediaToDB(id, blobData, callback) {
             let transaction = db.transaction(["mediaFiles"], "readwrite");
@@ -161,7 +241,7 @@
             closeSettings(); showToast("Đã lưu cài đặt!");
         }
 
-        /* --- TOAST ALARMS --- */
+        /* --- TOAST SYSTEM --- */
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -209,14 +289,14 @@
                     <input type="text" id="add-vault-url" value="${defUrl}" placeholder="Link Drive / Tài liệu tham khảo..." class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-pink-500">`;
             } else if (currentVaultCategory === 'braindump') {
                 document.getElementById('form-title').innerText = editId ? "Sửa Khoảnh Khắc" : "Cất Giấu Khoảnh Khắc 🤫";
-                document.getElementById('form-desc').innerText = editId ? "Cập nhật ghi chú cho khoảnh khắc này" : "Tải ảnh hoặc video riêng tư (Lưu trữ không giới hạn dung lượng máy).";
+                document.getElementById('form-desc').innerText = editId ? "Cập nhật ghi chú cho khoảnh khắc này" : "Tải ảnh hoặc video riêng tư (Lưu trữ dung lượng lớn an toàn).";
                 
                 let fileUploadSection = '';
                 if (!editId) {
                     fileUploadSection = `
                         <div class="relative w-full bg-gray-950 border border-gray-800 border-dashed rounded-xl p-4 text-center cursor-pointer hover:border-pink-500 transition mb-2">
                             <input type="file" id="add-vault-file" accept="image/*,video/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="updateFileNameDisplay(this)">
-                            <span id="file-upload-status" class="text-xs text-gray-400">📸 Chọn ảnh hoặc video gốc bất kỳ</span>
+                            <span id="file-upload-status" class="text-xs text-gray-400">📸 Chọn ảnh hoặc video gốc từ điện thoại</span>
                         </div>`;
                 }
                 fields.innerHTML = `
@@ -257,7 +337,6 @@
                         const file = fileInput.files[0];
                         const itemId = uuid();
                         
-                        // Lưu file gốc dưới dạng Blob trực tiếp vào IndexedDB (không lo giới hạn dung lượng)
                         saveMediaToDB(itemId, file, function() {
                             vaultItems.push({ 
                                 id: itemId, 
@@ -285,7 +364,7 @@
             }
         }
 
-        /* --- CONFIRM SYSTEM --- */
+        /* --- CONFIRM DIALOG SYSTEM --- */
         let confirmActionCallback = null;
         function customConfirm(message, callback) {
             document.getElementById('confirm-msg').innerText = message;
@@ -304,13 +383,12 @@
             if (type === 'vault') localStorage.setItem('local_vault', JSON.stringify(vaultItems));
         }
 
-        // Xuất file text nhẹ nhàng cho cấu trúc danh mục
         function exportData() {
             const data = { vault: vaultItems, appSettings };
             const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = `infinite_vault_struct.json`; a.click();
-            showToast("Đã xuất cấu trúc file!");
+            const a = document.createElement('a'); a.href = url; a.download = `infinite_vault_backup.json`; a.click();
+            showToast("Đã xuất file cấu trúc thành công!");
         }
 
         function importData(event) {
@@ -321,14 +399,15 @@
                     const d = JSON.parse(e.target.result);
                     if (d.vault) { vaultItems = d.vault; saveData('vault'); }
                     if (d.appSettings) { appSettings = d.appSettings; localStorage.setItem('app_settings', JSON.stringify(appSettings)); }
-                    showToast("Đã nhập dữ liệu!"); setTimeout(() => location.reload(), 800);
+                    showToast("Đã nhập dữ liệu mới!"); setTimeout(() => location.reload(), 800);
                 } catch (err) { showToast("File không đúng chuẩn!", "error"); }
             };
             reader.readAsText(file);
         }
 
+        /* --- RENDER VAULT DATA --- */
         function loadVault() {
-            if (!db) return; // Đợi DB khởi động xong mới render
+            if (!db) return; 
             const container = document.getElementById('vault-list'); container.innerHTML = '';
             const search = document.getElementById('vault-search').value.toLowerCase();
             let items = vaultItems.filter(i => i.category === currentVaultCategory);
@@ -336,7 +415,7 @@
             
             if(items.length === 0) {
                 const emptyText = currentVaultCategory === 'braindump' ? 'Chưa có khoảnh khắc bí mật nào 🤫' : 'Ngăn kéo trống.';
-                return container.innerHTML = renderEmptyState(emptyText, currentVaultCategory === 'braindump' ? '🔒' : '📦');
+                return container.innerHTML = `<div class="flex flex-col items-center justify-center py-12 text-gray-500 opacity-60"><div class="text-3xl mb-2">${currentVaultCategory === 'braindump' ? '🔒' : '📦'}</div><p class="text-xs">${emptyText}</p></div>`;
             }
 
             items.forEach(item => {
@@ -358,7 +437,6 @@
                     
                     container.appendChild(card);
 
-                    // Lấy dữ liệu file nhị phân gốc từ IndexedDB ra để hiển thị mượt mà
                     getMediaFromDB(item.id, function(blobFile) {
                         const mediaBox = document.getElementById(mediaContainerId);
                         if (mediaBox && blobFile) {
@@ -405,7 +483,7 @@
             customConfirm("Xóa mục này khỏi kho lưu trữ?", () => { 
                 const item = vaultItems.find(i => i.id === id);
                 if (item && item.isIndexedDB) {
-                    deleteMediaFromDB(id); // Xóa file vật lý trong database ngầm
+                    deleteMediaFromDB(id); 
                 }
                 vaultItems = vaultItems.filter(i => i.id !== id); 
                 saveData('vault'); 

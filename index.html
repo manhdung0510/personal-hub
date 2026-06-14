@@ -342,7 +342,6 @@
                     preview.src = currentAvatarUrl;
                     preview.classList.remove('hidden');
                     document.getElementById('settings-avatar-placeholder').classList.add('hidden');
-                    // Đã loại bỏ thông báo thừa thãi lúc đang chọn ảnh theo đúng ý ông
                 });
             }
         }
@@ -362,13 +361,9 @@
                 document.getElementById('intro-star-icon').classList.add('hidden');
             }
             
-            // Đóng Modal cài đặt xuống một cách gọn gàng
+            // Hiện ngay lập tức, không lằng nhằng delay nữa!
+            showToast("Hồ sơ của bạn đã được lưu! ✨");
             closeSettings();
-
-            // Chờ Modal đóng lại 1 xíu rồi mới cho Toast nảy lên báo thành công
-            setTimeout(() => {
-                showToast("Bạn đã cập nhật hồ sơ cá nhân! ✅", "success");
-            }, 300);
         }
 
         /* --- UI CONTROLLER --- */
@@ -386,7 +381,7 @@
             document.getElementById('modal-settings').classList.replace('flex', 'hidden'); 
         }
 
-        /* --- TOAST SYSTEM CHUẨN MỰC --- */
+        /* --- TOAST SYSTEM --- */
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -421,7 +416,7 @@
                     a.click();
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
-                    showToast("Đang tải xuống tệp gốc...", "success");
+                    showToast("Đang tải xuống tệp gốc...");
                 } else {
                     showToast("Không tìm thấy tệp tin!", "error");
                 }
@@ -430,7 +425,7 @@
 
         function triggerConfetti() {
             confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 }, colors: ['#f472b6', '#818cf8', '#c084fc', '#60a5fa'] });
-            showToast("Gửi đến bạn những điều may mắn! ✨", "success");
+            showToast("Gửi đến bạn những điều may mắn! ✨");
         }
 
         /* --- FORM HANDLING --- */

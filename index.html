@@ -12,7 +12,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         body { 
@@ -118,14 +118,13 @@
     <div id="toast-container" class="fixed bottom-24 right-6 left-6 z-[1000] flex flex-col gap-3 pointer-events-none"></div>
 
     <header class="glass px-6 py-4 flex justify-between items-center z-10 sticky top-0 shrink-0 pt-8">
-        <div class="flex flex-col">
-            <div class="flex items-center gap-3">
-                <h1 class="text-2xl font-bold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Infinite Vault ✨</h1>
-                <button onclick="openMusicModal()" id="music-btn" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-full active:scale-90 transition shadow-sm text-xl" title="Giai điệu mật thất">🎵</button>
-            </div>
-            <div class="flex items-center gap-1.5 mt-1 bg-black/10 px-2.5 py-1 rounded-xl border border-white/5 w-fit shadow-inner">
-                <span id="clock-status-icon" class="text-xs">🌙</span>
-                <span id="realtime-clock" class="text-xs font-bold font-mono tracking-widest opacity-90">00:00:00</span>
+        <div class="flex flex-col max-w-[70%]">
+            <h1 class="text-2xl font-bold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Infinite Vault ✨</h1>
+            
+            <div id="header-mini-player" class="flex items-center gap-1.5 mt-1.5 bg-black/10 px-2.5 py-1.5 rounded-xl border border-white/5 w-fit shadow-inner max-w-full overflow-hidden transition-all duration-300">
+                <button onclick="openMusicModal()" id="music-btn" class="text-sm shrink-0 w-6 h-6 flex items-center justify-center bg-white/5 rounded-md active:scale-75 transition" title="Mở danh sách nhạc">🎵</button>
+                <div id="header-track-title" class="text-[11px] font-medium tracking-wide opacity-80 truncate max-w-[120px]">Giai điệu không gian</div>
+                <button onclick="stopMusicQuickly(event)" id="quick-stop-btn" class="hidden text-[10px] w-5 h-5 flex items-center justify-center bg-red-500/20 text-red-400 border border-red-500/30 rounded-md font-bold active:scale-75 transition ml-1" title="Tắt nhạc ngay lập tức">⏸️</button>
             </div>
         </div>
         <button onclick="openSettings()" class="text-3xl p-2 active:scale-90 transition-transform">⚙️</button>
@@ -256,7 +255,6 @@
     <script>
         let vaultItems = JSON.parse(localStorage.getItem('local_vault')) || [];
         let profileData = JSON.parse(localStorage.getItem('user_profile')) || { name: '' };
-        // Đã nâng cấp: Lưu danh sách nhạc cá nhân tự nhập
         let customTracks = JSON.parse(localStorage.getItem('custom_tracks')) || [];
         let currentVaultCategory = 'wishlist';
         let currentFormType = '', currentEditId = null;
@@ -286,33 +284,41 @@
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
-            document.getElementById('realtime-clock').innerText = `${hours}:${minutes}:${seconds}`;
+            
+            const clockEl = document.getElementById('realtime-clock');
+            if (clockEl) clockEl.innerText = `${hours}:${minutes}:${seconds}`;
             
             const currentHour = now.getHours();
             const body = document.body;
             const clockIcon = document.getElementById('clock-status-icon');
             
+            const clockParent = clockEl ? clockEl.parentElement : null;
+            
             if (currentHour >= 6 && currentHour < 18) {
                 if (!body.classList.contains('light-theme')) {
                     body.classList.remove('dark-theme');
                     body.classList.add('light-theme');
-                    clockIcon.innerText = "☀️";
-                    document.getElementById('realtime-clock').parentElement.classList.remove('bg-black/10', 'border-white/5');
-                    document.getElementById('realtime-clock').parentElement.classList.add('bg-white/40', 'border-black/5');
+                    if (clockIcon) clockIcon.innerText = "☀️";
+                    if (clockParent) {
+                        clockParent.classList.remove('bg-black/10', 'border-white/5');
+                        clockParent.classList.add('bg-white/40', 'border-black/5');
+                    }
                 }
             } else {
                 if (!body.classList.contains('dark-theme')) {
                     body.classList.remove('light-theme');
                     body.classList.add('dark-theme');
-                    clockIcon.innerText = "🌙";
-                    document.getElementById('realtime-clock').parentElement.classList.remove('bg-white/40', 'border-black/5');
-                    document.getElementById('realtime-clock').parentElement.classList.add('bg-black/10', 'border-white/5');
+                    if (clockIcon) clockIcon.innerText = "🌙";
+                    if (clockParent) {
+                        clockParent.classList.remove('bg-white/40', 'border-black/5');
+                        clockParent.classList.add('bg-black/10', 'border-white/5');
+                    }
                 }
             }
         }
         setInterval(updateTimeAndTheme, 1000);
 
-        /* --- TRÌNH QUẢN LÝ NHẠC NỀN CHỐNG LỖI DI ĐỘNG --- */
+        /* --- TRÌNH QUẢN LÝ NHẠC NỀN & DIỀU KHIỂN ĐỘNG --- */
         function openMusicModal() {
             const inputs = document.querySelectorAll('#modal-music input[type="text"]');
             inputs.forEach(inp => {
@@ -367,23 +373,54 @@
             const audio = document.getElementById('bg-audio');
             const btn = document.getElementById('music-btn');
             const statusLabel = document.getElementById('current-track-name');
+            const headerTitle = document.getElementById('header-track-title');
+            const quickStopBtn = document.getElementById('quick-stop-btn');
+            const miniPlayer = document.getElementById('header-mini-player');
             
             if (audio.src === url && !audio.paused) {
                 audio.pause();
                 btn.innerText = "🎵";
                 btn.classList.remove('spin-slow', 'bg-indigo-500/30');
                 statusLabel.innerText = "Trạng thái: Đang dừng phát";
+                headerTitle.innerText = "Giai điệu không gian";
+                quickStopBtn.classList.add('hidden');
+                miniPlayer.classList.remove('bg-indigo-500/10', 'border-indigo-500/20');
             } else {
                 audio.src = url;
                 audio.play().then(() => {
                     btn.innerText = "💿";
                     btn.classList.add('spin-slow', 'bg-indigo-500/30');
                     statusLabel.innerText = `Đang phát: ${name}`;
+                    headerTitle.innerText = name;
+                    quickStopBtn.classList.remove('hidden');
+                    miniPlayer.classList.add('bg-indigo-500/10', 'border-indigo-500/20');
                 }).catch(() => {
                     showToast("Hãy chạm nhẹ màn hình một phát rồi bật nhạc lại nhé!", "error");
                 });
             }
             renderTrackList();
+        }
+
+        // TÍNH NĂNG MỚI: Tắt nhạc nhanh tức thì ngay tại màn hình chính bằng 1 chạm
+        function stopMusicQuickly(event) {
+            if (event) event.stopPropagation(); // Chặn hiện tượng nổi bọt kích hoạt mở Modal nhầm
+            const audio = document.getElementById('bg-audio');
+            const btn = document.getElementById('music-btn');
+            const statusLabel = document.getElementById('current-track-name');
+            const headerTitle = document.getElementById('header-track-title');
+            const quickStopBtn = document.getElementById('quick-stop-btn');
+            const miniPlayer = document.getElementById('header-mini-player');
+
+            audio.pause();
+            btn.innerText = "🎵";
+            btn.classList.remove('spin-slow', 'bg-indigo-500/30');
+            statusLabel.innerText = "Trạng thái: Đang dừng phát";
+            headerTitle.innerText = "Giai điệu không gian";
+            quickStopBtn.classList.add('hidden');
+            miniPlayer.classList.remove('bg-indigo-500/10', 'border-indigo-500/20');
+            
+            renderTrackList();
+            showToast("Đã dừng nhạc phát ngầm!");
         }
 
         function addNewTrack() {
@@ -407,8 +444,6 @@
         function deleteTrack(id) {
             customTracks = customTracks.filter(t => t.id.toString() !== id.toString());
             localStorage.setItem('custom_tracks', JSON.stringify(customTracks));
-            const audio = document.getElementById('bg-audio');
-            
             renderTrackList();
             showToast("Đã xóa bài hát!");
         }
@@ -456,9 +491,12 @@
                     currentAvatarUrl = URL.createObjectURL(blobFile);
                     
                     const settingsPreview = document.getElementById('settings-avatar-preview');
-                    settingsPreview.src = currentAvatarUrl;
-                    settingsPreview.classList.remove('hidden');
-                    document.getElementById('settings-avatar-placeholder').classList.add('hidden');
+                    if (settingsPreview) {
+                        settingsPreview.src = currentAvatarUrl;
+                        settingsPreview.classList.remove('hidden');
+                    }
+                    const placeholder = document.getElementById('settings-avatar-placeholder');
+                    if (placeholder) placeholder.classList.add('hidden');
                     
                     const introImg = document.getElementById('intro-avatar-img');
                     if (introImg) introImg.src = currentAvatarUrl;
@@ -469,7 +507,9 @@
                 }
             });
 
-            document.getElementById('profile-name-input').value = profileData.name || '';
+            const nameInp = document.getElementById('profile-name-input');
+            if (nameInp) nameInp.value = profileData.name || '';
+            
             const introWelcome = document.getElementById('intro-welcome-text');
             if (profileData.name && introWelcome) {
                 introWelcome.innerText = `Chào mừng ${profileData.name} trở lại...`;
@@ -484,9 +524,12 @@
                     if (currentAvatarUrl) URL.revokeObjectURL(currentAvatarUrl);
                     currentAvatarUrl = URL.createObjectURL(file);
                     const preview = document.getElementById('settings-avatar-preview');
-                    preview.src = currentAvatarUrl;
-                    preview.classList.remove('hidden');
-                    document.getElementById('settings-avatar-placeholder').classList.add('hidden');
+                    if (preview) {
+                        preview.src = currentAvatarUrl;
+                        preview.classList.remove('hidden');
+                    }
+                    const placeholder = document.getElementById('settings-avatar-placeholder');
+                    if (placeholder) placeholder.classList.add('hidden');
                 });
             }
         }
@@ -504,8 +547,10 @@
             const introImg = document.getElementById('intro-avatar-img');
             if (currentAvatarUrl && introImg) {
                 introImg.src = currentAvatarUrl;
-                document.getElementById('intro-avatar-box').classList.remove('hidden');
-                document.getElementById('intro-star-icon').classList.add('hidden');
+                const introBox = document.getElementById('intro-avatar-box');
+                if (introBox) introBox.classList.remove('hidden');
+                const introIcon = document.getElementById('intro-star-icon');
+                if (introIcon) introIcon.classList.add('hidden');
             }
             
             closeSettings();
@@ -514,10 +559,12 @@
         /* --- UI CONTROLLER --- */
         function openSettings() {
             const inp = document.getElementById('profile-name-input');
-            if(document.body.classList.contains('light-theme')) {
-                inp.style.backgroundColor = "#ffffff"; inp.style.borderColor = "rgba(15, 23, 42, 0.1)"; inp.style.color = "#0f172a";
-            } else {
-                inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; inp.style.borderColor = "rgba(255, 255, 255, 0.05)"; inp.style.color = "#f3f4f6";
+            if (inp) {
+                if(document.body.classList.contains('light-theme')) {
+                    inp.style.backgroundColor = "#ffffff"; inp.style.borderColor = "rgba(15, 23, 42, 0.1)"; inp.style.color = "#0f172a";
+                } else {
+                    inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; inp.style.borderColor = "rgba(255, 255, 255, 0.05)"; inp.style.color = "#f3f4f6";
+                }
             }
             document.getElementById('modal-settings').classList.replace('hidden', 'flex'); 
         }
@@ -529,6 +576,7 @@
         /* --- TOAST SYSTEM --- */
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
+            if (!container) return;
             const toast = document.createElement('div');
             
             let colorClass = 'bg-emerald-500 border-emerald-400';
@@ -620,7 +668,7 @@
 
         function updateFileName(input) {
             const status = document.getElementById('file-status');
-            if (input.files && input.files[0]) {
+            if (status && input.files && input.files[0]) {
                 status.innerText = `Đã chọn: ${input.files[0].name.slice(0, 15)}...`; status.classList.add('text-pink-500');
             }
         }
@@ -761,7 +809,9 @@
             else setTimeout(loadProfileImages, 300);
 
             const randomMsg = starMessages[Math.floor(Math.random() * starMessages.length)];
-            document.getElementById('star-message').innerText = randomMsg;
+            const msgEl = document.getElementById('star-message');
+            if (msgEl) msgEl.innerText = randomMsg;
+            
             setTimeout(() => { 
                 const intro = document.getElementById('intro-screen'); if(intro){ intro.classList.add('intro-hide'); setTimeout(()=>intro.remove(), 800); } 
             }, 2000); 

@@ -92,6 +92,12 @@
         input, select, textarea {
             font-size: 16px !important;
         }
+
+        /* Hiệu ứng xoay đĩa nhạc */
+        .spin-slow {
+            animation: spin 6s linear infinite;
+        }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="h-full flex flex-col justify-between overflow-hidden select-none pt-safe pb-safe dark-theme">
@@ -114,7 +120,10 @@
 
     <header class="glass px-6 py-4 flex justify-between items-center z-10 sticky top-0 shrink-0 pt-8">
         <div class="flex flex-col">
-            <h1 class="text-2xl font-bold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Infinite Vault ✨</h1>
+            <div class="flex items-center gap-2.5">
+                <h1 class="text-2xl font-bold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Infinite Vault ✨</h1>
+                <button onclick="toggleMusicMenu()" id="music-btn" class="text-lg p-1 bg-gray-500/10 rounded-full active:scale-90 transition shadow-sm" title="Giai điệu mật thất">🎵</button>
+            </div>
             <div class="flex items-center gap-1.5 mt-1 bg-black/10 px-2.5 py-1 rounded-xl border border-white/5 w-fit shadow-inner">
                 <span id="clock-status-icon" class="text-xs">🌙</span>
                 <span id="realtime-clock" class="text-xs font-bold font-mono tracking-widest opacity-90">00:00:00</span>
@@ -122,6 +131,19 @@
         </div>
         <button onclick="openSettings()" class="text-3xl p-2 active:scale-90 transition-transform">⚙️</button>
     </header>
+
+    <div id="music-menu" class="hidden absolute top-24 left-6 z-40 glass-card p-4 rounded-2xl w-64 shadow-2xl space-y-3 fade-in">
+        <div class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex justify-between items-center">
+            <span>Giai điệu không gian 🎧</span>
+            <button onclick="toggleMusicMenu()" class="opacity-60 text-sm">✕</button>
+        </div>
+        <div class="space-y-1 text-sm text-left">
+            <button onclick="playTrack('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', 'Lo-Fi Chill ✨')" class="w-full text-left p-2 rounded-xl hover:bg-indigo-500/10 active:bg-indigo-500/20 block truncate">✨ Bản nhạc tình ca Lo-Fi</button>
+            <button onclick="playTrack('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', 'Piano Rain 🌧️')" class="w-full text-left p-2 rounded-xl hover:bg-indigo-500/10 active:bg-indigo-500/20 block truncate">🌧️ Tiếng mưa đêm Piano không lời</button>
+        </div>
+        <div id="current-track-name" class="text-[11px] text-gray-400 italic mt-1 border-t border-white/5 pt-2 truncate hidden">Đang phát: ...</div>
+        <audio id="bg-audio" loop></audio>
+    </div>
 
     <main class="flex-1 overflow-y-auto scroll-container px-5 py-6 space-y-8 pb-32">
         <section id="tab-vault" class="tab-content space-y-6">
@@ -271,6 +293,33 @@
         }
         setInterval(updateTimeAndTheme, 1000);
 
+        /* --- TRÌNH PHÁT NHẠC NỀN CHỮA LÀNH --- */
+        function toggleMusicMenu() {
+            const menu = document.getElementById('music-menu');
+            menu.classList.toggle('hidden');
+        }
+        function playTrack(url, name) {
+            const audio = document.getElementById('bg-audio');
+            const btn = document.getElementById('music-btn');
+            const trackLabel = document.getElementById('current-track-name');
+            
+            if (audio.src === url && !audio.paused) {
+                audio.pause();
+                btn.innerText = "🎵";
+                btn.classList.remove('spin-slow', 'bg-indigo-500/30');
+                trackLabel.classList.add('hidden');
+            } else {
+                audio.src = url;
+                audio.play().catch(() => {
+                    alert("Chạm lên màn hình một cái rồi bấm bài nhạc lại ông nhé, trình duyệt yêu cầu tương tác để cấp quyền phát âm thanh!");
+                });
+                btn.innerText = "💿";
+                btn.classList.add('spin-slow', 'bg-indigo-500/30');
+                trackLabel.innerText = `Đang phát: ${name}`;
+                trackLabel.classList.remove('hidden');
+            }
+        }
+
         /* --- INDEXEDDB STORAGE --- */
         let db;
         const dbRequest = indexedDB.open("SecureMomentsDB", 1);
@@ -349,13 +398,11 @@
             }
         }
 
-        /* --- SỬA LỖI UNCAUGHT: KIỂM TRA PHẦN TỬ INTRO TRƯỚC KHI ĐỔI CHỮ --- */
         function saveProfile() {
             const nameInput = document.getElementById('profile-name-input').value.trim();
             profileData.name = nameInput;
             localStorage.setItem('user_profile', JSON.stringify(profileData));
             
-            // Thêm "if" kiểm tra xem màn hình intro có còn tồn tại trong DOM không rồi mới ghi đè
             const introWelcome = document.getElementById('intro-welcome-text');
             if(nameInput && introWelcome) {
                 introWelcome.innerText = `Chào mừng ${nameInput} trở lại...`;
@@ -368,7 +415,6 @@
                 document.getElementById('intro-star-icon').classList.add('hidden');
             }
             
-            // Đóng cài đặt ngay tắp lự không bị nghẽn lệnh nữa
             closeSettings();
         }
 

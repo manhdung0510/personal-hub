@@ -342,7 +342,7 @@
                     preview.src = currentAvatarUrl;
                     preview.classList.remove('hidden');
                     document.getElementById('settings-avatar-placeholder').classList.add('hidden');
-                    showToast("success", "Đã chọn ảnh đại diện mới!");
+                    // Đã loại bỏ thông báo thừa thãi lúc đang chọn ảnh theo đúng ý ông
                 });
             }
         }
@@ -362,12 +362,13 @@
                 document.getElementById('intro-star-icon').classList.add('hidden');
             }
             
-            // Bắn Toast thông báo chuẩn đã sửa class tường minh
-            showToast("success", "Đã lưu cấu hình hồ sơ thành công! ✅");
-            
+            // Đóng Modal cài đặt xuống một cách gọn gàng
+            closeSettings();
+
+            // Chờ Modal đóng lại 1 xíu rồi mới cho Toast nảy lên báo thành công
             setTimeout(() => {
-                closeSettings();
-            }, 150);
+                showToast("Bạn đã cập nhật hồ sơ cá nhân! ✅", "success");
+            }, 300);
         }
 
         /* --- UI CONTROLLER --- */
@@ -385,37 +386,11 @@
             document.getElementById('modal-settings').classList.replace('flex', 'hidden'); 
         }
 
-        /* --- DOWNLOAD FILE --- */
-        function downloadMediaItem(id, fileName, fileType) {
-            getMediaFromDB(id, (blob) => {
-                if (blob) {
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    const ext = fileType.startsWith('video/') ? 'mp4' : 'jpg';
-                    a.download = `${fileName.replace(/\s+/g, '_')}_moment.${ext}`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                    showToast("success", "Đang tải xuống tệp gốc...");
-                } else {
-                    showToast("error", "Không tìm thấy tệp tìn!");
-                }
-            });
-        }
-
-        function triggerConfetti() {
-            confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 }, colors: ['#f472b6', '#818cf8', '#c084fc', '#60a5fa'] });
-            showToast("success", "Gửi đến bạn những điều may mắn! ✨");
-        }
-
-        /* --- FIX FIX FIX: ĐỔI SANG BIẾN CLASS TƯỜNG MINH CHO TAILWIND --- */
-        function showToast(type, message) {
+        /* --- TOAST SYSTEM CHUẨN MỰC --- */
+        function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             
-            // Viết tường minh chữ ra đây thì Tailwind mới kích hoạt màu nền lên được ông nhé!
             let colorClass = 'bg-emerald-500 border-emerald-400';
             let icon = '✅';
             if (type === 'error') {
@@ -431,6 +406,31 @@
                 toast.classList.replace('toast-enter', 'toast-leave');
                 setTimeout(() => toast.remove(), 400);
             }, 3000);
+        }
+
+        /* --- DOWNLOAD FILE --- */
+        function downloadMediaItem(id, fileName, fileType) {
+            getMediaFromDB(id, (blob) => {
+                if (blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    const ext = fileType.startsWith('video/') ? 'mp4' : 'jpg';
+                    a.download = `${fileName.replace(/\s+/g, '_')}_moment.${ext}`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    showToast("Đang tải xuống tệp gốc...", "success");
+                } else {
+                    showToast("Không tìm thấy tệp tin!", "error");
+                }
+            });
+        }
+
+        function triggerConfetti() {
+            confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 }, colors: ['#f472b6', '#818cf8', '#c084fc', '#60a5fa'] });
+            showToast("Gửi đến bạn những điều may mắn! ✨", "success");
         }
 
         /* --- FORM HANDLING --- */
@@ -494,12 +494,12 @@
 
         function submitForm() {
             const title = document.getElementById('add-vault-title').value.trim();
-            if (!title) return showToast("error", "Nhập tiêu đề đã nhé!");
+            if (!title) return showToast("Nhập tiêu đề đã nhé!", "error");
             const uuid = () => Math.random().toString(36).substring(2, 15);
 
             if (currentVaultCategory === 'braindump' && !currentEditId) {
                 const fileInput = document.getElementById('add-vault-file');
-                if (!fileInput.files[0]) return showToast("error", "Chọn ảnh/video đã ông!");
+                if (!fileInput.files[0]) return showToast("Chọn ảnh/video đã ông!", "error");
                 const file = fileInput.files[0]; const itemId = uuid();
                 saveMediaToDB(itemId, file, () => {
                     vaultItems.push({ id: itemId, title, isIndexedDB: true, fileType: file.type, category: 'braindump' });
@@ -521,7 +521,7 @@
         }
 
         function finalizeSubmit() {
-            localStorage.setItem('local_vault', JSON.stringify(vaultItems)); loadVault(); closeFormModal(); showToast("success", "Đã ghi nhớ!");
+            localStorage.setItem('local_vault', JSON.stringify(vaultItems)); loadVault(); closeFormModal(); showToast("Đã ghi nhớ!");
         }
 
         /* --- CORE LOGIC --- */
@@ -601,7 +601,7 @@
             confirmCallback = () => {
                 const item = vaultItems.find(i => i.id === id); if (item?.isIndexedDB) deleteMediaFromDB(id);
                 vaultItems = vaultItems.filter(i => i.id !== id); localStorage.setItem('local_vault', JSON.stringify(vaultItems));
-                loadVault(); showToast("success", "Đã xóa khỏi kho!");
+                loadVault(); showToast("Đã xóa khỏi kho!");
             };
             const modal = document.getElementById('modal-confirm'); modal.classList.replace('hidden', 'flex');
             setTimeout(() => modal.classList.replace('opacity-0', 'opacity-100'), 10);

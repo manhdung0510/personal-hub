@@ -123,11 +123,12 @@
             
             <div onclick="openMusicModal()" id="header-mini-player" class="flex items-center gap-2 mt-1.5 bg-black/10 px-3 py-2 rounded-2xl border border-white/5 w-fit shadow-inner max-w-full overflow-hidden transition-all duration-300 cursor-pointer active:scale-95">
                 <span id="music-btn" class="text-sm shrink-0 w-5 h-5 flex items-center justify-center">🎵</span>
-                <div id="header-track-title" class="text-[11px] font-bold tracking-wide opacity-80 truncate max-w-[100px]">Giai điệu không gian</div>
+                <div id="header-track-title" class="text-[11px] font-bold tracking-wide opacity-80 truncate max-w-[90px]">Giai điệu không gian</div>
                 
                 <div class="flex items-center gap-1 ml-1 shrink-0">
                     <button onclick="handleQuickPlayPause(event)" id="quick-stop-btn" class="hidden text-[10px] w-6 h-6 flex items-center justify-center bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 rounded-lg font-bold active:scale-75 transition" title="Tạm dừng / Phát tiếp"></button>
                     <button onclick="handleQuickMute(event)" id="quick-mute-btn" class="hidden text-[10px] w-6 h-6 flex items-center justify-center bg-gray-500/20 text-gray-400 border border-white/10 rounded-lg font-bold active:scale-75 transition" title="Tắt tiếng nhanh">🔊</button>
+                    <button onclick="handleQuickClear(event)" id="quick-clear-btn" class="hidden text-[10px] w-6 h-6 flex items-center justify-center bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg font-bold active:scale-75 transition" title="Tắt hẳn nhạc">✕</button>
                 </div>
             </div>
         </div>
@@ -156,7 +157,7 @@
                 </div>
 
             <audio id="bg-audio" loop></audio>
-            </div>
+        </div>
     </div>
 
     <main class="flex-1 overflow-y-auto scroll-container px-5 py-6 space-y-8 pb-32">
@@ -262,7 +263,7 @@
         let currentVaultCategory = 'wishlist';
         let currentFormType = '', currentEditId = null;
         let currentAvatarUrl = null;
-        let savedTrackName = "Giai điệu không gian"; // Lưu tên bài để phục vụ pause/resume
+        let savedTrackName = "Giai điệu không gian";
 
         const defaultTracks = [
             { id: 'def-1', title: 'Bản nhạc tình ca Lo-Fi ✨', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
@@ -380,17 +381,16 @@
             const headerTitle = document.getElementById('header-track-title');
             const quickStopBtn = document.getElementById('quick-stop-btn');
             const quickMuteBtn = document.getElementById('quick-mute-btn');
+            const quickClearBtn = document.getElementById('quick-clear-btn');
             const miniPlayer = document.getElementById('header-mini-player');
             
             if (audio.src === url && !audio.paused) {
-                // Trường hợp người dùng chủ động bấm tạm dừng bài nhạc đang chạy
                 audio.pause();
                 btn.innerText = "🎵";
                 btn.classList.remove('spin-slow', 'bg-indigo-500/30');
                 statusLabel.innerText = "Trạng thái: Đang dừng phát";
                 quickStopBtn.innerText = "▶️";
             } else if (audio.src === url && audio.paused) {
-                // Trường hợp nhạc đang được tạm dừng, bấm phát tiếp tục (Resume) từ giây cũ
                 audio.play().then(() => {
                     btn.innerText = "💿";
                     btn.classList.add('spin-slow', 'bg-indigo-500/30');
@@ -398,7 +398,6 @@
                     quickStopBtn.innerText = "⏸️";
                 });
             } else {
-                // Chọn một bài hát mới hoàn toàn
                 audio.src = url;
                 savedTrackName = name;
                 audio.play().then(() => {
@@ -409,6 +408,7 @@
                     quickStopBtn.innerText = "⏸️";
                     quickStopBtn.classList.remove('hidden');
                     quickMuteBtn.classList.remove('hidden');
+                    quickClearBtn.classList.remove('hidden');
                     miniPlayer.classList.add('bg-indigo-500/10', 'border-indigo-500/20');
                 }).catch(() => {
                     showToast("Hãy chạm nhẹ màn hình một phát rồi chọn lại nhạc nhé!", "error");
@@ -417,16 +417,14 @@
             renderTrackList();
         }
 
-        // ĐÃ NÂNG CẤP: Xử lý Tạm dừng / Phát tiếp mượt mà ngay tại một nút bên ngoài Header
         function handleQuickPlayPause(event) {
-            if (event) event.stopPropagation(); // Ngăn nổi bọt DOM để không kích hoạt mở Modal nhầm
+            if (event) event.stopPropagation(); 
             const audio = document.getElementById('bg-audio');
             const btn = document.getElementById('music-btn');
             const statusLabel = document.getElementById('current-track-name');
             const quickStopBtn = document.getElementById('quick-stop-btn');
 
             if (!audio.paused) {
-                // Tạm dừng nhạc (Giữ nguyên giây hiện tại)
                 audio.pause();
                 btn.innerText = "🎵";
                 btn.classList.remove('spin-slow', 'bg-indigo-500/30');
@@ -434,7 +432,6 @@
                 quickStopBtn.innerText = "▶️";
                 showToast("Đã tạm dừng nhạc!");
             } else {
-                // Tiếp tục chạy từ giây cũ (Resume)
                 audio.play().then(() => {
                     btn.innerText = "💿";
                     btn.classList.add('spin-slow', 'bg-indigo-500/30');
@@ -446,9 +443,8 @@
             renderTrackList();
         }
 
-        // TÍNH NĂNG MỚI: Tắt âm / Bật âm nhanh (Mute/Unmute)
         function handleQuickMute(event) {
-            if (event) event.stopPropagation(); // Chặn hiện tượng mở nhầm modal
+            if (event) event.stopPropagation(); 
             const audio = document.getElementById('bg-audio');
             const muteBtn = document.getElementById('quick-mute-btn');
 
@@ -463,6 +459,39 @@
                 muteBtn.classList.add('bg-red-500/20', 'text-red-400', 'border-red-500/30');
                 showToast("Đã tắt tiếng!");
             }
+        }
+
+        // ĐÃ THÊM: Tính năng Tắt hẳn nhạc, xóa bài đang phát và thu gọn Pill Bar về trạng thái mặc định ban đầu
+        function handleQuickClear(event) {
+            if (event) event.stopPropagation(); // Ngăn mở nhầm modal chọn nhạc
+            const audio = document.getElementById('bg-audio');
+            const btn = document.getElementById('music-btn');
+            const statusLabel = document.getElementById('current-track-name');
+            const headerTitle = document.getElementById('header-track-title');
+            const quickStopBtn = document.getElementById('quick-stop-btn');
+            const quickMuteBtn = document.getElementById('quick-mute-btn');
+            const quickClearBtn = document.getElementById('quick-clear-btn');
+            const miniPlayer = document.getElementById('header-mini-player');
+
+            // Tắt hẳn và xóa nguồn nhạc
+            audio.pause();
+            audio.removeAttribute('src'); 
+            audio.load();
+
+            // Reset toàn bộ giao diện Pill Bar về như cũ
+            btn.innerText = "🎵";
+            btn.classList.remove('spin-slow', 'bg-indigo-500/30');
+            statusLabel.innerText = "Trạng thái: Đang dừng phát";
+            headerTitle.innerText = "Giai điệu không gian";
+            
+            // Ẩn toàn bộ cụm nút chức năng
+            quickStopBtn.classList.add('hidden');
+            quickMuteBtn.classList.add('hidden');
+            quickClearBtn.classList.add('hidden');
+            miniPlayer.classList.remove('bg-indigo-500/10', 'border-indigo-500/20');
+            
+            renderTrackList();
+            showToast("Đã tắt hẳn nhạc nền!");
         }
 
         function addNewTrack() {

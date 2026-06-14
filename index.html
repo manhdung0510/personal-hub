@@ -102,7 +102,7 @@
 </head>
 <body class="h-full flex flex-col justify-between overflow-hidden select-none pt-safe pb-safe dark-theme">
 
-    <div id="lock-screen" class="fixed inset-0 bg-[#05070a] z-[1001] flex flex-col items-center justify-center text-center px-6 transition-all duration-500">
+    <div id="lock-screen" class="fixed inset-0 bg-[#05070a] z-[1005] flex flex-col items-center justify-center text-center px-6 transition-all duration-500">
         <div class="space-y-6 w-full max-w-xs fade-in flex flex-col items-center">
             <div class="text-6xl animate-pulse">🔒</div>
             <h2 id="lock-title" class="text-2xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Không Gian Bảo Mật</h2>
@@ -116,7 +116,7 @@
         </div>
     </div>
 
-    <div id="intro-screen" class="fixed inset-0 bg-[#05070a] z-[999] flex flex-col items-center justify-center text-center px-6 hidden">
+    <div id="intro-screen" class="fixed inset-0 bg-[#05070a] z-[1000] flex flex-col items-center justify-center text-center px-6">
         <div class="space-y-6 fade-in flex flex-col items-center">
             <div id="intro-avatar-box" class="w-24 h-24 rounded-full border-2 border-indigo-500/30 overflow-hidden shadow-2xl bg-gray-900 hidden">
                 <img id="intro-avatar-img" class="w-full h-full object-cover" src="">
@@ -130,7 +130,7 @@
         </div>
     </div>
 
-    <div id="toast-container" class="fixed bottom-24 right-6 left-6 z-[1000] flex flex-col gap-3 pointer-events-none"></div>
+    <div id="toast-container" class="fixed bottom-24 right-6 left-6 z-[1010] flex flex-col gap-3 pointer-events-none"></div>
 
     <header class="glass px-6 py-4 flex justify-between items-center z-10 sticky top-0 shrink-0 pt-8">
         <div class="flex flex-col max-w-[75%]">
@@ -382,19 +382,20 @@
             }
         }
 
-        /* --- 🛠️ ĐÃ SỬA LỖI ĐƠ MÀN HÌNH KHÓA TẠI ĐÂY --- */
+        /* --- 🛠️ CHỈNH LẠI THỨ TỰ LUỒNG HIỂN THỊ TRỰC QUAN MƯỢT MÀ --- */
         function unlockApp() {
             const lockScreen = document.getElementById('lock-screen');
             if (lockScreen) {
+                // Biến mất màn hình khoá trước để lộ ra màn hình Intro đang đợi sẵn phía dưới
                 lockScreen.classList.add('opacity-0', 'pointer-events-none');
+                
+                // Chờ hiệu ứng mờ nhạt dần (fade) của màn hình khóa xong thì dọn dẹp nó
                 setTimeout(() => {
-                    lockScreen.style.display = 'none'; // Đóng hẳn block
-                    lockScreen.remove(); // Xóa khỏi DOM hoàn toàn
+                    lockScreen.remove();
                     
-                    // Kích hoạt tiếp Intro màn hình chào mừng
+                    // Kích hoạt chạy đếm ngược 2 giây của màn hình chào Intro
                     const intro = document.getElementById('intro-screen');
                     if (intro) {
-                        intro.classList.remove('hidden');
                         setTimeout(() => { 
                             intro.classList.add('intro-hide'); 
                             setTimeout(() => intro.remove(), 800); 

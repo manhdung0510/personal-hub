@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Trợ Lý Cá Nhân</title>
-    <link rel="apple-touch-icon" href="icon.png">
+    <link class="apple-touch-icon" href="icon.png">
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -21,23 +21,51 @@
             padding-top: env(safe-area-inset-top);
             padding-bottom: env(safe-area-inset-bottom);
             font-size: 16px;
-            /* Thêm transition để lúc chuyển màu nền sáng/tối nó mượt mà không bị khựng */
-            transition: background-color 2s ease-in-out; 
+            /* ĐÃ GỠ BỎ ĐƯỜNG ÉP MÀU NỀN TĨNH TẠI ĐÂY ĐỂ JAVASCRIPT ĐIỀU KHIỂN DYNAMIC */
+            transition: background-color 1.5s ease-in-out, color 0.5s ease-in-out; 
         }
 
-        .glass { 
+        /* Khi ở chế độ ban ngày (Light Mode) */
+        body.light-theme {
+            background-color: #e2e8f0 !important;
+            color: #0f172a !important;
+        }
+        body.light-theme .text-gray-100,
+        body.light-theme .text-gray-200 { color: #1e293b !important; }
+        body.light-theme .text-gray-400,
+        body.light-theme .text-gray-500 { color: #475569 !important; }
+        body.light-theme .glass {
+            background: rgba(15, 23, 42, 0.04);
+            border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+        }
+        body.light-theme .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+        }
+        body.light-theme input[type="text"] {
+            background-color: rgba(255, 255, 255, 0.9) !important;
+            border-color: rgba(15, 23, 42, 0.1) !important;
+            color: #0f172a !important;
+        }
+
+        /* Khi ở chế độ ban đêm (Dark Mode gốc của ông) */
+        body.dark-theme {
+            background-color: #05070a !important;
+            color: #f3f4f6 !important;
+        }
+        body.dark-theme .glass { 
             background: rgba(255, 255, 255, 0.02); 
-            backdrop-filter: blur(25px); 
-            -webkit-backdrop-filter: blur(25px); 
             border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
         }
-
-        .glass-card { 
+        body.dark-theme .glass-card { 
             background: rgba(255, 255, 255, 0.04); 
-            backdrop-filter: blur(15px); 
-            -webkit-backdrop-filter: blur(15px); 
             border: 1px solid rgba(255, 255, 255, 0.1); 
-            transition: all 0.2s ease;
+        }
+        body.dark-theme input[type="text"] {
+            background-color: rgba(17, 24, 39, 0.6) !important;
+            border-color: rgba(255, 255, 255, 0.05) !important;
+            color: #f3f4f6 !important;
         }
 
         .active-tab { 
@@ -69,7 +97,7 @@
         }
     </style>
 </head>
-<body class="bg-[#05070a] text-gray-100 h-full flex flex-col justify-between overflow-hidden select-none pt-safe pb-safe">
+<body class="h-full flex flex-col justify-between overflow-hidden select-none pt-safe pb-safe dark-theme">
 
     <div id="intro-screen" class="fixed inset-0 bg-[#05070a] z-[999] flex flex-col items-center justify-center text-center px-6">
         <div class="space-y-6 fade-in flex flex-col items-center">
@@ -86,7 +114,7 @@
     <header class="glass px-6 py-5 flex justify-between items-center z-10 sticky top-0 shrink-0 pt-8">
         <div class="flex flex-col">
             <h1 class="text-2xl font-bold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Infinite Vault ✨</h1>
-            <span id="realtime-clock" class="text-xs font-semibold font-mono text-gray-400 tracking-widest mt-0.5">00:00:00</span>
+            <span id="realtime-clock" class="text-xs font-semibold font-mono tracking-widest mt-0.5 opacity-80">00:00:00</span>
         </div>
         <button onclick="openSettings()" class="text-3xl p-2 active:scale-90 transition-transform">⚙️</button>
     </header>
@@ -98,15 +126,15 @@
                     <h2 id="vault-title-text" class="text-xl font-bold text-gray-100">Kho Lưu Trữ</h2>
                     <p id="vault-desc-text" class="text-sm text-gray-400 font-medium">Bảo mật tuyệt đối trên máy</p>
                 </div>
-                <button onclick="openFormModal('vault')" class="h-12 px-6 bg-indigo-600 hover:bg-indigo-500 rounded-2xl font-bold text-sm shadow-lg shadow-indigo-600/20 active:scale-95 transition-all">+ Thêm</button>
+                <button onclick="openFormModal('vault')" class="h-12 px-6 bg-indigo-600 hover:bg-indigo-500 rounded-2xl font-bold text-sm shadow-lg shadow-indigo-600/20 active:scale-95 transition-all text-white">+ Thêm</button>
             </div>
             
             <div class="relative">
-                <input type="text" id="vault-search" oninput="loadVault()" placeholder="🔍 Tìm nhanh trong kho..." class="w-full h-14 bg-gray-900/60 border border-gray-800 rounded-2xl px-5 text-sm outline-none focus:border-pink-500 text-gray-100 transition-all shadow-inner">
+                <input type="text" id="vault-search" oninput="loadVault()" placeholder="🔍 Tìm nhanh trong kho..." class="w-full h-14 border rounded-2xl px-5 text-sm outline-none focus:border-pink-500 transition-all shadow-inner">
             </div>
             
             <div class="grid grid-cols-4 gap-2">
-                <button onclick="filterVault('wishlist')" id="vbtn-wishlist" class="vault-filter-btn h-14 bg-pink-600 rounded-2xl flex flex-col items-center justify-center gap-1 active:scale-95 transition-all">
+                <button onclick="filterVault('wishlist')" id="vbtn-wishlist" class="vault-filter-btn h-14 bg-pink-600 rounded-2xl flex flex-col items-center justify-center gap-1 active:scale-95 transition-all text-white font-medium">
                     <span class="text-lg">🛍️</span>
                     <span class="text-[9px] font-bold uppercase tracking-wider">Shopping</span>
                 </button>
@@ -162,8 +190,8 @@
             <div class="text-5xl">⚠️</div>
             <h3 class="text-lg font-bold text-gray-100" id="confirm-msg">Xác nhận xóa mục này?</h3>
             <div class="flex flex-col gap-3">
-                <button id="btn-confirm-action" class="h-14 w-full bg-red-600 rounded-2xl font-bold shadow-lg shadow-red-600/20">Xóa vĩnh viễn</button>
-                <button onclick="closeConfirmModal()" class="h-14 w-full bg-gray-900 border border-gray-800 rounded-2xl font-bold">Quay lại</button>
+                <button id="btn-confirm-action" class="h-14 w-full bg-red-600 rounded-2xl font-bold shadow-lg shadow-red-600/20 text-white">Xóa vĩnh viễn</button>
+                <button onclick="closeConfirmModal()" class="h-14 w-full bg-gray-900 border border-gray-800 rounded-2xl font-bold text-gray-400">Quay lại</button>
             </div>
         </div>
     </div>
@@ -186,35 +214,37 @@
             "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."
         ];
 
-        /* --- LOGIC ĐỒNG HỒ & HÌNH NỀN THEO THỜI GIAN THỰC --- */
+        /* --- LOGIC ĐỒNG HỒ & HÌNH NỀN SÁNG TỐI THEO THỜI GIAN THỰC --- */
         function updateTimeAndTheme() {
             const now = new Date();
             
-            // 1. Chạy đồng hồ thời gian thực dạng HH:MM:SS
+            // 1. Chạy số đồng hồ thời gian thực
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
             document.getElementById('realtime-clock').innerText = `${hours}:${minutes}:${seconds}`;
             
-            // 2. Tự động đổi màu nền app dựa trên các mốc thời gian thực
+            // 2. Kiểm tra mốc giờ để chuyển mạch Sáng / Tối
             const currentHour = now.getHours();
             const body = document.body;
             
-            if (currentHour >= 6 && currentHour < 12) {
-                // Sáng (06h - 12h): Xanh ban mai
-                body.style.backgroundColor = "#0b1528";
-            } else if (currentHour >= 12 && currentHour < 18) {
-                // Chiều (12h - 18h): Nền ấm trung tính
-                body.style.backgroundColor = "#0f121d";
-            } else if (currentHour >= 18 && currentHour < 21) {
-                // Hoàng hôn (18h - 21h): Tím hoàng hôn thơ mộng
-                body.style.backgroundColor = "#130f1e";
+            if (currentHour >= 6 && currentHour < 18) {
+                // Ban ngày (06:00 - 18:00): Gắn theme Sáng, đổi màu text đồng hồ cho dễ nhìn
+                if (!body.classList.contains('light-theme')) {
+                    body.classList.remove('dark-theme');
+                    body.classList.add('light-theme');
+                    document.getElementById('realtime-clock').classList.replace('text-gray-400', 'text-slate-600');
+                }
             } else {
-                // Đêm (21h - 06h sáng hôm sau): Đen đêm sâu thẳm
-                body.style.backgroundColor = "#05070a";
+                // Ban đêm (18:00 - 06:00 sáng hôm sau): Trở về theme Tối sâu gốc
+                if (!body.classList.contains('dark-theme')) {
+                    body.classList.remove('light-theme');
+                    body.classList.add('dark-theme');
+                    document.getElementById('realtime-clock').classList.replace('text-slate-600', 'text-gray-400');
+                }
             }
         }
-        // Cho chạy ngay lập tức khi mở app và lặp lại liên tục sau mỗi 1 giây
+        // Gọi lặp lại sau mỗi 1 giây để đồng hồ chạy và cập nhật theme liên tục
         setInterval(updateTimeAndTheme, 1000);
 
         /* --- INDEXEDDB STORAGE --- */
@@ -294,17 +324,31 @@
 
             let fileUpload = '';
             if (currentVaultCategory === 'braindump' && !editId) {
-                fileUpload = `<div class="relative w-full h-32 bg-gray-900 border-2 border-gray-800 border-dashed rounded-2xl flex flex-col items-center justify-center gap-2 active:border-pink-500 transition-all">
+                fileUpload = `<div class="relative w-full h-32 bg-gray-900/30 border-2 border-gray-400/30 border-dashed rounded-2xl flex flex-col items-center justify-center gap-2 active:border-pink-500 transition-all">
                                 <input type="file" id="add-vault-file" accept="image/*,video/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="updateFileName(this)">
                                 <span class="text-3xl">📸</span>
-                                <span id="file-status" class="text-xs text-gray-500 font-bold uppercase tracking-widest">Chọn Ảnh / Video</span>
+                                <span id="file-status" class="text-xs font-bold uppercase tracking-widest opacity-60">Chọn Ảnh / Video</span>
                              </div>`;
             }
 
             fields.innerHTML = `
-                <input type="text" id="add-vault-title" value="${defName}" placeholder="${c.p}" class="w-full h-16 bg-gray-900 border border-gray-800 rounded-2xl px-5 text-base text-white outline-none focus:border-indigo-500 shadow-inner transition-all">
-                ${currentVaultCategory !== 'braindump' ? `<input type="text" id="add-vault-url" value="${defUrl}" placeholder="${c.l}" class="w-full h-16 bg-gray-900 border border-gray-800 rounded-2xl px-5 text-base text-white outline-none focus:border-indigo-500 shadow-inner transition-all">` : ''}
+                <input type="text" id="add-vault-title" value="${defName}" placeholder="${c.p}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">
+                ${currentVaultCategory !== 'braindump' ? `<input type="text" id="add-vault-url" value="${defUrl}" placeholder="${c.l}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">` : ''}
                 ${fileUpload}`;
+
+            // Ép form input có nền sáng/tối đồng bộ với trạng thái lúc mở modal
+            const inputs = fields.querySelectorAll('input[type="text"]');
+            inputs.forEach(inp => {
+                if(document.body.classList.contains('light-theme')) {
+                    inp.style.backgroundColor = "#ffffff";
+                    inp.style.borderColor = "rgba(15, 23, 42, 0.1)";
+                    inp.style.color = "#0f172a";
+                } else {
+                    inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)";
+                    inp.style.borderColor = "rgba(255, 255, 255, 0.05)";
+                    inp.style.color = "#f3f4f6";
+                }
+            });
 
             const m = document.getElementById('modal-form');
             m.classList.remove('hidden'); m.classList.add('flex');
@@ -315,7 +359,7 @@
             const status = document.getElementById('file-status');
             if (input.files && input.files[0]) {
                 status.innerText = `Đã chọn: ${input.files[0].name.slice(0, 15)}...`;
-                status.classList.replace('text-gray-500', 'text-pink-400');
+                status.classList.add('text-pink-500');
             }
         }
 
@@ -377,18 +421,18 @@
                 
                 let content = `<div class="flex justify-between items-start">
                                     <div class="flex-1 overflow-hidden pr-2">
-                                        <h4 class="font-bold text-base text-gray-100 truncate">${item.title}</h4>
+                                        <h4 class="font-bold text-base truncate h4-title-text">${item.title}</h4>
                                         ${item.url ? `<a href="${item.url}" target="_blank" class="text-xs text-indigo-400 font-bold mt-1 inline-block">🔗 Mở liên kết</a>` : ''}
                                     </div>
                                     <div class="flex gap-2">
-                                        <button onclick="openFormModal('vault', '${item.id}')" class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-xl text-lg">✏️</button>
-                                        <button onclick="deleteVaultItem('${item.id}')" class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-xl text-lg text-red-400">✕</button>
+                                        <button onclick="openFormModal('vault', '${item.id}')" class="w-10 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg">✏️</button>
+                                        <button onclick="deleteVaultItem('${item.id}')" class="w-10 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-red-400">✕</button>
                                     </div>
                                </div>`;
                 
                 if (item.isIndexedDB) {
                     const mediaId = `media-${item.id}`;
-                    content += `<div id="${mediaId}" class="w-full aspect-video bg-black/20 rounded-2xl flex items-center justify-center text-xs text-gray-600 italic">⌛ Đang tải bí mật...</div>`;
+                    content += `<div id="${mediaId}" class="w-full aspect-video bg-black/10 rounded-2xl flex items-center justify-center text-xs italic opacity-60">⌛ Đang tải bí mật...</div>`;
                     container.appendChild(card);
                     card.innerHTML = content;
                     getMediaFromDB(item.id, (blob) => {
@@ -396,8 +440,8 @@
                         if (el && blob) {
                             const url = URL.createObjectURL(blob);
                             el.outerHTML = item.fileType.startsWith('video/') 
-                                ? `<video src="${url}" controls class="w-full max-h-[65vh] rounded-2xl shadow-lg object-contain bg-black/30" playsinline></video>` 
-                                : `<img src="${url}" class="w-full max-h-[65vh] rounded-2xl shadow-lg object-contain bg-black/30" loading="lazy">`;
+                                ? `<video src="${url}" controls class="w-full max-h-[65vh] rounded-2xl shadow-md object-contain bg-black/20" playsinline></video>` 
+                                : `<img src="${url}" class="w-full max-h-[65vh] rounded-2xl shadow-md object-contain bg-black/20" loading="lazy">`;
                         }
                     });
                 } else {
@@ -411,11 +455,12 @@
             currentVaultCategory = cat; 
             document.querySelectorAll('.vault-filter-btn').forEach(b => {
                 b.classList.replace('bg-pink-600', 'bg-gray-900/60');
-                b.classList.replace('text-white', 'text-gray-400');
+                b.classList.add('text-gray-400');
             });
             const active = document.getElementById(`vbtn-${cat}`);
             active.classList.replace('bg-gray-900/60', 'bg-pink-600');
-            active.classList.replace('text-gray-400', 'text-white');
+            active.classList.remove('text-gray-400');
+            active.classList.add('text-white');
             
             const titleEl = document.getElementById('vault-title-text');
             const descEl = document.getElementById('vault-desc-text');
@@ -450,7 +495,7 @@
         document.getElementById('btn-confirm-action').onclick = () => { confirmCallback?.(); closeConfirmModal(); };
 
         window.addEventListener('DOMContentLoaded', () => { 
-            // Chạy kiểm tra thời gian và set hình nền chuẩn ngay khi vừa load app
+            // Cập nhật trạng thái Sáng / Tối chính xác ngay tắp lự
             updateTimeAndTheme();
 
             const randomMsg = starMessages[Math.floor(Math.random() * starMessages.length)];

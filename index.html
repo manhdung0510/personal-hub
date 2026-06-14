@@ -202,7 +202,7 @@
             
             <div class="flex gap-2">
                 <button onclick="triggerConfetti()" class="h-14 flex-1 bg-gradient-to-r from-pink-500/20 to-indigo-500/20 border border-indigo-500/30 rounded-2xl font-bold text-indigo-300 text-xs active:scale-95 transition">Nhận niềm vui ✨</button>
-                <button onclick="saveProfile()" class="h-14 flex-1 bg-indigo-600 rounded-2xl font-bold text-white text-xs active:scale-95 transition shadow-lg shadow-indigo-600/20">Lưu thay đổi</button>
+                <button id="btn-save-profile" onclick="saveProfile()" class="h-14 flex-1 bg-indigo-600 rounded-2xl font-bold text-white text-xs active:scale-95 transition shadow-lg shadow-indigo-600/20">Lưu thay đổi</button>
             </div>
             <button onclick="closeSettings()" class="h-12 w-full bg-gray-900 border border-gray-800 rounded-xl font-bold text-sm text-gray-400 active:scale-95 transition">Đóng</button>
         </div>
@@ -346,9 +346,16 @@
             }
         }
 
-        /* --- FIX FIX FIX BIẾN MẤT TOAST --- */
+        /* --- THAY ĐỔI UX THEO ĐÚNG Ý ÔNG: BẤM LƯU TỰ ĐỘNG SẬP BÁNH RĂNG + NỔ PHÁO HOA --- */
         function saveProfile() {
             const nameInput = document.getElementById('profile-name-input').value.trim();
+            const btnSave = document.getElementById('btn-save-profile');
+            
+            // 1. Thay đổi chữ hiển thị báo hiệu ngay lập tức cho cô ấy biết app nhận lệnh
+            btnSave.innerText = "Đang ghi nhớ... ⏳";
+            btnSave.style.opacity = "0.7";
+            btnSave.disabled = true;
+
             profileData.name = nameInput;
             localStorage.setItem('user_profile', JSON.stringify(profileData));
             
@@ -362,13 +369,20 @@
                 document.getElementById('intro-star-icon').classList.add('hidden');
             }
             
-            // Bước 1: Đóng sập modal trước để dọn sạch không gian hiển thị cho Toast
-            closeSettings();
-            
-            // Bước 2: Đẩy lệnh bắn Toast vào hàng đợi microtask (giúp DOM ổn định lại) -> Toast sẽ nhảy lên rực rỡ y hệt nút "Nhận niềm vui"
+            // 2. Chờ 400ms tạo cảm giác xử lý mượt mà rồi tự động đóng sập cài đặt bánh răng
             setTimeout(() => {
-                showToast("Hồ sơ của bạn đã được lưu! ✨");
-            }, 50);
+                closeSettings();
+                
+                // Khôi phục nút về trạng thái ban đầu cho lần mở sau
+                btnSave.innerText = "Lưu thay đổi";
+                btnSave.style.opacity = "1";
+                btnSave.disabled = false;
+
+                // 3. Đóng bánh răng xong, bắn pháo hoa giấy rực rỡ ăn mừng thay cho thông báo!
+                setTimeout(() => {
+                    confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 }, colors: ['#818cf8', '#c084fc', '#60a5fa'] });
+                }, 150);
+            }, 400);
         }
 
         /* --- UI CONTROLLER --- */

@@ -111,7 +111,7 @@
             <div class="w-full space-y-3 pt-2" id="lock-inputs-container"></div>
             
             <button onclick="checkOrSetPassword()" class="h-14 w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold text-sm shadow-lg shadow-indigo-600/20 active:scale-95 transition-all">
-                Xác Nhận Nhập 🔑
+                Xác Nhận 🔑
             </button>
         </div>
     </div>
@@ -188,7 +188,7 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <div class="text-[11px] font-bold uppercase tracking-widest text-indigo-400 opacity-80">Chủ sở hữu</div>
-                    <div class="text-2xl font-extrabold truncate text-gray-100 tracking-tight mt-1" id="main-profile-name">Thành viên quý giá</div>
+                    <div class="text-2xl font-extrabold truncate text-gray-100 tracking-tight mt-1" id="main-profile-name">Người đẹp chưa biết tên</div>
                 </div>
             </div>
             
@@ -255,7 +255,7 @@
         <div class="glass-card w-full max-w-sm rounded-[32px] p-6 space-y-5 text-center shadow-2xl">
             <div class="text-center space-y-1">
                 <h3 class="text-lg font-bold text-gray-100">⚙️ Hồ Sơ & Hệ Thống</h3>
-                <p class="text-xs text-gray-400">Tùy chỉnh không gian mật thất của riêng bạn</p>
+                <p class="text-xs text-gray-400">Tùy chỉnh không gian mật thất của riêng em</p>
             </div>
 
             <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-4 text-left flex flex-col items-center">
@@ -267,7 +267,7 @@
                 <span class="text-[11px] text-indigo-400 font-bold uppercase tracking-wider -mt-2">Chạm để đổi ảnh đại diện</span>
                 
                 <div class="w-full">
-                    <label class="text-[11px] text-gray-400 font-bold block mb-1">Biệt danh của bạn</label>
+                    <label class="text-[11px] text-gray-400 font-bold block mb-1">Biệt danh</label>
                     <input type="text" id="profile-name-input" placeholder="Nhập tên biệt danh..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
                 </div>
 
@@ -278,7 +278,7 @@
             </div>
 
             <p class="text-xs text-gray-400 leading-relaxed px-2 italic">
-                "Mật thất an toàn này thuộc về bạn. Được hoàn thiện với tất cả sự trân trọng từ một người bạn phương xa."
+                "Mật thất an toàn này thuộc về em. Phản ứng thích thú của em lần trước là lý do ra đời cho cái này."
             </p>
             
             <div class="flex gap-2">
@@ -313,15 +313,15 @@
         const defaultTracks = [];
 
         const starMessages = [
-            "Mong ngày hôm nay sẽ dịu dàng với bạn.",
-            "Dù bận rộn đến đâu, cũng nhớ uống đủ nước nhé.",
-            "Bạn đã làm rất tốt rồi, hôm nay hãy nghỉ ngơi thôi.",
-            "Một ngày nhiều niềm vui nhỏ và ít deadline nha.",
-            "Mong bầu trời nơi bạn đang ở hôm nay thật đẹp.",
+            "Mong ngày hôm nay sẽ dịu dàng với em.",
+            "Dù bận rộn đến đâu, cũng nhớ ăn uống điều độ nhé.",
+            "Em đã làm rất tốt rồi, hôm nay hãy nghỉ ngơi thôi.",
+            "Một ngày nhiều niềm vui nhỏ và ít chuyện buồn nhé.",
             "Bất cứ lúc nào mệt mỏi, trạm trú ẩn này luôn ở đây.",
-            "Mong bạn luôn bình an dưới những cơn mưa.",
+            "Dù có chuyên gì xảy ra, cũng không được buồn nhé.",
+            "Cố lên em, sắp đạt được điều mong muốn rồi.",
             "Gửi một chút năng lượng tích cực qua màn hình này.",
-            "Hãy mỉm cười một cái, bạn cười trông xinh lắm đấy.",
+            "Hãy mỉm cười một cái, em cười trông xinh lắm đấy.",
             "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."
         ];
 
@@ -342,7 +342,7 @@
                 `;
             } else {
                 title.innerText = "Không Gian Bảo Mật";
-                desc.innerText = "Vui lòng nhập mật mã để truy cập mật thất";
+                desc.innerText = "Hãy nhập mật mã để truy cập mật thất";
                 container.innerHTML = `
                     <input type="password" id="lock-pwd-input" placeholder="Nhập mật mã bí mật..." class="w-full h-16 border rounded-2xl px-5 text-base text-center outline-none focus:border-pink-500 shadow-inner tracking-widest transition-all">
                 `;
@@ -365,7 +365,7 @@
                 const p1 = document.getElementById('lock-pwd-1').value.trim();
                 const p2 = document.getElementById('lock-pwd-2').value.trim();
                 
-                if (!p1) return showToast("Vui lòng nhập mật mã thiết lập!", "error");
+                if (!p1) return showToast("Hãy nhập mật mã thiết lập!", "error");
                 if (p1 !== p2) return showToast("Hai mật mã không khớp nhau!", "error");
                 
                 localStorage.setItem('app_password', p1);

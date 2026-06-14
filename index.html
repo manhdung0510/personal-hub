@@ -100,8 +100,12 @@
 
     <div id="intro-screen" class="fixed inset-0 bg-[#05070a] z-[999] flex flex-col items-center justify-center text-center px-6">
         <div class="space-y-6 fade-in flex flex-col items-center">
-            <div class="text-6xl animate-bounce">✨</div>
-            <h2 class="text-2xl font-semibold tracking-wide bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300 bg-clip-text text-transparent">
+            <div id="intro-avatar-box" class="w-24 h-24 rounded-full border-2 border-indigo-500/30 overflow-hidden shadow-2xl bg-gray-900 hidden">
+                <img id="intro-avatar-img" class="w-full h-full object-cover" src="">
+            </div>
+            <div id="intro-star-icon" class="text-6xl animate-bounce">✨</div>
+            
+            <h2 id="intro-welcome-text" class="text-2xl font-semibold tracking-wide bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300 bg-clip-text text-transparent">
                 Xin chào kho báu...
             </h2>
             <p id="star-message" class="text-xs text-gray-400 max-w-xs font-medium italic opacity-80 leading-relaxed pt-2 border-t border-gray-900"></p>
@@ -110,10 +114,13 @@
 
     <div id="toast-container" class="fixed bottom-24 right-6 left-6 z-[1000] flex flex-col gap-3 pointer-events-none"></div>
 
-    <header class="glass px-6 py-5 flex justify-between items-center z-10 sticky top-0 shrink-0 pt-8">
+    <header class="glass px-6 py-4 flex justify-between items-center z-10 sticky top-0 shrink-0 pt-8">
         <div class="flex flex-col">
             <h1 class="text-2xl font-bold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Infinite Vault ✨</h1>
-            <span id="realtime-clock" class="text-xs font-semibold font-mono tracking-widest mt-0.5 opacity-80">00:00:00</span>
+            <div class="flex items-center gap-1.5 mt-1 bg-black/10 px-2.5 py-1 rounded-xl border border-white/5 w-fit shadow-inner">
+                <span id="clock-status-icon" class="text-xs">🌙</span>
+                <span id="realtime-clock" class="text-xs font-bold font-mono tracking-widest opacity-90">00:00:00</span>
+            </div>
         </div>
         <button onclick="openSettings()" class="text-3xl p-2 active:scale-90 transition-transform">⚙️</button>
     </header>
@@ -171,16 +178,35 @@
     </div>
 
     <div id="modal-settings" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-center justify-center p-6 z-[60]">
-        <div class="glass-card w-full max-w-sm rounded-[32px] p-8 space-y-6 text-center shadow-2xl">
-            <div class="text-4xl animate-pulse">🔮</div>
-            <h3 class="text-xl font-bold text-gray-100">Trạm Trú Ẩn An Toàn</h3>
-            <p class="text-sm text-gray-400 leading-relaxed px-2">
-                Không gian lưu trữ này thuộc về bạn. Được hoàn thiện với tất cả sự trân trọng từ một người bạn phương xa. Mong bạn luôn bình yên mỗi ngày.
-            </p>
-            <div class="pt-2">
-                <button onclick="triggerConfetti()" class="h-14 w-full bg-gradient-to-r from-pink-500/20 to-indigo-500/20 border border-indigo-500/40 rounded-2xl font-bold text-indigo-300 active:scale-95 transition shadow-lg">Nhận một niềm vui nhỏ ✨</button>
+        <div class="glass-card w-full max-w-sm rounded-[32px] p-6 space-y-5 text-center shadow-2xl">
+            <div class="text-center space-y-1">
+                <h3 class="text-lg font-bold text-gray-100">⚙️ Hồ Sơ & Hệ Thống</h3>
+                <p class="text-xs text-gray-400">Tùy chỉnh không gian mật thất của riêng bạn</p>
             </div>
-            <button onclick="closeSettings()" class="h-14 w-full bg-gray-900 border border-gray-800 rounded-2xl font-bold text-gray-400 active:scale-95 transition">Đóng</button>
+
+            <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-4 text-left flex flex-col items-center">
+                <div class="relative w-20 h-20 rounded-full bg-gray-900 border border-gray-700 overflow-hidden group cursor-pointer shadow-xl">
+                    <img id="settings-avatar-preview" class="w-full h-full object-cover hidden" src="">
+                    <div id="settings-avatar-placeholder" class="absolute inset-0 flex items-center justify-center text-2xl opacity-60">👤</div>
+                    <input type="file" id="profile-avatar-input" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="uploadProfileAvatar(this)">
+                </div>
+                <span class="text-[11px] text-indigo-400 font-bold uppercase tracking-wider -mt-2">Chạm để đổi ảnh đại diện</span>
+                
+                <div class="w-full">
+                    <label class="text-[11px] text-gray-400 font-bold block mb-1">Biệt danh của bạn</label>
+                    <input type="text" id="profile-name-input" placeholder="Nhập tên biệt danh..." class="w-full h-12 bg-gray-950 border border-gray-800 rounded-xl px-4 text-sm text-white outline-none focus:border-indigo-500 transition-all">
+                </div>
+            </div>
+
+            <p class="text-xs text-gray-400 leading-relaxed px-2 italic">
+                "Mật thất an toàn này thuộc về bạn. Được hoàn thiện với tất cả sự trân trọng từ một người bạn phương xa."
+            </p>
+            
+            <div class="flex gap-2">
+                <button onclick="triggerConfetti()" class="h-14 flex-1 bg-gradient-to-r from-pink-500/20 to-indigo-500/20 border border-indigo-500/30 rounded-2xl font-bold text-indigo-300 text-xs active:scale-95 transition">Nhận niềm vui ✨</button>
+                <button onclick="saveProfile()" class="h-14 flex-1 bg-indigo-600 rounded-2xl font-bold text-white text-xs active:scale-95 transition shadow-lg shadow-indigo-600/20">Lưu thay đổi</button>
+            </div>
+            <button onclick="closeSettings()" class="h-12 w-full bg-gray-900 border border-gray-800 rounded-xl font-bold text-sm text-gray-400 active:scale-95 transition">Đóng</button>
         </div>
     </div>
 
@@ -197,6 +223,7 @@
 
     <script>
         let vaultItems = JSON.parse(localStorage.getItem('local_vault')) || [];
+        let profileData = JSON.parse(localStorage.getItem('user_profile')) || { name: '' };
         let currentVaultCategory = 'wishlist';
         let currentFormType = '', currentEditId = null;
 
@@ -213,7 +240,7 @@
             "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."
         ];
 
-        /* --- LOGIC ĐỒNG HỒ & HÌNH NỀN SÁNG TỐI --- */
+        /* --- LOGIC ĐỒNG HỒ & HÌNH NỀN SÁNG TỐI THEO THỜI GIAN THỰC --- */
         function updateTimeAndTheme() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -223,24 +250,29 @@
             
             const currentHour = now.getHours();
             const body = document.body;
+            const clockIcon = document.getElementById('clock-status-icon');
             
             if (currentHour >= 6 && currentHour < 18) {
                 if (!body.classList.contains('light-theme')) {
                     body.classList.remove('dark-theme');
                     body.classList.add('light-theme');
-                    document.getElementById('realtime-clock').classList.replace('text-gray-400', 'text-slate-600');
+                    clockIcon.innerText = "☀️";
+                    document.getElementById('realtime-clock').parentElement.classList.remove('bg-black/10', 'border-white/5');
+                    document.getElementById('realtime-clock').parentElement.classList.add('bg-white/40', 'border-black/5');
                 }
             } else {
                 if (!body.classList.contains('dark-theme')) {
                     body.classList.remove('light-theme');
                     body.classList.add('dark-theme');
-                    document.getElementById('realtime-clock').classList.replace('text-slate-600', 'text-gray-400');
+                    clockIcon.innerText = "🌙";
+                    document.getElementById('realtime-clock').parentElement.classList.remove('bg-white/40', 'border-black/5');
+                    document.getElementById('realtime-clock').parentElement.classList.add('bg-black/10', 'border-white/5');
                 }
             }
         }
         setInterval(updateTimeAndTheme, 1000);
 
-        /* --- INDEXEDDB STORAGE --- */
+        /* --- INDEXEDDB STORAGE (MỞ RỘNG ĐỂ LƯU CẢ AVATAR) --- */
         let db;
         const dbRequest = indexedDB.open("SecureMomentsDB", 1);
         dbRequest.onupgradeneeded = function(e) {
@@ -249,7 +281,11 @@
                 database.createObjectStore("mediaFiles", { keyPath: "id" });
             }
         };
-        dbRequest.onsuccess = function(e) { db = e.target.result; loadVault(); };
+        dbRequest.onsuccess = function(e) { 
+            db = e.target.result; 
+            loadVault(); 
+            loadProfileImages(); // DB lên cấu trúc thành công thì load ảnh profile ngay
+        };
 
         function saveMediaToDB(id, blobData, callback) {
             let transaction = db.transaction(["mediaFiles"], "readwrite");
@@ -270,6 +306,67 @@
             transaction.objectStore("mediaFiles").delete(id);
         }
 
+        /* --- CHỨC NĂNG QUẢN LÝ TÀI KHOẢN PROFILE --- */
+        function uploadProfileAvatar(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                if (!db) return;
+                // Lưu file ảnh đại diện gốc trực tiếp vào database IndexedDB bảo mật
+                saveMediaToDB("user_avatar_blob", file, function() {
+                    const url = URL.createObjectURL(file);
+                    const preview = document.getElementById('settings-avatar-preview');
+                    preview.src = url;
+                    preview.classList.remove('hidden');
+                    document.getElementById('settings-avatar-placeholder').classList.add('hidden');
+                    showToast("Đã tải ảnh đại diện lên bộ nhớ nháp!");
+                });
+            }
+        }
+
+        function saveProfile() {
+            const nameInput = document.getElementById('profile-name-input').value.trim();
+            profileData.name = nameInput;
+            localStorage.setItem('user_profile', JSON.stringify(profileData));
+            showToast("Đã lưu hồ sơ cá nhân!");
+            closeSettings();
+            
+            // Cập nhật lại lời chào ngay lập tức sau khi lưu
+            if(profileData.name) {
+                document.getElementById('intro-welcome-text').innerText = `Chào mừng ${profileData.name} trở lại...`;
+            }
+            loadProfileImages();
+        }
+
+        function loadProfileImages() {
+            if (!db) return;
+            // Gọi ảnh đại diện từ database ngầm ra nạp vào giao diện cài đặt và màn hình chờ intro
+            getMediaFromDB("user_avatar_blob", function(blobFile) {
+                if (blobFile) {
+                    const objectURL = URL.createObjectURL(blobFile);
+                    
+                    // Nạp vào preview trong cài đặt
+                    const settingsPreview = document.getElementById('settings-avatar-preview');
+                    settingsPreview.src = objectURL;
+                    settingsPreview.classList.remove('hidden');
+                    document.getElementById('settings-avatar-placeholder').classList.add('hidden');
+                    
+                    // Nạp vào vòng tròn Avatar trên màn hình chờ Intro
+                    const introImg = document.getElementById('intro-avatar-img');
+                    introImg.src = objectURL;
+                    document.getElementById('intro-avatar-box').classList.remove('hidden');
+                    document.getElementById('intro-star-icon').classList.add('hidden'); // Ẩn icon ngôi sao thường đi
+                }
+            });
+
+            // Gán tên biệt danh vào ô nhập liệu sẵn
+            document.getElementById('profile-name-input').value = profileData.name || '';
+            
+            // Đổi chữ lời chào tại màn hình intro nếu có biệt danh
+            if (profileData.name) {
+                document.getElementById('intro-welcome-text').innerText = `Chào mừng ${profileData.name} trở lại...`;
+            }
+        }
+
         /* --- CHỨC NĂNG TẢI FILE NGƯỢC VỀ ĐIỆN THOẠI --- */
         function downloadMediaItem(id, fileName, fileType) {
             getMediaFromDB(id, (blob) => {
@@ -277,7 +374,6 @@
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    // Tự động gán đuôi file chuẩn dựa theo loại file để không bị lỗi định dạng khi lưu
                     const ext = fileType.startsWith('video/') ? 'mp4' : 'jpg';
                     a.download = `${fileName.replace(/\s+/g, '_')}_moment.${ext}`;
                     document.body.appendChild(a);
@@ -292,7 +388,10 @@
         }
 
         /* --- UI HELPERS & SETTINGS --- */
-        function openSettings() { document.getElementById('modal-settings').classList.replace('hidden', 'flex'); }
+        function openSettings() { 
+            loadProfileImages(); // Mỗi lần bấm mở cài đặt thì đồng bộ dữ liệu mới nhất
+            document.getElementById('modal-settings').classList.replace('hidden', 'flex'); 
+        }
         function closeSettings() { document.getElementById('modal-settings').classList.replace('flex', 'hidden'); }
 
         function triggerConfetti() {
@@ -370,6 +469,10 @@
             setTimeout(() => document.getElementById('modal-form').classList.replace('flex', 'hidden'), 300);
         }
 
+        document.getElementById('modal-form').addEventListener('click', function(e) {
+            if (e.target === this) closeFormModal();
+        });
+
         function submitForm() {
             const title = document.getElementById('add-vault-title').value.trim();
             if (!title) return showToast("Nhập tiêu đề đã nhé!", "error");
@@ -402,7 +505,7 @@
             localStorage.setItem('local_vault', JSON.stringify(vaultItems)); loadVault(); closeFormModal(); showToast("Đã ghi nhớ!");
         }
 
-        /* --- RENDERING VAULT (TÍCH HỢP NÚT DOWNLOAD) --- */
+        /* --- CORE LOGIC --- */
         function loadVault() {
             if (!db) return;
             const container = document.getElementById('vault-list'); container.innerHTML = '';
@@ -418,13 +521,11 @@
                 const card = document.createElement('div');
                 card.className = 'glass-card p-5 rounded-3xl flex flex-col gap-4 fade-in';
                 
-                // Khởi tạo bộ nút thao tác mặc định cho text danh mục thường
                 let buttonsHTML = `
                     <button onclick="openFormModal('vault', '${item.id}')" class="w-10 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg">✏️</button>
                     <button onclick="deleteVaultItem('${item.id}')" class="w-10 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-red-400">✕</button>
                 `;
 
-                // Nếu là tab bí mật, nạp thêm nút Tải về (📥) vào bộ điều hướng
                 if (item.category === 'braindump' && item.isIndexedDB) {
                     buttonsHTML = `
                         <button onclick="downloadMediaItem('${item.id}', '${item.title}', '${item.fileType}')" class="w-10 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-indigo-400" title="Tải về máy">📥</button>
@@ -496,6 +597,11 @@
 
         window.addEventListener('DOMContentLoaded', () => { 
             updateTimeAndTheme();
+            
+            // Đọc tên/avatar hồ sơ người dùng lưu từ trước để nạp ngay khi khởi động
+            if(db) loadProfileImages();
+            else setTimeout(loadProfileImages, 300);
+
             const randomMsg = starMessages[Math.floor(Math.random() * starMessages.length)];
             document.getElementById('star-message').innerText = randomMsg;
             setTimeout(() => { 

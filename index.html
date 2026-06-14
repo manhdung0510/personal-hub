@@ -319,15 +319,18 @@
                     document.getElementById('settings-avatar-placeholder').classList.add('hidden');
                     
                     const introImg = document.getElementById('intro-avatar-img');
-                    introImg.src = currentAvatarUrl;
-                    document.getElementById('intro-avatar-box').classList.remove('hidden');
-                    document.getElementById('intro-star-icon').classList.add('hidden');
+                    if (introImg) introImg.src = currentAvatarUrl;
+                    const introBox = document.getElementById('intro-avatar-box');
+                    if (introBox) introBox.classList.remove('hidden');
+                    const introIcon = document.getElementById('intro-star-icon');
+                    if (introIcon) introIcon.classList.add('hidden');
                 }
             });
 
             document.getElementById('profile-name-input').value = profileData.name || '';
-            if (profileData.name) {
-                document.getElementById('intro-welcome-text').innerText = `Chào mừng ${profileData.name} trở lại...`;
+            const introWelcome = document.getElementById('intro-welcome-text');
+            if (profileData.name && introWelcome) {
+                introWelcome.innerText = `Chào mừng ${profileData.name} trở lại...`;
             }
         }
 
@@ -346,23 +349,26 @@
             }
         }
 
-        /* --- SỬA ĐÚNG 1 DÒNG CHUẨN ĐÉT Ý ÔNG: ẤN LƯU LÀ TỰ ĐÓNG BÁNH RĂNG --- */
+        /* --- SỬA LỖI UNCAUGHT: KIỂM TRA PHẦN TỬ INTRO TRƯỚC KHI ĐỔI CHỮ --- */
         function saveProfile() {
             const nameInput = document.getElementById('profile-name-input').value.trim();
             profileData.name = nameInput;
             localStorage.setItem('user_profile', JSON.stringify(profileData));
             
-            if(nameInput) {
-                document.getElementById('intro-welcome-text').innerText = `Chào mừng ${nameInput} trở lại...`;
+            // Thêm "if" kiểm tra xem màn hình intro có còn tồn tại trong DOM không rồi mới ghi đè
+            const introWelcome = document.getElementById('intro-welcome-text');
+            if(nameInput && introWelcome) {
+                introWelcome.innerText = `Chào mừng ${nameInput} trở lại...`;
             }
             
-            if (currentAvatarUrl) {
-                document.getElementById('intro-avatar-img').src = currentAvatarUrl;
+            const introImg = document.getElementById('intro-avatar-img');
+            if (currentAvatarUrl && introImg) {
+                introImg.src = currentAvatarUrl;
                 document.getElementById('intro-avatar-box').classList.remove('hidden');
                 document.getElementById('intro-star-icon').classList.add('hidden');
             }
             
-            // Đóng sập luôn cái bánh răng cài đặt theo đúng ý ông, coi như tín hiệu báo thành công trực tiếp!
+            // Đóng cài đặt ngay tắp lự không bị nghẽn lệnh nữa
             closeSettings();
         }
 

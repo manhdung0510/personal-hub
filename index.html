@@ -224,7 +224,7 @@
         let profileData = JSON.parse(localStorage.getItem('user_profile')) || { name: '' };
         let currentVaultCategory = 'wishlist';
         let currentFormType = '', currentEditId = null;
-        let currentAvatarUrl = null; // Biến tạm giải phóng bộ nhớ cache ảnh
+        let currentAvatarUrl = null;
 
         const starMessages = [
             "Mong ngày hôm nay sẽ dịu dàng với bạn.",
@@ -283,7 +283,7 @@
         dbRequest.onsuccess = function(e) { 
             db = e.target.result; 
             loadVault(); 
-            loadProfileImages(); // Chỉ load từ DB đúng 1 lần khi khởi động app
+            loadProfileImages();
         };
 
         function saveMediaToDB(id, blobData, callback) {
@@ -305,15 +305,14 @@
             transaction.objectStore("mediaFiles").delete(id);
         }
 
-        /* --- FIX LỖI LUỒNG PROFILE: LOAD SẴN RA CACHE --- */
+        /* --- LUỒNG HỒ SƠ TÀI KHOẢN --- */
         function loadProfileImages() {
             if (!db) return;
             getMediaFromDB("user_avatar_blob", function(blobFile) {
                 if (blobFile) {
-                    if (currentAvatarUrl) URL.revokeObjectURL(currentAvatarUrl); // Xóa rác cache cũ
+                    if (currentAvatarUrl) URL.revokeObjectURL(currentAvatarUrl);
                     currentAvatarUrl = URL.createObjectURL(blobFile);
                     
-                    // Gán thẳng vào ảnh đại diện các khu vực
                     const settingsPreview = document.getElementById('settings-avatar-preview');
                     settingsPreview.src = currentAvatarUrl;
                     settingsPreview.classList.remove('hidden');
@@ -348,6 +347,7 @@
             }
         }
 
+        /* --- FIX LUỒNG UX: BẮN TOAST TRƯỚC, SẬP MODAL SAU --- */
         function saveProfile() {
             const nameInput = document.getElementById('profile-name-input').value.trim();
             profileData.name = nameInput;
@@ -357,20 +357,23 @@
                 document.getElementById('intro-welcome-text').innerText = `Chào mừng ${profileData.name} trở lại...`;
             }
             
-            // Cập nhật lại avatar trên giao diện Intro luôn
             if (currentAvatarUrl) {
                 document.getElementById('intro-avatar-img').src = currentAvatarUrl;
                 document.getElementById('intro-avatar-box').classList.remove('hidden');
                 document.getElementById('intro-star-icon').classList.add('hidden');
             }
             
-            showToast("Đã lưu cấu hình hồ sơ!");
-            closeSettings();
+            // 1. Bắn Toast thông báo nổi lên màn hình ngay tắp lự
+            showToast("Đã lưu cấu hình hồ sơ thành công! ✅");
+            
+            // 2. Tạo độ trễ 150ms để cô ấy kịp nhìn thấy chữ rồi mới sập Modal xuống mượt mà
+            setTimeout(() => {
+                closeSettings();
+            }, 150);
         }
 
-        /* --- UI HELPERS & SETTINGS CONTROLLER --- */
+        /* --- UI CONTROLLER --- */
         function openSettings() {
-            // FIX LỖI: Gán màu nền động cho ô input text đồng bộ lúc mở hộp cài đặt
             const inp = document.getElementById('profile-name-input');
             if(document.body.classList.contains('light-theme')) {
                 inp.style.backgroundColor = "#ffffff"; inp.style.borderColor = "rgba(15, 23, 42, 0.1)"; inp.style.color = "#0f172a";
@@ -384,7 +387,7 @@
             document.getElementById('modal-settings').classList.replace('flex', 'hidden'); 
         }
 
-        /* --- CHỨC NĂNG TẢI FILE NGƯỢC VỀ ĐIỆN THOẠI --- */
+        /* --- DOWNLOAD FILE --- */
         function downloadMediaItem(id, fileName, fileType) {
             getMediaFromDB(id, (blob) => {
                 if (blob) {
@@ -605,6 +608,10 @@
 
         window.addEventListener('DOMContentLoaded', () => { 
             updateTimeAndTheme();
+            
+            if(db) loadProfileImages();
+            else setTimeout(loadProfileImages, 300);
+
             const randomMsg = starMessages[Math.floor(Math.random() * starMessages.length)];
             document.getElementById('star-message').innerText = randomMsg;
             setTimeout(() => { 

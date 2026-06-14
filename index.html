@@ -47,6 +47,7 @@
             color: #0f172a !important;
         }
 
+        /* --- GIỮ NGUYÊN NỀN TÍM TỐI NGUYÊN BẢN CỦA ÔNG --- */
         body.dark-theme {
             background-color: #05070a !important;
             color: #f3f4f6 !important;
@@ -285,11 +286,10 @@
         let profileData = JSON.parse(localStorage.getItem('user_profile')) || { name: '' };
         let customTracks = JSON.parse(localStorage.getItem('custom_tracks')) || [];
         let currentVaultCategory = 'wishlist';
-        let currentStudySubTab = 'learn'; 
+        let currentStudySubTab = 'learn'; // Phân loại con mặc định cho study
         let currentFormType = '', currentEditId = null;
         let currentAvatarUrl = null;
         let savedTrackName = "Giai điệu không gian";
-        let tempStudyFileBlob = null; // Biến tạm lưu blob khi chọn file trong form
 
         const defaultTracks = [
             { id: 'def-1', title: 'Bản nhạc tình ca Lo-Fi ✨', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
@@ -734,17 +734,277 @@
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    
-                    // Kiểm tra nếu là file tài liệu chung không phải video/image
-                    let ext = 'jpg';
-                    if (fileType.startsWith('video/')) ext = 'mp4';
-                    else if (!fileType.startsWith('image/')) {
-                        // Giữ nguyên tên file ban đầu cho tài liệu học tập
-                        a.download = fileName;
-                        a.click();
-                        URL.revokeObjectURL(url);
-                        return;
-                    }
-                    
+                    const ext = fileType.startsWith('video/') ? 'mp4' : 'jpg';
                     a.download = `${fileName.replace(/\s+/g, '_')}_moment.${ext}`;
                     document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    showToast("Đang tải xuống tệp gốc...");
+                } else {
+                    showToast("Không tìm thấy tệp tin!", "error");
+                }
+            });
+        }
+
+        function triggerConfetti() {
+            confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 }, colors: ['#f472b6', '#818cf8', '#c084fc', '#60a5fa'] });
+            showToast("Gửi đến bạn những điều may mắn! ✨");
+        }
+
+        /* --- CHUYỂN ĐỔI TAB CON TRONG STUDY CORNER --- */
+        function changeStudySubTab(subtype) {
+            currentStudySubTab = subtype;
+            document.getElementById('sub-study-learn').className = subtype === 'learn' 
+                ? 'py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20' 
+                : 'py-2.5 rounded-lg text-xs font-bold transition-all text-gray-400';
+            document.getElementById('sub-study-teach').className = subtype === 'teach' 
+                ? 'py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20' 
+                : 'py-2.5 rounded-lg text-xs font-bold transition-all text-gray-400';
+            loadVault();
+        }
+
+        /* --- FORM HANDLING --- */
+        function openFormModal(type, editId = null) {
+            currentFormType = type; currentEditId = editId;
+            const fields = document.getElementById('form-fields'); fields.innerHTML = '';
+            let defName = '', defUrl = '', defStudyType = currentStudySubTab;
+            
+            if (editId) { 
+                const v = vaultItems.find(x => x.id === editId); 
+                defName = v?.title || ''; 
+                defUrl = v?.url || ''; 
+                if(v?.studyType) defStudyType = v.studyType;
+            }
+
+            const configs = {
+                'wishlist': { t: editId ? "Sửa mục mua sắm" : "Mục mua sắm mới", d: "Bạn đang muốn mua gì thế?", p: "Tên món đồ...", l: "Link sản phẩm..." },
+                'media': { t: editId ? "Sửa nội dung" : "Lưu Media hay", d: "Phim hay nhạc đều được nhé!", p: "Tên phim/nhạc...", l: "Link xem/nghe..." },
+                'study': { t: editId ? "Sửa tài liệu" : "Cất tài liệu học & dạy", d: "Chỉ lưu trữ File, Link tài liệu, không lưu bài viết.", p: "Tên tài liệu / giáo án...", l: "Link Drive, file hoặc liên kết tài liệu..." },
+                'braindump': { t: editId ? "Sửa ghi chú" : "Khoảnh khắc bí mật 🔒", d: "Ảnh và Video sẽ lưu kín trên máy.", p: "Cảm xúc lúc này...", l: "" }
+            };
+
+            const c = configs[currentVaultCategory];
+            document.getElementById('form-title').innerText = c.t;
+            document.getElementById('form-desc').innerText = c.d;
+
+            let fileUpload = '';
+            if (currentVaultCategory === 'braindump' && !editId) {
+                fileUpload = `<div class="relative w-full h-32 bg-gray-900/30 border-2 border-gray-400/30 border-dashed rounded-2xl flex flex-col items-center justify-center gap-2 active:border-pink-500 transition-all">
+                                <input type="file" id="add-vault-file" accept="image/*,video/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="updateFileName(this)">
+                                <span class="text-3xl">📸</span>
+                                <span id="file-status" class="text-xs font-bold uppercase tracking-widest opacity-60">Chọn Ảnh / Video</span>
+                             </div>`;
+            }
+
+            // Nếu đang ở không gian Study, thêm ô chọn phân loại tài liệu (Dạy học hoặc Tự học)
+            let studyTypeSelector = '';
+            if (currentVaultCategory === 'study') {
+                studyTypeSelector = `
+                    <div class="space-y-1.5 text-left">
+                        <label class="text-[11px] text-gray-400 font-bold block px-1">Mục đích sử dụng tài liệu</label>
+                        <select id="add-vault-study-type" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 transition-all">
+                            <option value="learn" ${defStudyType === 'learn' ? 'selected' : ''}>📖 Tài liệu tự học / Nghiên cứu</option>
+                            <option value="teach" ${defStudyType === 'teach' ? 'selected' : ''}>🏫 Tài liệu mang đi giảng dạy</option>
+                        </select>
+                    </div>`;
+            }
+
+            fields.innerHTML = `
+                <input type="text" id="add-vault-title" value="${defName}" placeholder="${c.p}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">
+                ${currentVaultCategory !== 'braindump' ? `<input type="text" id="add-vault-url" value="${defUrl}" placeholder="${c.l}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">` : ''}
+                ${studyTypeSelector}
+                ${fileUpload}`;
+
+            const controls = fields.querySelectorAll('input[type="text"], select');
+            controls.forEach(ctrl => {
+                if(document.body.classList.contains('light-theme')) {
+                    ctrl.style.backgroundColor = "#ffffff"; ctrl.style.borderColor = "rgba(15, 23, 42, 0.1)"; ctrl.style.color = "#0f172a";
+                } else {
+                    ctrl.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; ctrl.style.borderColor = "rgba(255, 255, 255, 0.05)"; ctrl.style.color = "#f3f4f6";
+                }
+            });
+
+            const m = document.getElementById('modal-form'); m.classList.remove('hidden'); m.classList.add('flex');
+            setTimeout(() => document.getElementById('form-card').classList.remove('translate-y-full'), 10);
+        }
+
+        function updateFileName(input) {
+            const status = document.getElementById('file-status');
+            if (status && input.files && input.files[0]) {
+                status.innerText = `Đã chọn: ${input.files[0].name.slice(0, 15)}...`; status.classList.add('text-pink-500');
+            }
+        }
+
+        function closeFormModal() {
+            document.getElementById('form-card').classList.add('translate-y-full');
+            setTimeout(() => document.getElementById('modal-form').classList.replace('flex', 'hidden'), 300);
+        }
+
+        document.getElementById('modal-form').addEventListener('click', function(e) { if (e.target === this) closeFormModal(); });
+
+        function submitForm() {
+            const title = document.getElementById('add-vault-title').value.trim();
+            if (!title) return showToast("Nhập tiêu đề đã nhé!", "error");
+            const uuid = () => Math.random().toString(36).substring(2, 15);
+
+            if (currentVaultCategory === 'braindump' && !currentEditId) {
+                const fileInput = document.getElementById('add-vault-file');
+                if (!fileInput.files[0]) return showToast("Chọn ảnh/video đã ông!", "error");
+                const file = fileInput.files[0]; const itemId = uuid();
+                saveMediaToDB(itemId, file, () => {
+                    vaultItems.push({ id: itemId, title, isIndexedDB: true, fileType: file.type, category: 'braindump' });
+                    finalizeSubmit();
+                });
+            } else {
+                if (currentEditId) {
+                    const idx = vaultItems.findIndex(v => v.id === currentEditId);
+                    if (idx > -1) { 
+                        vaultItems[idx].title = title; 
+                        if (currentVaultCategory !== 'braindump') vaultItems[idx].url = document.getElementById('add-vault-url').value.trim();
+                        if (currentVaultCategory === 'study') {
+                            vaultItems[idx].studyType = document.getElementById('add-vault-study-type').value;
+                        }
+                    }
+                } else {
+                    const url = document.getElementById('add-vault-url').value.trim();
+                    let itemObj = { id: uuid(), title, url, category: currentVaultCategory };
+                    if (currentVaultCategory === 'study') {
+                        itemObj.studyType = document.getElementById('add-vault-study-type').value;
+                    }
+                    vaultItems.push(itemObj);
+                }
+                finalizeSubmit();
+            }
+        }
+
+        function finalizeSubmit() {
+            localStorage.setItem('local_vault', JSON.stringify(vaultItems)); loadVault(); closeFormModal(); showToast("Đã ghi nhớ!");
+        }
+
+        /* --- CORE LOGIC --- */
+        function loadVault() {
+            if (!db) return;
+            const container = document.getElementById('vault-list'); container.innerHTML = '';
+            const search = document.getElementById('vault-search').value.toLowerCase();
+            
+            let items = vaultItems.filter(i => i.category === currentVaultCategory);
+            
+            // Lọc sâu hơn nếu ở tab Study theo tiểu mục (Tự học / Giảng dạy)
+            if (currentVaultCategory === 'study') {
+                items = items.filter(i => (i.studyType || 'learn') === currentStudySubTab);
+            }
+
+            if(search) items = items.filter(i => i.title.toLowerCase().includes(search));
+            
+            if(items.length === 0) {
+                let msg = "Kho đồ đang trống";
+                if(currentVaultCategory === 'study') {
+                    msg = currentStudySubTab === 'learn' ? "Chưa lưu tài liệu tự học nào" : "Chưa lưu giáo án/tài liệu đi dạy nào";
+                }
+                return container.innerHTML = `<div class="py-20 text-center opacity-30"><div class="text-6xl mb-4">${currentVaultCategory === 'braindump' ? '🔒' : '📦'}</div><p class="text-sm font-bold uppercase tracking-widest">${msg}</p></div>`;
+            }
+
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'glass-card p-5 rounded-3xl flex flex-col gap-4 fade-in';
+                
+                let buttonsHTML = `
+                    <button onclick="openFormModal('vault', '${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg">✏️</button>
+                    <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-red-400">✕</button>
+                `;
+
+                if (item.category === 'braindump' && item.isIndexedDB) {
+                    buttonsHTML = `
+                        <button onclick="downloadMediaItem('${item.id}', '${item.title}', '${item.fileType}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-indigo-400" title="Tải về máy">📥</button>
+                        <button onclick="openFormModal('vault', '${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg">✏️</button>
+                        <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-red-400">✕</button>
+                    `;
+                }
+
+                let content = `<div class="flex justify-between items-start">
+                                    <div class="flex-1 overflow-hidden pr-2">
+                                        <h4 class="font-bold text-base truncate h4-title-text">${item.title}</h4>
+                                        ${item.url ? `<a href="${item.url}" target="_blank" class="text-xs text-indigo-400 font-bold mt-1 inline-block">🔗 Mở tài liệu / liên kết</a>` : ''}
+                                    </div>
+                                    <div class="flex items-center gap-2 shrink-0">
+                                        ${buttonsHTML}
+                                    </div>
+                               </div>`;
+                
+                if (item.isIndexedDB) {
+                    const mediaId = `media-${item.id}`;
+                    content += `<div id="${mediaId}" class="flex justify-center items-center w-full text-xs italic opacity-60 py-4">⌛ Đang tải bí mật...</div>`;
+                    container.appendChild(card); card.innerHTML = content;
+                    
+                    getMediaFromDB(item.id, (blob) => {
+                        const el = document.getElementById(mediaId);
+                        if (el && blob) {
+                            const url = URL.createObjectURL(blob);
+                            el.outerHTML = item.fileType.startsWith('video/') 
+                                ? `<div class="flex justify-center w-full"><video src="${url}" controls class="w-full max-h-[65vh] rounded-2xl shadow-md object-contain" playsinline></video></div>` 
+                                : `<div class="flex justify-center w-full"><img src="${url}" class="w-full max-h-[65vh] rounded-2xl shadow-md object-contain" loading="lazy"></div>`;
+                        }
+                    });
+                } else {
+                    card.innerHTML = content; container.appendChild(card);
+                }
+            });
+        }
+
+        function filterVault(cat) { 
+            currentVaultCategory = cat; 
+            document.querySelectorAll('.vault-filter-btn').forEach(b => { b.classList.replace('bg-pink-600', 'bg-gray-900/60'); b.classList.add('text-gray-400'); });
+            const active = document.getElementById(`vbtn-${cat}`); active.classList.replace('bg-gray-900/60', 'bg-pink-600'); active.classList.remove('text-gray-400'); active.classList.add('text-white');
+            
+            const titleEl = document.getElementById('vault-title-text'); 
+            const descEl = document.getElementById('vault-desc-text');
+            const subTabs = document.getElementById('study-sub-tabs');
+
+            if (cat === 'study') {
+                subTabs.classList.replace('hidden', 'grid');
+                titleEl.innerText = "Study Center 📚"; 
+                descEl.innerText = "Nơi cất giữ File, Link tài liệu và Giáo án giảng dạy.";
+            } else {
+                subTabs.classList.replace('grid', 'hidden');
+                if (cat === 'wishlist') { titleEl.innerText = "Kho Lưu Trữ Vô Tận"; descEl.innerText = "Nơi lưu trữ những món đồ riêng tư của bạn"; }
+                else if (cat === 'media') { titleEl.innerText = "Media Hub 🎬"; descEl.innerText = "Cất giữ phim ảnh, bài hát hoặc video hay"; }
+                else if (cat === 'braindump') { titleEl.innerText = "Secret Moments 🔒"; descEl.innerText = "Không gian cất giấu hình ảnh & video thầm kín"; }
+            }
+            loadVault(); 
+        }
+
+        let confirmCallback = null;
+        function deleteVaultItem(id) {
+            confirmCallback = () => {
+                const item = vaultItems.find(i => i.id === id); if (item?.isIndexedDB) deleteMediaFromDB(id);
+                vaultItems = vaultItems.filter(i => i.id !== id); localStorage.setItem('local_vault', JSON.stringify(vaultItems));
+                loadVault(); showToast("Đã xóa khỏi kho!");
+            };
+            const modal = document.getElementById('modal-confirm'); modal.classList.replace('hidden', 'flex');
+            setTimeout(() => modal.classList.replace('opacity-0', 'opacity-100'), 10);
+        }
+
+        function closeConfirmModal() {
+            const modal = document.getElementById('modal-confirm'); modal.classList.replace('opacity-100', 'opacity-0');
+            setTimeout(() => modal.classList.replace('flex', 'hidden'), 300);
+        }
+
+        document.getElementById('btn-confirm-action').onclick = () => { confirmCallback?.(); closeConfirmModal(); };
+
+        window.addEventListener('DOMContentLoaded', () => { 
+            updateTimeAndTheme();
+            if(db) loadProfileImages();
+            else setTimeout(loadProfileImages, 300);
+
+            const randomMsg = starMessages[Math.floor(Math.random() * starMessages.length)];
+            const msgEl = document.getElementById('star-message');
+            if (msgEl) msgEl.innerText = randomMsg;
+            
+            setTimeout(() => { 
+                const intro = document.getElementById('intro-screen'); if(intro){ intro.classList.add('intro-hide'); setTimeout(()=>intro.remove(), 800); } 
+            }, 2000); 
+        });
+    </script>
+</body>
+</html>

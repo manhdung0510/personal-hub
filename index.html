@@ -47,6 +47,7 @@
             color: #0f172a !important;
         }
 
+        /* --- TRẢ LẠI NỀN TÍM TỐI NGUYÊN BẢN CỦA ÔNG --- */
         body.dark-theme {
             background-color: #05070a !important;
             color: #f3f4f6 !important;
@@ -166,14 +167,14 @@
     <main class="flex-1 overflow-y-auto scroll-container px-5 py-6 space-y-8 pb-32">
         <section id="tab-vault" class="tab-content space-y-6">
             
-            <div class="glass-card p-4 rounded-2xl flex items-center gap-4 shadow-sm fade-in">
-                <div class="w-14 h-14 rounded-full bg-gray-800 border border-gray-700/50 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+            <div class="glass-card p-6 rounded-3xl flex items-center gap-5 shadow-md fade-in">
+                <div class="w-20 h-20 rounded-full bg-gray-950/40 border-2 border-indigo-500/20 flex items-center justify-center overflow-hidden shrink-0 shadow-lg">
                     <img id="main-avatar-preview" class="w-full h-full object-cover hidden" src="">
-                    <div id="main-avatar-placeholder" class="text-2xl opacity-70">👤</div>
+                    <div id="main-avatar-placeholder" class="text-4xl opacity-60">👤</div>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <div class="text-xs font-semibold uppercase tracking-wider text-gray-400" id="main-profile-role">Chủ sở hữu</div>
-                    <div class="text-lg font-bold truncate text-gray-100 mt-0.5" id="main-profile-name">Thành viên quý giá</div>
+                    <div class="text-[11px] font-bold uppercase tracking-widest text-indigo-400 opacity-80">Chủ sở hữu</div>
+                    <div class="text-2xl font-extrabold truncate text-gray-100 tracking-tight mt-1" id="main-profile-name">Thành viên quý giá</div>
                 </div>
             </div>
             
@@ -595,7 +596,7 @@
                     const placeholder = document.getElementById('settings-avatar-placeholder');
                     if (placeholder) placeholder.classList.add('hidden');
                     
-                    // Đồng bộ sang Avatar trên màn hình chính
+                    // Đồng bộ sang Avatar lớn trên màn hình chính
                     const mainPreview = document.getElementById('main-avatar-preview');
                     if (mainPreview) {
                         mainPreview.src = currentAvatarUrl;
@@ -616,7 +617,7 @@
             const nameInp = document.getElementById('profile-name-input');
             if (nameInp) nameInp.value = profileData.name || '';
             
-            // Đồng bộ tên sang màn hình chính
+            // Đồng bộ tên to ngoài màn hình chính
             const mainName = document.getElementById('main-profile-name');
             if (mainName && profileData.name) {
                 mainName.innerText = profileData.name;
@@ -651,7 +652,7 @@
             profileData.name = nameInput;
             localStorage.setItem('user_profile', JSON.stringify(profileData));
             
-            // Cập nhật tên hiển thị ngoài màn hình chính
+            // Cập nhật tên to rõ ngoài màn hình chính
             const mainName = document.getElementById('main-profile-name');
             if (mainName && nameInput) {
                 mainName.innerText = nameInput;

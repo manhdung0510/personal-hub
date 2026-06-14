@@ -24,7 +24,6 @@
             transition: background-color 1.5s ease-in-out, color 0.5s ease-in-out; 
         }
 
-        /* Khi ở chế độ ban ngày (Light Mode) */
         body.light-theme {
             background-color: #e2e8f0 !important;
             color: #0f172a !important;
@@ -48,7 +47,6 @@
             color: #0f172a !important;
         }
 
-        /* Khi ở chế độ ban đêm (Dark Mode) */
         body.dark-theme {
             background-color: #05070a !important;
             color: #f3f4f6 !important;
@@ -194,7 +192,7 @@
                 
                 <div class="w-full">
                     <label class="text-[11px] text-gray-400 font-bold block mb-1">Biệt danh của bạn</label>
-                    <input type="text" id="profile-name-input" placeholder="Nhập tên biệt danh..." class="w-full h-12 bg-gray-950 border border-gray-800 rounded-xl px-4 text-sm text-white outline-none focus:border-indigo-500 transition-all">
+                    <input type="text" id="profile-name-input" placeholder="Nhập tên biệt danh..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
                 </div>
             </div>
 
@@ -226,6 +224,7 @@
         let profileData = JSON.parse(localStorage.getItem('user_profile')) || { name: '' };
         let currentVaultCategory = 'wishlist';
         let currentFormType = '', currentEditId = null;
+        let currentAvatarUrl = null; // Biến tạm giải phóng bộ nhớ cache ảnh
 
         const starMessages = [
             "Mong ngày hôm nay sẽ dịu dàng với bạn.",
@@ -240,7 +239,7 @@
             "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."
         ];
 
-        /* --- LOGIC ĐỒNG HỒ & HÌNH NỀN SÁNG TỐI THEO THỜI GIAN THỰC --- */
+        /* --- LOGIC ĐỒNG HỒ & HÌNH NỀN SÁNG TỐI --- */
         function updateTimeAndTheme() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -272,7 +271,7 @@
         }
         setInterval(updateTimeAndTheme, 1000);
 
-        /* --- INDEXEDDB STORAGE (MỞ RỘNG ĐỂ LƯU CẢ AVATAR) --- */
+        /* --- INDEXEDDB STORAGE --- */
         let db;
         const dbRequest = indexedDB.open("SecureMomentsDB", 1);
         dbRequest.onupgradeneeded = function(e) {
@@ -284,7 +283,7 @@
         dbRequest.onsuccess = function(e) { 
             db = e.target.result; 
             loadVault(); 
-            loadProfileImages(); // DB lên cấu trúc thành công thì load ảnh profile ngay
+            loadProfileImages(); // Chỉ load từ DB đúng 1 lần khi khởi động app
         };
 
         function saveMediaToDB(id, blobData, callback) {
@@ -306,19 +305,45 @@
             transaction.objectStore("mediaFiles").delete(id);
         }
 
-        /* --- CHỨC NĂNG QUẢN LÝ TÀI KHOẢN PROFILE --- */
+        /* --- FIX LỖI LUỒNG PROFILE: LOAD SẴN RA CACHE --- */
+        function loadProfileImages() {
+            if (!db) return;
+            getMediaFromDB("user_avatar_blob", function(blobFile) {
+                if (blobFile) {
+                    if (currentAvatarUrl) URL.revokeObjectURL(currentAvatarUrl); // Xóa rác cache cũ
+                    currentAvatarUrl = URL.createObjectURL(blobFile);
+                    
+                    // Gán thẳng vào ảnh đại diện các khu vực
+                    const settingsPreview = document.getElementById('settings-avatar-preview');
+                    settingsPreview.src = currentAvatarUrl;
+                    settingsPreview.classList.remove('hidden');
+                    document.getElementById('settings-avatar-placeholder').classList.add('hidden');
+                    
+                    const introImg = document.getElementById('intro-avatar-img');
+                    introImg.src = currentAvatarUrl;
+                    document.getElementById('intro-avatar-box').classList.remove('hidden');
+                    document.getElementById('intro-star-icon').classList.add('hidden');
+                }
+            });
+
+            document.getElementById('profile-name-input').value = profileData.name || '';
+            if (profileData.name) {
+                document.getElementById('intro-welcome-text').innerText = `Chào mừng ${profileData.name} trở lại...`;
+            }
+        }
+
         function uploadProfileAvatar(input) {
             if (input.files && input.files[0]) {
                 const file = input.files[0];
                 if (!db) return;
-                // Lưu file ảnh đại diện gốc trực tiếp vào database IndexedDB bảo mật
                 saveMediaToDB("user_avatar_blob", file, function() {
-                    const url = URL.createObjectURL(file);
+                    if (currentAvatarUrl) URL.revokeObjectURL(currentAvatarUrl);
+                    currentAvatarUrl = URL.createObjectURL(file);
                     const preview = document.getElementById('settings-avatar-preview');
-                    preview.src = url;
+                    preview.src = currentAvatarUrl;
                     preview.classList.remove('hidden');
                     document.getElementById('settings-avatar-placeholder').classList.add('hidden');
-                    showToast("Đã tải ảnh đại diện lên bộ nhớ nháp!");
+                    showToast("Đã chọn ảnh đại diện mới!");
                 });
             }
         }
@@ -327,44 +352,36 @@
             const nameInput = document.getElementById('profile-name-input').value.trim();
             profileData.name = nameInput;
             localStorage.setItem('user_profile', JSON.stringify(profileData));
-            showToast("Đã lưu hồ sơ cá nhân!");
-            closeSettings();
             
-            // Cập nhật lại lời chào ngay lập tức sau khi lưu
             if(profileData.name) {
                 document.getElementById('intro-welcome-text').innerText = `Chào mừng ${profileData.name} trở lại...`;
             }
-            loadProfileImages();
+            
+            // Cập nhật lại avatar trên giao diện Intro luôn
+            if (currentAvatarUrl) {
+                document.getElementById('intro-avatar-img').src = currentAvatarUrl;
+                document.getElementById('intro-avatar-box').classList.remove('hidden');
+                document.getElementById('intro-star-icon').classList.add('hidden');
+            }
+            
+            showToast("Đã lưu cấu hình hồ sơ!");
+            closeSettings();
         }
 
-        function loadProfileImages() {
-            if (!db) return;
-            // Gọi ảnh đại diện từ database ngầm ra nạp vào giao diện cài đặt và màn hình chờ intro
-            getMediaFromDB("user_avatar_blob", function(blobFile) {
-                if (blobFile) {
-                    const objectURL = URL.createObjectURL(blobFile);
-                    
-                    // Nạp vào preview trong cài đặt
-                    const settingsPreview = document.getElementById('settings-avatar-preview');
-                    settingsPreview.src = objectURL;
-                    settingsPreview.classList.remove('hidden');
-                    document.getElementById('settings-avatar-placeholder').classList.add('hidden');
-                    
-                    // Nạp vào vòng tròn Avatar trên màn hình chờ Intro
-                    const introImg = document.getElementById('intro-avatar-img');
-                    introImg.src = objectURL;
-                    document.getElementById('intro-avatar-box').classList.remove('hidden');
-                    document.getElementById('intro-star-icon').classList.add('hidden'); // Ẩn icon ngôi sao thường đi
-                }
-            });
-
-            // Gán tên biệt danh vào ô nhập liệu sẵn
-            document.getElementById('profile-name-input').value = profileData.name || '';
-            
-            // Đổi chữ lời chào tại màn hình intro nếu có biệt danh
-            if (profileData.name) {
-                document.getElementById('intro-welcome-text').innerText = `Chào mừng ${profileData.name} trở lại...`;
+        /* --- UI HELPERS & SETTINGS CONTROLLER --- */
+        function openSettings() {
+            // FIX LỖI: Gán màu nền động cho ô input text đồng bộ lúc mở hộp cài đặt
+            const inp = document.getElementById('profile-name-input');
+            if(document.body.classList.contains('light-theme')) {
+                inp.style.backgroundColor = "#ffffff"; inp.style.borderColor = "rgba(15, 23, 42, 0.1)"; inp.style.color = "#0f172a";
+            } else {
+                inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; inp.style.borderColor = "rgba(255, 255, 255, 0.05)"; inp.style.color = "#f3f4f6";
             }
+            document.getElementById('modal-settings').classList.replace('hidden', 'flex'); 
+        }
+        
+        function closeSettings() { 
+            document.getElementById('modal-settings').classList.replace('flex', 'hidden'); 
         }
 
         /* --- CHỨC NĂNG TẢI FILE NGƯỢC VỀ ĐIỆN THOẠI --- */
@@ -386,13 +403,6 @@
                 }
             });
         }
-
-        /* --- UI HELPERS & SETTINGS --- */
-        function openSettings() { 
-            loadProfileImages(); // Mỗi lần bấm mở cài đặt thì đồng bộ dữ liệu mới nhất
-            document.getElementById('modal-settings').classList.replace('hidden', 'flex'); 
-        }
-        function closeSettings() { document.getElementById('modal-settings').classList.replace('flex', 'hidden'); }
 
         function triggerConfetti() {
             confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 }, colors: ['#f472b6', '#818cf8', '#c084fc', '#60a5fa'] });
@@ -469,9 +479,7 @@
             setTimeout(() => document.getElementById('modal-form').classList.replace('flex', 'hidden'), 300);
         }
 
-        document.getElementById('modal-form').addEventListener('click', function(e) {
-            if (e.target === this) closeFormModal();
-        });
+        document.getElementById('modal-form').addEventListener('click', function(e) { if (e.target === this) closeFormModal(); });
 
         function submitForm() {
             const title = document.getElementById('add-vault-title').value.trim();
@@ -597,11 +605,6 @@
 
         window.addEventListener('DOMContentLoaded', () => { 
             updateTimeAndTheme();
-            
-            // Đọc tên/avatar hồ sơ người dùng lưu từ trước để nạp ngay khi khởi động
-            if(db) loadProfileImages();
-            else setTimeout(loadProfileImages, 300);
-
             const randomMsg = starMessages[Math.floor(Math.random() * starMessages.length)];
             document.getElementById('star-message').innerText = randomMsg;
             setTimeout(() => { 

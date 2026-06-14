@@ -41,7 +41,7 @@
             border: 1px solid rgba(15, 23, 42, 0.08);
             box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
         }
-        body.light-theme input[type="text"], body.light-theme select {
+        body.light-theme input[type="text"], body.light-theme input[type="password"], body.light-theme select {
             background-color: rgba(255, 255, 255, 0.9) !important;
             border-color: rgba(15, 23, 42, 0.1) !important;
             color: #0f172a !important;
@@ -60,7 +60,7 @@
             background: rgba(255, 255, 255, 0.04); 
             border: 1px solid rgba(255, 255, 255, 0.1); 
         }
-        body.dark-theme input[type="text"], body.dark-theme select {
+        body.dark-theme input[type="text"], body.dark-theme input[type="password"], body.dark-theme select {
             background-color: rgba(17, 24, 39, 0.6) !important;
             border-color: rgba(255, 255, 255, 0.05) !important;
             color: #f3f4f6 !important;
@@ -102,7 +102,22 @@
 </head>
 <body class="h-full flex flex-col justify-between overflow-hidden select-none pt-safe pb-safe dark-theme">
 
-    <div id="intro-screen" class="fixed inset-0 bg-[#05070a] z-[999] flex flex-col items-center justify-center text-center px-6">
+    <div id="lock-screen" class="fixed inset-0 bg-[#05070a] z-[1001] flex flex-col items-center justify-center text-center px-6 transition-all duration-500">
+        <div class="space-y-6 w-full max-w-xs fade-in flex flex-col items-center">
+            <div class="text-6xl animate-pulse">🔒</div>
+            <h2 id="lock-title" class="text-2xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Không Gian Bảo Mật</h2>
+            <p id="lock-desc" class="text-xs text-gray-400 font-medium">Vui lòng nhập mật mã để truy cập mật thất</p>
+            
+            <div class="w-full space-y-3 pt-2" id="lock-inputs-container">
+                </div>
+            
+            <button onclick="checkOrSetPassword()" class="h-14 w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold text-sm shadow-lg shadow-indigo-600/20 active:scale-95 transition-all">
+                Xác Nhận Nhập 🔑
+            </button>
+        </div>
+    </div>
+
+    <div id="intro-screen" class="fixed inset-0 bg-[#05070a] z-[999] flex flex-col items-center justify-center text-center px-6 hidden">
         <div class="space-y-6 fade-in flex flex-col items-center">
             <div id="intro-avatar-box" class="w-24 h-24 rounded-full border-2 border-indigo-500/30 overflow-hidden shadow-2xl bg-gray-900 hidden">
                 <img id="intro-avatar-img" class="w-full h-full object-cover" src="">
@@ -256,6 +271,11 @@
                     <label class="text-[11px] text-gray-400 font-bold block mb-1">Biệt danh của bạn</label>
                     <input type="text" id="profile-name-input" placeholder="Nhập tên biệt danh..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
                 </div>
+
+                <div class="w-full pt-2 border-t border-white/5 mt-2">
+                    <label class="text-[11px] text-pink-400 font-bold block mb-1">Cài đặt mật mã bảo mật mới</label>
+                    <input type="password" id="change-app-password" placeholder="Nhập mật mã mới nếu muốn đổi..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-pink-500 transition-all bg-transparent">
+                </div>
             </div>
 
             <p class="text-xs text-gray-400 leading-relaxed px-2 italic">
@@ -308,6 +328,80 @@
             "Hãy mỉm cười một cái, bạn cười trông xinh lắm đấy.",
             "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."
         ];
+
+        /* --- 🔐 LOGIC KIỂM TRA & THIẾT LẬP MẬT KHẨU BAN ĐẦU --- */
+        function initPasswordScreen() {
+            const hasPassword = localStorage.getItem('app_password');
+            const container = document.getElementById('lock-inputs-container');
+            const title = document.getElementById('lock-title');
+            const desc = document.getElementById('lock-desc');
+            container.innerHTML = '';
+
+            if (!hasPassword) {
+                title.innerText = "Thiết Lập Mật Mã";
+                desc.innerText = "Tạo mật mã riêng tư để bảo vệ không gian bí mật này";
+                container.innerHTML = `
+                    <input type="password" id="lock-pwd-1" placeholder="Nhập mật mã mới..." class="w-full h-16 border rounded-2xl px-5 text-base text-center outline-none focus:border-indigo-500 shadow-inner tracking-widest transition-all">
+                    <input type="password" id="lock-pwd-2" placeholder="Xác nhận lại mật mã..." class="w-full h-16 border rounded-2xl px-5 text-base text-center outline-none focus:border-indigo-500 shadow-inner tracking-widest transition-all">
+                `;
+            } else {
+                title.innerText = "Không Gian Bảo Mật";
+                desc.innerText = "Vui lòng nhập mật mã để truy cập mật thất";
+                container.innerHTML = `
+                    <input type="password" id="lock-pwd-input" placeholder="Nhập mật mã bí mật..." class="w-full h-16 border rounded-2xl px-5 text-base text-center outline-none focus:border-pink-500 shadow-inner tracking-widest transition-all">
+                `;
+            }
+
+            const inputs = container.querySelectorAll('input');
+            inputs.forEach(inp => {
+                if(document.body.classList.contains('light-theme')) {
+                    inp.style.backgroundColor = "#ffffff"; inp.style.borderColor = "rgba(15, 23, 42, 0.1)"; inp.style.color = "#0f172a";
+                } else {
+                    inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; inp.style.borderColor = "rgba(255, 255, 255, 0.05)"; inp.style.color = "#f3f4f6";
+                }
+            });
+        }
+
+        function checkOrSetPassword() {
+            const hasPassword = localStorage.getItem('app_password');
+            
+            if (!hasPassword) {
+                const p1 = document.getElementById('lock-pwd-1').value.trim();
+                const p2 = document.getElementById('lock-pwd-2').value.trim();
+                
+                if (!p1) return showToast("Vui lòng nhập mật mã thiết lập!", "error");
+                if (p1 !== p2) return showToast("Hai mật mã không khớp nhau!", "error");
+                
+                localStorage.setItem('app_password', p1);
+                showToast("Đã thiết lập mật mã thành công!");
+                unlockApp();
+            } else {
+                const inputPass = document.getElementById('lock-pwd-input').value.trim();
+                if (inputPass === hasPassword) {
+                    showToast("Mật mã chính xác!");
+                    unlockApp();
+                } else {
+                    showToast("Sai mật mã, vui lòng nhập lại!", "error");
+                }
+            }
+        }
+
+        function unlockApp() {
+            const lockScreen = document.getElementById('lock-screen');
+            lockScreen.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                lockScreen.remove();
+                // Chỉ kích hoạt màn hình chào mừng Intro sau khi đã mở khóa app thành công
+                const intro = document.getElementById('intro-screen');
+                if (intro) {
+                    intro.classList.remove('hidden');
+                    setTimeout(() => { 
+                        intro.classList.add('intro-hide'); 
+                        setTimeout(() => intro.remove(), 800); 
+                    }, 2000);
+                }
+            }, 500);
+        }
 
         /* --- LOGIC ĐỒNG HỒ & HÌNH NỀN SÁNG TỐI --- */
         function updateTimeAndTheme() {
@@ -684,19 +778,32 @@
                 const mainPlaceholder = document.getElementById('main-avatar-placeholder');
                 if (mainPlaceholder) mainPlaceholder.classList.add('hidden');
             }
+
+            // 🔐 Xử lý đổi mật khẩu trong phần cài đặt nếu cô ấy nhập ô mới
+            const newPassInput = document.getElementById('change-app-password').value.trim();
+            if (newPassInput) {
+                localStorage.setItem('app_password', newPassInput);
+                document.getElementById('change-app-password').value = '';
+                showToast("Đã cập nhật mật mã bảo mật mới!");
+            }
+            
             closeSettings();
         }
 
         /* --- UI CONTROLLER --- */
         function openSettings() {
             const inp = document.getElementById('profile-name-input');
-            if (inp) {
-                if(document.body.classList.contains('light-theme')) {
-                    inp.style.backgroundColor = "#ffffff"; inp.style.borderColor = "rgba(15, 23, 42, 0.1)"; inp.style.color = "#0f172a";
-                } else {
-                    inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; inp.style.borderColor = "rgba(255, 255, 255, 0.05)"; inp.style.color = "#f3f4f6";
+            const passInp = document.getElementById('change-app-password');
+            const ctrls = [inp, passInp];
+            ctrls.forEach(ctrl => {
+                if (ctrl) {
+                    if(document.body.classList.contains('light-theme')) {
+                        ctrl.style.backgroundColor = "#ffffff"; ctrl.style.borderColor = "rgba(15, 23, 42, 0.1)"; ctrl.style.color = "#0f172a";
+                    } else {
+                        ctrl.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; ctrl.style.borderColor = "rgba(255, 255, 255, 0.05)"; ctrl.style.color = "#f3f4f6";
+                    }
                 }
-            }
+            });
             document.getElementById('modal-settings').classList.replace('hidden', 'flex'); 
         }
         
@@ -734,19 +841,13 @@
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    
-                    if (fileType && !fileType.startsWith('video/') && !fileType.startsWith('image/')) {
-                        a.download = fileName;
-                    } else {
-                        const ext = fileType.startsWith('video/') ? 'mp4' : 'jpg';
-                        a.download = `${fileName.replace(/\s+/g, '_')}_moment.${ext}`;
-                    }
-                    
+                    const ext = fileType.startsWith('video/') ? 'mp4' : 'jpg';
+                    a.download = `${fileName.replace(/\s+/g, '_')}_moment.${ext}`;
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
-                    showToast("Đang tải tài liệu về máy...");
+                    showToast("Đang tải xuống tệp gốc...");
                 } else {
                     showToast("Không tìm thấy tệp tin!", "error");
                 }
@@ -770,19 +871,6 @@
             loadVault();
         }
 
-        /* --- THEO DÕI TÊN FILE TÀI LIỆU KHI ĐIỆN THOẠI CHỌN --- */
-        function updateStudyFileName(input) {
-            const status = document.getElementById('study-file-status');
-            if (status && input.files && input.files[0]) {
-                status.innerText = `Đã chọn file: ${input.files[0].name.slice(0, 20)}...`;
-                status.classList.add('text-indigo-400');
-                const titleInp = document.getElementById('add-vault-title');
-                if (titleInp && !titleInp.value.trim()) {
-                    titleInp.value = input.files[0].name.split('.').slice(0, -1).join('.');
-                }
-            }
-        }
-
         /* --- FORM HANDLING --- */
         function openFormModal(type, editId = null) {
             currentFormType = type; currentEditId = editId;
@@ -793,7 +881,7 @@
             const configs = {
                 'wishlist': { t: editId ? "Sửa mục mua sắm" : "Mục mua sắm mới", d: "Bạn đang muốn mua gì thế?", p: "Tên món đồ...", l: "Link sản phẩm..." },
                 'media': { t: editId ? "Sửa nội dung" : "Lưu Media hay", d: "Phim hay nhạc đều được nhé!", p: "Tên phim/nhạc...", l: "Link xem/nghe..." },
-                'study': { t: editId ? "Sửa tài liệu" : "Cất tài liệu học & dạy 📚", d: "Hỗ trợ dán Link Drive hoặc Tải trực tiếp file giáo án từ máy lên. Sẽ tự lưu vào nhánh bạn đang xem ngoài màn hình.", p: "Tên tài liệu / giáo án...", l: "Dán Link Drive/Website tài liệu tại đây..." },
+                'study': { t: editId ? "Sửa tài liệu" : "Cất tài liệu học & dạy 📚", d: "Tài liệu sẽ tự động lưu vào mục bạn đang chọn ở màn hình chính.", p: "Tên tài liệu / giáo án...", l: "Dán Link Drive/Website tài liệu tại đây..." },
                 'braindump': { t: editId ? "Sửa ghi chú" : "Khoảnh khắc bí mật 🔒", d: "Ảnh và Video sẽ lưu kín trên máy.", p: "Cảm xúc lúc này...", l: "" }
             };
 
@@ -810,20 +898,9 @@
                              </div>`;
             }
 
-            let studyFileUpload = '';
-            if (currentVaultCategory === 'study' && !editId) {
-                studyFileUpload = `
-                    <div class="relative w-full h-20 bg-gray-900/20 border border-dashed border-gray-700 rounded-2xl flex items-center justify-center gap-3 active:border-indigo-500 transition-all cursor-pointer">
-                        <input type="file" id="add-study-file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="updateStudyFileName(this)">
-                        <span class="text-xl">📁</span>
-                        <span id="study-file-status" class="text-xs font-bold uppercase tracking-wider opacity-70">Hoặc chọn File gốc từ điện thoại (.pdf, .docx, .xlsx...)</span>
-                    </div>`;
-            }
-
             fields.innerHTML = `
                 <input type="text" id="add-vault-title" value="${defName}" placeholder="${c.p}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">
                 ${currentVaultCategory !== 'braindump' ? `<input type="text" id="add-vault-url" value="${defUrl}" placeholder="${c.l}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">` : ''}
-                ${studyFileUpload}
                 ${fileUpload}`;
 
             const inputs = fields.querySelectorAll('input[type="text"]');
@@ -866,29 +943,6 @@
                     vaultItems.push({ id: itemId, title, isIndexedDB: true, fileType: file.type, category: 'braindump' });
                     finalizeSubmit();
                 });
-            } else if (currentVaultCategory === 'study' && !currentEditId) {
-                const studyFileInput = document.getElementById('add-study-file');
-                const url = document.getElementById('add-vault-url').value.trim();
-
-                if (studyFileInput && studyFileInput.files[0]) {
-                    const file = studyFileInput.files[0];
-                    const itemId = uuid();
-                    saveMediaToDB(itemId, file, () => {
-                        vaultItems.push({ 
-                            id: itemId, 
-                            title: title, 
-                            isIndexedDB: true, 
-                            fileType: file.type, 
-                            fileName: file.name,
-                            category: 'study', 
-                            studyType: currentStudySubTab 
-                        });
-                        finalizeSubmit();
-                    });
-                } else {
-                    vaultItems.push({ id: uuid(), title, url, category: 'study', studyType: currentStudySubTab });
-                    finalizeSubmit();
-                }
             } else {
                 if (currentEditId) {
                     const idx = vaultItems.findIndex(v => v.id === currentEditId);
@@ -899,6 +953,9 @@
                 } else {
                     const url = document.getElementById('add-vault-url').value.trim();
                     let itemObj = { id: uuid(), title, url, category: currentVaultCategory };
+                    if (currentVaultCategory === 'study') {
+                        itemObj.studyType = currentStudySubTab;
+                    }
                     vaultItems.push(itemObj);
                 }
                 finalizeSubmit();
@@ -940,38 +997,25 @@
                     <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-red-400">✕</button>
                 `;
 
-                if (item.isIndexedDB) {
-                    const nameToDownload = item.category === 'study' ? (item.fileName || item.title) : item.title;
+                if (item.category === 'braindump' && item.isIndexedDB) {
                     buttonsHTML = `
-                        <button onclick="downloadMediaItem('${item.id}', '${nameToDownload}', '${item.fileType}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-indigo-400" title="Tải file về máy">📥</button>
+                        <button onclick="downloadMediaItem('${item.id}', '${item.title}', '${item.fileType}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-indigo-400" title="Tải về máy">📥</button>
                         <button onclick="openFormModal('vault', '${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg">✏️</button>
                         <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-red-400">✕</button>
                     `;
                 }
 
-                let iconType = "📄";
-                if (item.isIndexedDB && item.category === 'study') {
-                    if (item.fileType && item.fileType.includes('pdf')) iconType = "📕";
-                    else if (item.fileType && (item.fileType.includes('word') || item.fileType.includes('officedocument.wordprocessingml'))) iconType = "📘";
-                    else if (item.fileType && (item.fileType.includes('excel') || item.fileType.includes('officedocument.spreadsheetml'))) iconType = "💚";
-                    else if (item.fileType && (item.fileType.includes('presentation') || item.fileType.includes('powerpoint'))) iconType = "🍊";
-                }
-
                 let content = `<div class="flex justify-between items-start">
-                                    <div class="flex-1 overflow-hidden pr-2 flex items-start gap-2">
-                                        ${item.category === 'study' && item.isIndexedDB ? `<span class="text-xl pt-0.5">${iconType}</span>` : ''}
-                                        <div class="flex-1 min-w-0">
-                                            <h4 class="font-bold text-base truncate h4-title-text">${item.title}</h4>
-                                            ${item.url ? `<a href="${item.url}" target="_blank" class="text-xs text-indigo-400 font-bold mt-1 inline-block">🔗 Mở tài liệu / liên kết</a>` : ''}
-                                            ${item.isIndexedDB && item.category === 'study' ? `<span class="text-[10px] text-gray-500 block truncate mt-0.5">Tệp lưu trên máy: ${item.fileName || 'Chưa rõ tên'}</span>` : ''}
-                                        </div>
+                                    <div class="flex-1 overflow-hidden pr-2">
+                                        <h4 class="font-bold text-base truncate h4-title-text">${item.title}</h4>
+                                        ${item.url ? `<a href="${item.url}" target="_blank" class="text-xs text-indigo-400 font-bold mt-1 inline-block">🔗 Mở tài liệu / liên kết</a>` : ''}
                                     </div>
                                     <div class="flex items-center gap-2 shrink-0">
                                         ${buttonsHTML}
                                     </div>
                                </div>`;
                 
-                if (item.isIndexedDB && item.category === 'braindump') {
+                if (item.isIndexedDB) {
                     const mediaId = `media-${item.id}`;
                     content += `<div id="${mediaId}" class="flex justify-center items-center w-full text-xs italic opacity-60 py-4">⌛ Đang tải bí mật...</div>`;
                     container.appendChild(card); card.innerHTML = content;
@@ -1033,16 +1077,13 @@
 
         window.addEventListener('DOMContentLoaded', () => { 
             updateTimeAndTheme();
+            initPasswordScreen(); // Khởi tạo màn hình mật khẩu đầu tiên
             if(db) loadProfileImages();
             else setTimeout(loadProfileImages, 300);
 
             const randomMsg = starMessages[Math.floor(Math.random() * starMessages.length)];
             const msgEl = document.getElementById('star-message');
             if (msgEl) msgEl.innerText = randomMsg;
-            
-            setTimeout(() => { 
-                const intro = document.getElementById('intro-screen'); if(intro){ intro.classList.add('intro-hide'); setTimeout(()=>intro.remove(), 800); } 
-            }, 2000); 
         });
     </script>
 </body>

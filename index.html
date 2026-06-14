@@ -21,7 +21,6 @@
             padding-top: env(safe-area-inset-top);
             padding-bottom: env(safe-area-inset-bottom);
             font-size: 16px;
-            /* ĐÃ GỠ BỎ ĐƯỜNG ÉP MÀU NỀN TĨNH TẠI ĐÂY ĐỂ JAVASCRIPT ĐIỀU KHIỂN DYNAMIC */
             transition: background-color 1.5s ease-in-out, color 0.5s ease-in-out; 
         }
 
@@ -49,7 +48,7 @@
             color: #0f172a !important;
         }
 
-        /* Khi ở chế độ ban đêm (Dark Mode gốc của ông) */
+        /* Khi ở chế độ ban đêm (Dark Mode) */
         body.dark-theme {
             background-color: #05070a !important;
             color: #f3f4f6 !important;
@@ -217,26 +216,21 @@
         /* --- LOGIC ĐỒNG HỒ & HÌNH NỀN SÁNG TỐI THEO THỜI GIAN THỰC --- */
         function updateTimeAndTheme() {
             const now = new Date();
-            
-            // 1. Chạy số đồng hồ thời gian thực
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
             document.getElementById('realtime-clock').innerText = `${hours}:${minutes}:${seconds}`;
             
-            // 2. Kiểm tra mốc giờ để chuyển mạch Sáng / Tối
             const currentHour = now.getHours();
             const body = document.body;
             
             if (currentHour >= 6 && currentHour < 18) {
-                // Ban ngày (06:00 - 18:00): Gắn theme Sáng, đổi màu text đồng hồ cho dễ nhìn
                 if (!body.classList.contains('light-theme')) {
                     body.classList.remove('dark-theme');
                     body.classList.add('light-theme');
                     document.getElementById('realtime-clock').classList.replace('text-gray-400', 'text-slate-600');
                 }
             } else {
-                // Ban đêm (18:00 - 06:00 sáng hôm sau): Trở về theme Tối sâu gốc
                 if (!body.classList.contains('dark-theme')) {
                     body.classList.remove('light-theme');
                     body.classList.add('dark-theme');
@@ -244,7 +238,6 @@
                 }
             }
         }
-        // Gọi lặp lại sau mỗi 1 giây để đồng hồ chạy và cập nhật theme liên tục
         setInterval(updateTimeAndTheme, 1000);
 
         /* --- INDEXEDDB STORAGE --- */
@@ -336,7 +329,6 @@
                 ${currentVaultCategory !== 'braindump' ? `<input type="text" id="add-vault-url" value="${defUrl}" placeholder="${c.l}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">` : ''}
                 ${fileUpload}`;
 
-            // Ép form input có nền sáng/tối đồng bộ với trạng thái lúc mở modal
             const inputs = fields.querySelectorAll('input[type="text"]');
             inputs.forEach(inp => {
                 if(document.body.classList.contains('light-theme')) {
@@ -403,7 +395,7 @@
             loadVault(); closeFormModal(); showToast("Đã ghi nhớ!");
         }
 
-        /* --- CORE LOGIC --- */
+        /* --- CORE LOGIC (ĐÃ SỬA ĐỂ KHÔNG BỊ TRƠ TRỌI) --- */
         function loadVault() {
             if (!db) return;
             const container = document.getElementById('vault-list'); container.innerHTML = '';
@@ -432,7 +424,8 @@
                 
                 if (item.isIndexedDB) {
                     const mediaId = `media-${item.id}`;
-                    content += `<div id="${mediaId}" class="w-full aspect-video bg-black/10 rounded-2xl flex items-center justify-center text-xs italic opacity-60">⌛ Đang tải bí mật...</div>`;
+                    // LOẠI BỎ KHUNG NỀN XÁM CỐ ĐỊNH, ĐỂ MEDIA TỰ DO CO GIÃN THEO TỶ LỆ TRÊN NỀN MỜ KÍNH
+                    content += `<div id="${mediaId}" class="flex justify-center items-center w-full text-xs italic opacity-60 py-4">⌛ Đang tải bí mật...</div>`;
                     container.appendChild(card);
                     card.innerHTML = content;
                     getMediaFromDB(item.id, (blob) => {
@@ -440,8 +433,8 @@
                         if (el && blob) {
                             const url = URL.createObjectURL(blob);
                             el.outerHTML = item.fileType.startsWith('video/') 
-                                ? `<video src="${url}" controls class="w-full max-h-[65vh] rounded-2xl shadow-md object-contain bg-black/20" playsinline></video>` 
-                                : `<img src="${url}" class="w-full max-h-[65vh] rounded-2xl shadow-md object-contain bg-black/20" loading="lazy">`;
+                                ? `<div class="flex justify-center w-full"><video src="${url}" controls class="w-full max-h-[65vh] rounded-2xl shadow-md object-contain" playsinline></video></div>` 
+                                : `<div class="flex justify-center w-full"><img src="${url}" class="w-full max-h-[65vh] rounded-2xl shadow-md object-contain" loading="lazy"></div>`;
                         }
                     });
                 } else {
@@ -495,7 +488,6 @@
         document.getElementById('btn-confirm-action').onclick = () => { confirmCallback?.(); closeConfirmModal(); };
 
         window.addEventListener('DOMContentLoaded', () => { 
-            // Cập nhật trạng thái Sáng / Tối chính xác ngay tắp lự
             updateTimeAndTheme();
 
             const randomMsg = starMessages[Math.floor(Math.random() * starMessages.length)];

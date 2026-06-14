@@ -136,7 +136,7 @@
     </header>
 
     <div id="modal-music" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-end justify-center z-50 transition-all duration-300">
-        <div class="glass-card w-full rounded-t-[40px] p-6 pb-12 space-y-6 shadow-2xl transform translate-y-full transition-transform max-h-[85vh] flex flex-col overflow-hidden" id="music-card">
+        <div class="glass-card w-full rounded-t-[40px] p-6 pb-12 space-y-5 shadow-2xl transform translate-y-full transition-transform max-h-[85vh] flex flex-col overflow-hidden" id="music-card">
             <div class="w-12 h-1.5 bg-gray-700 rounded-full mx-auto mb-1 shrink-0"></div>
             
             <div class="text-center space-y-1 shrink-0">
@@ -151,6 +151,10 @@
                     <input type="text" id="track-url-input" placeholder="Dán link nhạc trực tiếp (.mp3)..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
                     <button onclick="addNewTrack()" class="h-12 w-full bg-indigo-600 rounded-xl font-bold text-white text-xs active:scale-95 transition shadow-md">Thêm vào kho nhạc</button>
                 </div>
+            </div>
+
+            <div class="relative shrink-0 px-1">
+                <input type="text" id="music-search" oninput="renderTrackList()" placeholder="🔍 Tìm kiếm tên bài hát..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all shadow-inner bg-transparent">
             </div>
 
             <div class="flex-1 overflow-y-auto space-y-2 pr-1 scroll-container" id="music-track-list">
@@ -234,7 +238,7 @@
             </div>
 
             <p class="text-xs text-gray-400 leading-relaxed px-2 italic">
-                "Mật thất an toàn này thuộc về bạn. Được hoàn thiện với tất cả sự trân trọng từ một người bạn phương xa."
+                "Mật thất an toàn này thuộc về bạn. Được hoàn thiện with tất cả sự trân trọng từ một người bạn phương xa."
             </p>
             
             <div class="flex gap-2">
@@ -325,6 +329,7 @@
 
         /* --- TRÌNH QUẢN LÝ VÀ ĐIỀU KHIỂN NHẠC NỀN DYNAMIC --- */
         function openMusicModal() {
+            // Đồng bộ màu nền ô tìm kiếm nhạc và ô thêm nhạc theo Theme hệ thống
             const inputs = document.querySelectorAll('#modal-music input[type="text"]');
             inputs.forEach(inp => {
                 if(document.body.classList.contains('light-theme')) {
@@ -333,6 +338,10 @@
                     inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; inp.style.borderColor = "rgba(255, 255, 255, 0.05)"; inp.style.color = "#f3f4f6";
                 }
             });
+
+            // Xóa rác chữ tìm kiếm cũ mỗi lần mở modal
+            const searchInp = document.getElementById('music-search');
+            if (searchInp) searchInp.value = '';
 
             renderTrackList();
             const m = document.getElementById('modal-music'); m.classList.remove('hidden'); m.classList.add('flex');
@@ -346,11 +355,25 @@
 
         document.getElementById('modal-music').addEventListener('click', function(e) { if (e.target === this) closeMusicModal(); });
 
+        // ĐÃ NÂNG CẤP: Render kết hợp bộ lọc tìm kiếm thời gian thực
         function renderTrackList() {
             const container = document.getElementById('music-track-list');
             container.innerHTML = '';
-            const allTracks = [...defaultTracks, ...customTracks];
+            
             const audio = document.getElementById('bg-audio');
+            const searchKeyword = document.getElementById('music-search').value.toLowerCase().trim();
+            
+            let allTracks = [...defaultTracks, ...customTracks];
+            
+            // Tiến hành lọc bài hát nếu cô ấy gõ từ khóa tìm kiếm
+            if (searchKeyword) {
+                allTracks = allTracks.filter(t => t.title.toLowerCase().includes(searchKeyword));
+            }
+
+            if (allTracks.length === 0) {
+                container.innerHTML = `<div class="py-8 text-center text-xs opacity-40 italic">Không tìm thấy bài hát nào hợp lệ...</div>`;
+                return;
+            }
 
             allTracks.forEach(track => {
                 const isCurrent = (audio.src === track.url && !audio.paused);
@@ -461,9 +484,8 @@
             }
         }
 
-        // ĐÃ THÊM: Tính năng Tắt hẳn nhạc, xóa bài đang phát và thu gọn Pill Bar về trạng thái mặc định ban đầu
         function handleQuickClear(event) {
-            if (event) event.stopPropagation(); // Ngăn mở nhầm modal chọn nhạc
+            if (event) event.stopPropagation(); 
             const audio = document.getElementById('bg-audio');
             const btn = document.getElementById('music-btn');
             const statusLabel = document.getElementById('current-track-name');
@@ -473,18 +495,15 @@
             const quickClearBtn = document.getElementById('quick-clear-btn');
             const miniPlayer = document.getElementById('header-mini-player');
 
-            // Tắt hẳn và xóa nguồn nhạc
             audio.pause();
             audio.removeAttribute('src'); 
             audio.load();
 
-            // Reset toàn bộ giao diện Pill Bar về như cũ
             btn.innerText = "🎵";
             btn.classList.remove('spin-slow', 'bg-indigo-500/30');
             statusLabel.innerText = "Trạng thái: Đang dừng phát";
             headerTitle.innerText = "Giai điệu không gian";
             
-            // Ẩn toàn bộ cụm nút chức năng
             quickStopBtn.classList.add('hidden');
             quickMuteBtn.classList.add('hidden');
             quickClearBtn.classList.add('hidden');

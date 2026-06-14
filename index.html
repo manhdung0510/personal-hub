@@ -12,7 +12,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         body { 
@@ -93,7 +93,6 @@
             font-size: 16px !important;
         }
 
-        /* Hiệu ứng xoay đĩa nhạc */
         .spin-slow {
             animation: spin 6s linear infinite;
         }
@@ -120,9 +119,9 @@
 
     <header class="glass px-6 py-4 flex justify-between items-center z-10 sticky top-0 shrink-0 pt-8">
         <div class="flex flex-col">
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-3">
                 <h1 class="text-2xl font-bold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Infinite Vault ✨</h1>
-                <button onclick="toggleMusicMenu()" id="music-btn" class="text-lg p-1 bg-gray-500/10 rounded-full active:scale-90 transition shadow-sm" title="Giai điệu mật thất">🎵</button>
+                <button onclick="openMusicModal()" id="music-btn" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-full active:scale-90 transition shadow-sm text-xl" title="Giai điệu mật thất">🎵</button>
             </div>
             <div class="flex items-center gap-1.5 mt-1 bg-black/10 px-2.5 py-1 rounded-xl border border-white/5 w-fit shadow-inner">
                 <span id="clock-status-icon" class="text-xs">🌙</span>
@@ -132,17 +131,30 @@
         <button onclick="openSettings()" class="text-3xl p-2 active:scale-90 transition-transform">⚙️</button>
     </header>
 
-    <div id="music-menu" class="hidden absolute top-24 left-6 z-40 glass-card p-4 rounded-2xl w-64 shadow-2xl space-y-3 fade-in">
-        <div class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex justify-between items-center">
-            <span>Giai điệu không gian 🎧</span>
-            <button onclick="toggleMusicMenu()" class="opacity-60 text-sm">✕</button>
+    <div id="modal-music" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-end justify-center z-50 transition-all duration-300">
+        <div class="glass-card w-full rounded-t-[40px] p-6 pb-12 space-y-6 shadow-2xl transform translate-y-full transition-transform max-h-[85vh] flex flex-col overflow-hidden" id="music-card">
+            <div class="w-12 h-1.5 bg-gray-700 rounded-full mx-auto mb-1 shrink-0"></div>
+            
+            <div class="text-center space-y-1 shrink-0">
+                <h3 class="text-xl font-bold text-gray-100">Giai Điệu Không Gian 🎧</h3>
+                <p id="current-track-name" class="text-xs text-indigo-400 italic font-medium">Trạng thái: Đang dừng phát</p>
+            </div>
+
+            <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-3 shrink-0">
+                <div class="text-xs font-bold uppercase tracking-wider text-gray-400">Thêm bài hát mới vào danh sách</div>
+                <div class="flex flex-col gap-2">
+                    <input type="text" id="track-title-input" placeholder="Tên bài hát (Ví dụ: Lo-Fi ban đêm...)" class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
+                    <input type="text" id="track-url-input" placeholder="Dán link nhạc trực tiếp (.mp3)..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
+                    <button onclick="addNewTrack()" class="h-12 w-full bg-indigo-600 rounded-xl font-bold text-white text-xs active:scale-95 transition shadow-md">Thêm vào kho nhạc</button>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto space-y-2 pr-1 scroll-container" id="music-track-list">
+                </div>
+
+            <audio id="bg-audio" loop></audio>
+            <button onclick="closeMusicModal()" class="h-14 w-full bg-gray-900 border border-gray-800 rounded-2xl font-bold text-sm text-gray-400 active:scale-95 transition shrink-0">Đóng trình phát</button>
         </div>
-        <div class="space-y-1 text-sm text-left">
-            <button onclick="playTrack('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', 'Lo-Fi Chill ✨')" class="w-full text-left p-2 rounded-xl hover:bg-indigo-500/10 active:bg-indigo-500/20 block truncate">✨ Bản nhạc tình ca Lo-Fi</button>
-            <button onclick="playTrack('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', 'Piano Rain 🌧️')" class="w-full text-left p-2 rounded-xl hover:bg-indigo-500/10 active:bg-indigo-500/20 block truncate">🌧️ Tiếng mưa đêm Piano không lời</button>
-        </div>
-        <div id="current-track-name" class="text-[11px] text-gray-400 italic mt-1 border-t border-white/5 pt-2 truncate hidden">Đang phát: ...</div>
-        <audio id="bg-audio" loop></audio>
     </div>
 
     <main class="flex-1 overflow-y-auto scroll-container px-5 py-6 space-y-8 pb-32">
@@ -244,9 +256,16 @@
     <script>
         let vaultItems = JSON.parse(localStorage.getItem('local_vault')) || [];
         let profileData = JSON.parse(localStorage.getItem('user_profile')) || { name: '' };
+        // Đã nâng cấp: Lưu danh sách nhạc cá nhân tự nhập
+        let customTracks = JSON.parse(localStorage.getItem('custom_tracks')) || [];
         let currentVaultCategory = 'wishlist';
         let currentFormType = '', currentEditId = null;
         let currentAvatarUrl = null;
+
+        const defaultTracks = [
+            { id: 'def-1', title: 'Bản nhạc tình ca Lo-Fi ✨', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+            { id: 'def-2', title: 'Tiếng mưa đêm Piano không lời 🌧️', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' }
+        ];
 
         const starMessages = [
             "Mong ngày hôm nay sẽ dịu dàng với bạn.",
@@ -293,31 +312,105 @@
         }
         setInterval(updateTimeAndTheme, 1000);
 
-        /* --- TRÌNH PHÁT NHẠC NỀN CHỮA LÀNH --- */
-        function toggleMusicMenu() {
-            const menu = document.getElementById('music-menu');
-            menu.classList.toggle('hidden');
+        /* --- TRÌNH QUẢN LÝ NHẠC NỀN CHỐNG LỖI DI ĐỘNG --- */
+        function openMusicModal() {
+            const inputs = document.querySelectorAll('#modal-music input[type="text"]');
+            inputs.forEach(inp => {
+                if(document.body.classList.contains('light-theme')) {
+                    inp.style.backgroundColor = "#ffffff"; inp.style.borderColor = "rgba(15, 23, 42, 0.1)"; inp.style.color = "#0f172a";
+                } else {
+                    inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; inp.style.borderColor = "rgba(255, 255, 255, 0.05)"; inp.style.color = "#f3f4f6";
+                }
+            });
+
+            renderTrackList();
+            const m = document.getElementById('modal-music'); m.classList.remove('hidden'); m.classList.add('flex');
+            setTimeout(() => document.getElementById('music-card').classList.remove('translate-y-full'), 10);
         }
+
+        function closeMusicModal() {
+            document.getElementById('music-card').classList.add('translate-y-full');
+            setTimeout(() => document.getElementById('modal-music').classList.replace('flex', 'hidden'), 300);
+        }
+
+        document.getElementById('modal-music').addEventListener('click', function(e) { if (e.target === this) closeMusicModal(); });
+
+        function renderTrackList() {
+            const container = document.getElementById('music-track-list');
+            container.innerHTML = '';
+            const allTracks = [...defaultTracks, ...customTracks];
+            const audio = document.getElementById('bg-audio');
+
+            allTracks.forEach(track => {
+                const isCurrent = (audio.src === track.url && !audio.paused);
+                const item = document.createElement('div');
+                item.className = 'w-full h-14 bg-gray-500/5 border border-white/5 rounded-2xl flex items-center justify-between px-4 gap-2 shrink-0';
+                
+                const isDefault = track.id.toString().startsWith('def-');
+
+                item.innerHTML = `
+                    <div onclick="playTrack('${track.url}', '${track.title}')" class="flex-1 min-w-0 h-full flex items-center cursor-pointer text-left">
+                        <span class="text-sm font-semibold truncate ${isCurrent ? 'text-indigo-400' : ''}">${track.title}</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button onclick="playTrack('${track.url}', '${track.title}')" class="w-10 h-10 rounded-xl bg-indigo-600/10 flex items-center justify-center text-base">
+                            ${isCurrent ? '⏸️' : '▶️'}
+                        </button>
+                        ${!isDefault ? `<button onclick="deleteTrack('${track.id}')" class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center text-sm text-red-400">✕</button>` : ''}
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
         function playTrack(url, name) {
             const audio = document.getElementById('bg-audio');
             const btn = document.getElementById('music-btn');
-            const trackLabel = document.getElementById('current-track-name');
+            const statusLabel = document.getElementById('current-track-name');
             
             if (audio.src === url && !audio.paused) {
                 audio.pause();
                 btn.innerText = "🎵";
                 btn.classList.remove('spin-slow', 'bg-indigo-500/30');
-                trackLabel.classList.add('hidden');
+                statusLabel.innerText = "Trạng thái: Đang dừng phát";
             } else {
                 audio.src = url;
-                audio.play().catch(() => {
-                    alert("Chạm lên màn hình một cái rồi bấm bài nhạc lại ông nhé, trình duyệt yêu cầu tương tác để cấp quyền phát âm thanh!");
+                audio.play().then(() => {
+                    btn.innerText = "💿";
+                    btn.classList.add('spin-slow', 'bg-indigo-500/30');
+                    statusLabel.innerText = `Đang phát: ${name}`;
+                }).catch(() => {
+                    showToast("Hãy chạm nhẹ màn hình một phát rồi bật nhạc lại nhé!", "error");
                 });
-                btn.innerText = "💿";
-                btn.classList.add('spin-slow', 'bg-indigo-500/30');
-                trackLabel.innerText = `Đang phát: ${name}`;
-                trackLabel.classList.remove('hidden');
             }
+            renderTrackList();
+        }
+
+        function addNewTrack() {
+            const title = document.getElementById('track-title-input').value.trim();
+            const url = document.getElementById('track-url-input').value.trim();
+
+            if (!title || !url) return showToast("Nhập tên và dán link nhạc đã nhé!", "error");
+            if (!url.startsWith('http://') && !url.startsWith('https://')) return showToast("Link nhạc phải có http hoặc https!", "error");
+
+            const newTrack = { id: Date.now(), title, url };
+            customTracks.push(newTrack);
+            localStorage.setItem('custom_tracks', JSON.stringify(customTracks));
+
+            document.getElementById('track-title-input').value = '';
+            document.getElementById('track-url-input').value = '';
+            
+            renderTrackList();
+            showToast("Đã lưu bài hát mới!");
+        }
+
+        function deleteTrack(id) {
+            customTracks = customTracks.filter(t => t.id.toString() !== id.toString());
+            localStorage.setItem('custom_tracks', JSON.stringify(customTracks));
+            const audio = document.getElementById('bg-audio');
+            
+            renderTrackList();
+            showToast("Đã xóa bài hát!");
         }
 
         /* --- INDEXEDDB STORAGE --- */
@@ -588,15 +681,15 @@
                 card.className = 'glass-card p-5 rounded-3xl flex flex-col gap-4 fade-in';
                 
                 let buttonsHTML = `
-                    <button onclick="openFormModal('vault', '${item.id}')" class="w-10 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg">✏️</button>
-                    <button onclick="deleteVaultItem('${item.id}')" class="w-10 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-red-400">✕</button>
+                    <button onclick="openFormModal('vault', '${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg">✏️</button>
+                    <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-red-400">✕</button>
                 `;
 
                 if (item.category === 'braindump' && item.isIndexedDB) {
                     buttonsHTML = `
-                        <button onclick="downloadMediaItem('${item.id}', '${item.title}', '${item.fileType}')" class="w-10 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-indigo-400" title="Tải về máy">📥</button>
-                        <button onclick="openFormModal('vault', '${item.id}')" class="w-10 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg">✏️</button>
-                        <button onclick="deleteVaultItem('${item.id}')" class="w-10 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-red-400">✕</button>
+                        <button onclick="downloadMediaItem('${item.id}', '${item.title}', '${item.fileType}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-indigo-400" title="Tải về máy">📥</button>
+                        <button onclick="openFormModal('vault', '${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg">✏️</button>
+                        <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-red-400">✕</button>
                     `;
                 }
 
@@ -605,7 +698,7 @@
                                         <h4 class="font-bold text-base truncate h4-title-text">${item.title}</h4>
                                         ${item.url ? `<a href="${item.url}" target="_blank" class="text-xs text-indigo-400 font-bold mt-1 inline-block">🔗 Mở liên kết</a>` : ''}
                                     </div>
-                                    <div class="flex gap-2 shrink-0">
+                                    <div class="flex items-center gap-2 shrink-0">
                                         ${buttonsHTML}
                                     </div>
                                </div>`;

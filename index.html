@@ -21,66 +21,81 @@
             padding-top: env(safe-area-inset-top);
             padding-bottom: env(safe-area-inset-bottom);
             font-size: 16px;
-            transition: background-color 1.5s ease-in-out, color 0.5s ease-in-out; 
+            /* Chuyển đổi theme mượt mà như hoàng hôn buông xuống */
+            transition: background-color 2.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.8s ease-in-out; 
         }
 
+        /* --- THEME BAN NGÀY: Hồng Mây Đào & Sương Sớm --- */
         body.light-theme {
-            background-color: #e2e8f0 !important;
-            color: #0f172a !important;
+            background: linear-gradient(135deg, #fef2f2 0%, #f0fdf4 50%, #e0e7ff 100%) !important;
+            color: #1e293b !important;
         }
         body.light-theme .text-gray-100,
-        body.light-theme .text-gray-200 { color: #1e293b !important; }
+        body.light-theme .text-gray-200 { color: #0f172a !important; }
         body.light-theme .text-gray-400,
-        body.light-theme .text-gray-500 { color: #475569 !important; }
+        body.light-theme .text-gray-500 { color: #64748b !important; }
         body.light-theme .glass {
-            background: rgba(15, 23, 42, 0.04);
-            border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+            background: rgba(255, 255, 255, 0.4);
+            border-bottom: 1px solid rgba(255, 182, 193, 0.4);
+            backdrop-blur: 20px;
         }
         body.light-theme .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(15, 23, 42, 0.08);
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+            background: rgba(255, 255, 255, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 30px rgba(244, 63, 94, 0.05), inset 0 1px 0 rgba(255,255,255,0.6);
         }
         body.light-theme input[type="text"] {
-            background-color: rgba(255, 255, 255, 0.9) !important;
-            border-color: rgba(15, 23, 42, 0.1) !important;
+            background-color: rgba(255, 255, 255, 0.8) !important;
+            border-color: rgba(244, 63, 94, 0.2) !important;
             color: #0f172a !important;
         }
+        body.light-theme input[type="text"]:focus {
+            border-color: #ec4899 !important;
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.15);
+        }
 
+        /* --- THEME BAN ĐÊM: Thạch Anh Tím & Vũ Trụ Huyền Bí --- */
         body.dark-theme {
-            background-color: #05070a !important;
+            background: linear-gradient(135deg, #030712 0%, #0b0f19 50%, #0f051d 100%) !important;
             color: #f3f4f6 !important;
         }
         body.dark-theme .glass { 
-            background: rgba(255, 255, 255, 0.02); 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
+            background: rgba(11, 15, 25, 0.5); 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06); 
+            backdrop-blur: 20px;
         }
         body.dark-theme .glass-card { 
-            background: rgba(255, 255, 255, 0.04); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
+            background: rgba(255, 255, 255, 0.03); 
+            border: 1px solid rgba(255, 255, 255, 0.07); 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255,255,255,0.05);
         }
         body.dark-theme input[type="text"] {
-            background-color: rgba(17, 24, 39, 0.6) !important;
-            border-color: rgba(255, 255, 255, 0.05) !important;
+            background-color: rgba(17, 24, 39, 0.5) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
             color: #f3f4f6 !important;
         }
-
-        .active-tab { 
-            background: rgba(99, 102, 241, 0.2); 
-            color: #818cf8 !important; 
-            border: 1px solid rgba(99, 102, 241, 0.4); 
+        body.dark-theme input[type="text"]:focus {
+            border-color: #818cf8 !important;
+            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
         }
 
-        .fade-in { animation: fadeIn 0.8s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* --- HIỆU ỨNG CẢM XÚC VÀ ĐƯỜNG CONG MỀM MẠI --- */
+        .active-tab { 
+            background: linear-gradient(135deg, rgba(244, 63, 94, 0.15), rgba(129, 140, 248, 0.15));
+            color: #f43f5e !important; 
+            border: 1px solid rgba(244, 63, 94, 0.3); 
+        }
 
-        .intro-hide { opacity: 0; pointer-events: none; transition: opacity 0.8s ease-in-out; }
+        .fade-in { animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
-        .toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .toast-leave { animation: fadeOut 0.3s ease forwards; }
+        .intro-hide { opacity: 0; pointer-events: none; transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        @keyframes slideInUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+        .toast-enter { animation: slideInUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.15) forwards; }
+        .toast-leave { animation: fadeOut 0.4s ease forwards; }
+
+        @keyframes slideInUp { from { transform: translateY(120%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; transform: scale(0.95); } to { opacity: 0; } }
 
         ::-webkit-scrollbar { width: 0px; }
         
@@ -91,27 +106,28 @@
 
         input, select, textarea {
             font-size: 16px !important;
+            transition: all 0.3s ease;
         }
 
         .spin-slow {
-            animation: spin 6s linear infinite;
+            animation: spin 8s linear infinite;
         }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="h-full flex flex-col justify-between overflow-hidden select-none pt-safe pb-safe dark-theme">
 
-    <div id="intro-screen" class="fixed inset-0 bg-[#05070a] z-[999] flex flex-col items-center justify-center text-center px-6">
-        <div class="space-y-6 fade-in flex flex-col items-center">
-            <div id="intro-avatar-box" class="w-24 h-24 rounded-full border-2 border-indigo-500/30 overflow-hidden shadow-2xl bg-gray-900 hidden">
+    <div id="intro-screen" class="fixed inset-0 bg-[#030712] z-[999] flex flex-col items-center justify-center text-center px-6 transition-all">
+        <div class="space-y-6 flex flex-col items-center">
+            <div id="intro-avatar-box" class="w-24 h-24 rounded-full border-2 border-indigo-400/40 overflow-hidden shadow-2xl bg-gray-900 hidden">
                 <img id="intro-avatar-img" class="w-full h-full object-cover" src="">
             </div>
-            <div id="intro-star-icon" class="text-6xl animate-bounce">✨</div>
+            <div id="intro-star-icon" class="text-6xl animate-pulse filter drop-shadow-[0_0_15px_rgba(251,191,36,0.6)]">✨</div>
             
-            <h2 id="intro-welcome-text" class="text-2xl font-semibold tracking-wide bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300 bg-clip-text text-transparent">
+            <h2 id="intro-welcome-text" class="text-2xl font-bold tracking-wide bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300 bg-clip-text text-transparent">
                 Xin chào kho báu...
             </h2>
-            <p id="star-message" class="text-xs text-gray-400 max-w-xs font-medium italic opacity-80 leading-relaxed pt-2 border-t border-gray-900"></p>
+            <p id="star-message" class="text-xs text-gray-400 max-w-xs font-medium italic opacity-75 leading-relaxed pt-3 border-t border-white/5"></p>
         </div>
     </div>
 
@@ -119,46 +135,45 @@
 
     <header class="glass px-6 py-4 flex justify-between items-center z-10 sticky top-0 shrink-0 pt-8">
         <div class="flex flex-col max-w-[75%]">
-            <h1 class="text-2xl font-bold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Infinite Vault ✨</h1>
+            <h1 class="text-2xl font-bold tracking-tight bg-gradient-to-r from-rose-400 via-fuchsia-400 to-indigo-400 bg-clip-text text-transparent filter drop-shadow-sm">Infinite Vault ✨</h1>
             
-            <div onclick="openMusicModal()" id="header-mini-player" class="flex items-center gap-2 mt-1.5 bg-black/10 px-3 py-2 rounded-2xl border border-white/5 w-fit shadow-inner max-w-full overflow-hidden transition-all duration-300 cursor-pointer active:scale-95">
-                <span id="music-btn" class="text-sm shrink-0 w-5 h-5 flex items-center justify-center">🎵</span>
-                <div id="header-track-title" class="text-[11px] font-bold tracking-wide opacity-80 truncate max-w-[90px]">Giai điệu không gian</div>
+            <div onclick="openMusicModal()" id="header-mini-player" class="flex items-center gap-2 mt-2 bg-black/10 dark:bg-white/5 px-3 py-2 rounded-2xl border border-black/5 dark:border-white/5 w-fit shadow-md max-w-full overflow-hidden transition-all duration-500 cursor-pointer active:scale-95">
+                <span id="music-btn" class="text-sm shrink-0 w-5 h-5 flex items-center justify-center filter drop-shadow-md">🎵</span>
+                <div id="header-track-title" class="text-[11px] font-bold tracking-wide opacity-80 truncate max-w-[100px] text-gray-700 dark:text-gray-300">Giai điệu không gian</div>
                 
-                <div class="flex items-center gap-1 ml-1 shrink-0">
-                    <button onclick="handleQuickPlayPause(event)" id="quick-stop-btn" class="hidden text-[10px] w-6 h-6 flex items-center justify-center bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 rounded-lg font-bold active:scale-75 transition" title="Tạm dừng / Phát tiếp"></button>
-                    <button onclick="handleQuickMute(event)" id="quick-mute-btn" class="hidden text-[10px] w-6 h-6 flex items-center justify-center bg-gray-500/20 text-gray-400 border border-white/10 rounded-lg font-bold active:scale-75 transition" title="Tắt tiếng nhanh">🔊</button>
-                    <button onclick="handleQuickClear(event)" id="quick-clear-btn" class="hidden text-[10px] w-6 h-6 flex items-center justify-center bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg font-bold active:scale-75 transition" title="Tắt hẳn nhạc">✕</button>
+                <div class="flex items-center gap-1.5 ml-1 shrink-0">
+                    <button onclick="handleQuickPlayPause(event)" id="quick-stop-btn" class="hidden text-[10px] w-6 h-6 flex items-center justify-center bg-rose-500/10 text-rose-500 border border-rose-500/20 rounded-lg font-bold active:scale-75 transition duration-300" title="Tạm dừng / Phát tiếp"></button>
+                    <button onclick="handleQuickMute(event)" id="quick-mute-btn" class="hidden text-[10px] w-6 h-6 flex items-center justify-center bg-gray-500/10 text-gray-500 dark:text-gray-400 border border-black/5 dark:border-white/10 rounded-lg font-bold active:scale-75 transition duration-300" title="Tắt tiếng nhanh">🔊</button>
+                    <button onclick="handleQuickClear(event)" id="quick-clear-btn" class="hidden text-[10px] w-6 h-6 flex items-center justify-center bg-red-500/10 text-red-500 border border-red-500/20 rounded-lg font-bold active:scale-75 transition duration-300" title="Tắt hẳn nhạc">✕</button>
                 </div>
             </div>
         </div>
-        <button onclick="openSettings()" class="text-3xl p-2 active:scale-90 transition-transform">⚙️</button>
+        <button onclick="openSettings()" class="text-3xl p-2 active:scale-90 transition-transform duration-300 filter drop-shadow-sm">⚙️</button>
     </header>
 
-    <div id="modal-music" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-end justify-center z-50 transition-all duration-300">
-        <div class="glass-card w-full rounded-t-[40px] p-6 pb-12 space-y-5 shadow-2xl transform translate-y-full transition-transform max-h-[85vh] flex flex-col overflow-hidden" id="music-card">
-            <div class="w-12 h-1.5 bg-gray-700 rounded-full mx-auto mb-1 shrink-0"></div>
+    <div id="modal-music" class="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md hidden items-end justify-center z-50 transition-all duration-500">
+        <div class="glass-card w-full rounded-t-[40px] p-6 pb-12 space-y-5 shadow-[0_-15px_40px_rgba(0,0,0,0.2)] transform translate-y-full transition-transform duration-500 max-h-[85vh] flex flex-col overflow-hidden" id="music-card">
+            <div class="w-12 h-1.5 bg-gray-400 dark:bg-gray-700 rounded-full mx-auto mb-1 shrink-0"></div>
             
             <div class="text-center space-y-1 shrink-0">
-                <h3 class="text-xl font-bold text-gray-100">Giai Điệu Không Gian 🎧</h3>
-                <p id="current-track-name" class="text-xs text-indigo-400 italic font-medium">Trạng thái: Đang dừng phát</p>
+                <h3 class="text-xl font-bold bg-gradient-to-r from-rose-400 to-indigo-400 bg-clip-text text-transparent">Giai Điệu Không Gian 🎧</h3>
+                <p id="current-track-name" class="text-xs text-rose-400 dark:text-indigo-400 italic font-medium">Trạng thái: Đang dừng phát</p>
             </div>
 
-            <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-3 shrink-0">
-                <div class="text-xs font-bold uppercase tracking-wider text-gray-400">Thêm bài hát mới vào danh sách</div>
+            <div class="p-4 bg-rose-500/5 dark:bg-gray-500/5 rounded-3xl border border-rose-500/10 dark:border-white/5 space-y-3 shrink-0 shadow-inner">
+                <div class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Gửi gắm bài hát mới</div>
                 <div class="flex flex-col gap-2">
-                    <input type="text" id="track-title-input" placeholder="Tên bài hát (Ví dụ: Lo-Fi ban đêm...)" class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
-                    <input type="text" id="track-url-input" placeholder="Dán link nhạc trực tiếp (.mp3)..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
-                    <button onclick="addNewTrack()" class="h-12 w-full bg-indigo-600 rounded-xl font-bold text-white text-xs active:scale-95 transition shadow-md">Thêm vào kho nhạc</button>
+                    <input type="text" id="track-title-input" placeholder="Tên bài hát gửi cậu..." class="w-full h-12 border rounded-2xl px-4 text-sm outline-none shadow-sm">
+                    <input type="text" id="track-url-input" placeholder="Dán đường dẫn nhạc (.mp3)..." class="w-full h-12 border rounded-2xl px-4 text-sm outline-none shadow-sm">
+                    <button onclick="addNewTrack()" class="h-12 w-full bg-gradient-to-r from-rose-500 to-indigo-600 rounded-2xl font-bold text-white text-xs active:scale-95 transition shadow-lg shadow-indigo-500/20">Thêm vào kho nhạc</button>
                 </div>
             </div>
 
             <div class="relative shrink-0 px-1">
-                <input type="text" id="music-search" oninput="renderTrackList()" placeholder="🔍 Tìm kiếm tên bài hát..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all shadow-inner bg-transparent">
+                <input type="text" id="music-search" oninput="renderTrackList()" placeholder="🔍 Tìm kiếm giai điệu yêu thích..." class="w-full h-12 border rounded-2xl px-4 text-sm outline-none shadow-inner bg-transparent">
             </div>
 
-            <div class="flex-1 overflow-y-auto space-y-2 pr-1 scroll-container" id="music-track-list">
-                </div>
+            <div class="flex-1 overflow-y-auto space-y-2.5 pr-1 scroll-container" id="music-track-list"></div>
 
             <audio id="bg-audio" loop></audio>
         </div>
@@ -168,30 +183,30 @@
         <section id="tab-vault" class="tab-content space-y-6">
             <div class="flex justify-between items-end">
                 <div class="space-y-1">
-                    <h2 id="vault-title-text" class="text-xl font-bold text-gray-100">Kho Lưu Trữ</h2>
-                    <p id="vault-desc-text" class="text-sm text-gray-400 font-medium">Bảo mật tuyệt đối trên máy</p>
+                    <h2 id="vault-title-text" class="text-xl font-bold text-gray-800 dark:text-gray-100">Kho Lưu Trữ</h2>
+                    <p id="vault-desc-text" class="text-sm text-gray-500 dark:text-gray-400 font-medium">Bảo mật tuyệt đối trên máy</p>
                 </div>
-                <button onclick="openFormModal('vault')" class="h-12 px-6 bg-indigo-600 hover:bg-indigo-500 rounded-2xl font-bold text-sm shadow-lg shadow-indigo-600/20 active:scale-95 transition-all text-white">+ Thêm</button>
+                <button onclick="openFormModal('vault')" class="h-12 px-6 bg-gradient-to-r from-rose-500 to-indigo-600 rounded-2xl font-bold text-sm shadow-md shadow-indigo-500/20 active:scale-95 transition-all text-white">+ Thêm</button>
             </div>
             
             <div class="relative">
-                <input type="text" id="vault-search" oninput="loadVault()" placeholder="🔍 Tìm nhanh trong kho..." class="w-full h-14 border rounded-2xl px-5 text-sm outline-none focus:border-pink-500 transition-all shadow-inner">
+                <input type="text" id="vault-search" oninput="loadVault()" placeholder="🔍 Tìm nhanh trong kho..." class="w-full h-14 border rounded-2xl px-5 text-sm outline-none shadow-inner">
             </div>
             
             <div class="grid grid-cols-4 gap-2">
-                <button onclick="filterVault('wishlist')" id="vbtn-wishlist" class="vault-filter-btn h-14 bg-pink-600 rounded-2xl flex flex-col items-center justify-center gap-1 active:scale-95 transition-all text-white font-medium">
+                <button onclick="filterVault('wishlist')" id="vbtn-wishlist" class="vault-filter-btn h-14 bg-gradient-to-br from-rose-500 to-pink-500 rounded-2xl flex flex-col items-center justify-center gap-1 active:scale-95 transition-all text-white font-medium shadow-md shadow-rose-500/10">
                     <span class="text-lg">🛍️</span>
                     <span class="text-[9px] font-bold uppercase tracking-wider">Shopping</span>
                 </button>
-                <button onclick="filterVault('media')" id="vbtn-media" class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-2xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-95 transition-all">
+                <button onclick="filterVault('media')" id="vbtn-media" class="vault-filter-btn h-14 bg-white/40 dark:bg-gray-900/40 border border-black/5 dark:border-gray-800 rounded-2xl flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 active:scale-95 transition-all">
                     <span class="text-lg">🎬</span>
                     <span class="text-[9px] font-bold uppercase tracking-wider">Media</span>
                 </button>
-                <button onclick="filterVault('study')" id="vbtn-study" class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-2xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-95 transition-all">
+                <button onclick="filterVault('study')" id="vbtn-study" class="vault-filter-btn h-14 bg-white/40 dark:bg-gray-900/40 border border-black/5 dark:border-gray-800 rounded-2xl flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 active:scale-95 transition-all">
                     <span class="text-lg">📚</span>
                     <span class="text-[9px] font-bold uppercase tracking-wider">Study</span>
                 </button>
-                <button onclick="filterVault('braindump')" id="vbtn-braindump" class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-2xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-95 transition-all">
+                <button onclick="filterVault('braindump')" id="vbtn-braindump" class="vault-filter-btn h-14 bg-white/40 dark:bg-gray-900/40 border border-black/5 dark:border-gray-800 rounded-2xl flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 active:scale-95 transition-all">
                     <span class="text-lg">🤫</span>
                     <span class="text-[9px] font-bold uppercase tracking-wider">Secret</span>
                 </button>
@@ -201,61 +216,61 @@
         </section>
     </main>
 
-    <div id="modal-form" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-end justify-center z-50 transition-all duration-300">
-        <div class="glass-card w-full rounded-t-[40px] p-8 pb-12 space-y-6 shadow-2xl transform translate-y-full transition-transform" id="form-card">
-            <div class="w-12 h-1.5 bg-gray-700 rounded-full mx-auto mb-2"></div>
+    <div id="modal-form" class="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md hidden items-end justify-center z-50 transition-all duration-400">
+        <div class="glass-card w-full rounded-t-[40px] p-8 pb-12 space-y-6 shadow-2xl transform translate-y-full transition-transform duration-400" id="form-card">
+            <div class="w-12 h-1.5 bg-gray-400 dark:bg-gray-700 rounded-full mx-auto mb-2"></div>
             <div class="text-center space-y-2">
-                <h3 id="form-title" class="text-xl font-bold text-gray-100">Thêm mục mới</h3>
-                <p id="form-desc" class="text-xs text-gray-400"></p>
+                <h3 id="form-title" class="text-xl font-bold text-gray-800 dark:text-gray-100">Thêm mục mới</h3>
+                <p id="form-desc" class="text-xs text-gray-500 dark:text-gray-400"></p>
             </div>
             <div id="form-fields" class="space-y-4"></div>
             <div class="flex gap-3 pt-4">
-                <button onclick="closeFormModal()" class="h-16 flex-1 bg-gray-900 border border-gray-800 rounded-3xl font-bold text-gray-300 active:scale-95 transition">Hủy</button>
-                <button onclick="submitForm()" class="h-16 flex-1 bg-indigo-600 rounded-3xl font-bold text-white shadow-xl shadow-indigo-600/20 active:scale-95 transition">Xác nhận</button>
+                <button onclick="closeFormModal()" class="h-16 flex-1 bg-white/50 dark:bg-gray-900 border border-black/5 dark:border-gray-800 rounded-3xl font-bold text-gray-600 dark:text-gray-300 active:scale-95 transition duration-300">Hủy</button>
+                <button onclick="submitForm()" class="h-16 flex-1 bg-gradient-to-r from-rose-500 to-indigo-600 rounded-3xl font-bold text-white shadow-xl shadow-indigo-600/20 active:scale-95 transition duration-300">Xác nhận</button>
             </div>
         </div>
     </div>
 
-    <div id="modal-settings" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-center justify-center p-6 z-[60]">
-        <div class="glass-card w-full max-w-sm rounded-[32px] p-6 space-y-5 text-center shadow-2xl">
+    <div id="modal-settings" class="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md hidden items-center justify-center p-6 z-[60]">
+        <div class="glass-card w-full max-w-sm rounded-[36px] p-6 space-y-5 text-center shadow-2xl animate-fade-in">
             <div class="text-center space-y-1">
-                <h3 class="text-lg font-bold text-gray-100">⚙️ Hồ Sơ & Hệ Thống</h3>
-                <p class="text-xs text-gray-400">Tùy chỉnh không gian mật thất của riêng bạn</p>
+                <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100">⚙️ Hồ Sơ & Hệ Thống</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Tùy chỉnh không gian mật thất của riêng bạn</p>
             </div>
 
-            <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-4 text-left flex flex-col items-center">
-                <div class="relative w-20 h-20 rounded-full bg-gray-900 border border-gray-700 overflow-hidden group cursor-pointer shadow-xl">
+            <div class="p-4 bg-rose-500/5 dark:bg-gray-500/5 rounded-3xl border border-rose-500/10 dark:border-white/5 space-y-4 text-left flex flex-col items-center shadow-inner">
+                <div class="relative w-20 h-20 rounded-full bg-gray-900 border-2 border-rose-400/30 overflow-hidden group cursor-pointer shadow-xl transition-all duration-300 hover:scale-105">
                     <img id="settings-avatar-preview" class="w-full h-full object-cover hidden" src="">
                     <div id="settings-avatar-placeholder" class="absolute inset-0 flex items-center justify-center text-2xl opacity-60">👤</div>
                     <input type="file" id="profile-avatar-input" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="uploadProfileAvatar(this)">
                 </div>
-                <span class="text-[11px] text-indigo-400 font-bold uppercase tracking-wider -mt-2">Chạm để đổi ảnh đại diện</span>
+                <span class="text-[11px] text-rose-500 dark:text-indigo-400 font-bold uppercase tracking-wider -mt-2">Chạm để đổi ảnh đại diện</span>
                 
                 <div class="w-full">
-                    <label class="text-[11px] text-gray-400 font-bold block mb-1">Biệt danh của bạn</label>
-                    <input type="text" id="profile-name-input" placeholder="Nhập tên biệt danh..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
+                    <label class="text-[11px] text-gray-500 dark:text-gray-400 font-bold block mb-1">Biệt danh của bạn</label>
+                    <input type="text" id="profile-name-input" placeholder="Nhập tên biệt danh..." class="w-full h-12 border rounded-2xl px-4 text-sm outline-none shadow-sm">
                 </div>
             </div>
 
-            <p class="text-xs text-gray-400 leading-relaxed px-2 italic">
-                "Mật thất an toàn này thuộc về bạn. Được hoàn thiện with tất cả sự trân trọng từ một người bạn phương xa."
+            <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed px-2 italic font-medium opacity-90">
+                "Mật thất an toàn này thuộc về bạn. Được hoàn thiện với tất cả sự trân trọng từ một người bạn phương xa."
             </p>
             
             <div class="flex gap-2">
-                <button onclick="triggerConfetti()" class="h-14 flex-1 bg-gradient-to-r from-pink-500/20 to-indigo-500/20 border border-indigo-500/30 rounded-2xl font-bold text-indigo-300 text-xs active:scale-95 transition">Nhận niềm vui ✨</button>
-                <button onclick="saveProfile()" class="h-14 flex-1 bg-indigo-600 rounded-2xl font-bold text-white text-xs active:scale-95 transition shadow-lg shadow-indigo-600/20">Lưu thay đổi</button>
+                <button onclick="triggerConfetti()" class="h-14 flex-1 bg-gradient-to-r from-rose-500/10 to-indigo-500/10 border border-rose-400/20 dark:border-indigo-500/20 rounded-2xl font-bold text-rose-500 dark:text-indigo-300 text-xs active:scale-95 transition duration-300">Nhận niềm vui ✨</button>
+                <button onclick="saveProfile()" class="h-14 flex-1 bg-gradient-to-r from-rose-500 to-indigo-600 rounded-2xl font-bold text-white text-xs active:scale-95 transition shadow-lg shadow-indigo-600/20 duration-300">Lưu thay đổi</button>
             </div>
-            <button onclick="closeSettings()" class="h-12 w-full bg-gray-900 border border-gray-800 rounded-xl font-bold text-sm text-gray-400 active:scale-95 transition">Đóng</button>
+            <button onclick="closeSettings()" class="h-12 w-full bg-white/40 dark:bg-gray-900 border border-black/5 dark:border-gray-800 rounded-2xl font-bold text-sm text-gray-500 dark:text-gray-400 active:scale-95 transition duration-300">Đóng</button>
         </div>
     </div>
 
-    <div id="modal-confirm" class="fixed inset-0 bg-black/95 backdrop-blur-sm hidden items-center justify-center p-8 z-[100] opacity-0 transition-opacity duration-300">
-        <div class="glass-card w-full max-w-xs rounded-[32px] p-8 space-y-6 text-center">
-            <div class="text-5xl">⚠️</div>
-            <h3 class="text-lg font-bold text-gray-100" id="confirm-msg">Xác nhận xóa mục này?</h3>
+    <div id="modal-confirm" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-8 z-[100] opacity-0 transition-opacity duration-300">
+        <div class="glass-card w-full max-w-xs rounded-[36px] p-8 space-y-6 text-center shadow-2xl">
+            <div class="text-5xl filter drop-shadow-md">⚠️</div>
+            <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100" id="confirm-msg">Xác nhận xóa mục này?</h3>
             <div class="flex flex-col gap-3">
-                <button id="btn-confirm-action" class="h-14 w-full bg-red-600 rounded-2xl font-bold shadow-lg shadow-red-600/20 text-white">Xóa vĩnh viễn</button>
-                <button onclick="closeConfirmModal()" class="h-14 w-full bg-gray-900 border border-gray-800 rounded-2xl font-bold text-gray-400">Quay lại</button>
+                <button id="btn-confirm-action" class="h-14 w-full bg-gradient-to-r from-red-500 to-rose-600 rounded-2xl font-bold shadow-lg shadow-red-600/20 text-white">Xóa vĩnh viễn</button>
+                <button onclick="closeConfirmModal()" class="h-14 w-full bg-white/40 dark:bg-gray-900 border border-black/5 dark:border-gray-800 rounded-2xl font-bold text-gray-500 dark:text-gray-400">Quay lại</button>
             </div>
         </div>
     </div>
@@ -310,7 +325,7 @@
                     if (clockIcon) clockIcon.innerText = "☀️";
                     if (clockParent) {
                         clockParent.classList.remove('bg-black/10', 'border-white/5');
-                        clockParent.classList.add('bg-white/40', 'border-black/5');
+                        clockParent.classList.add('bg-white/20', 'border-black/5');
                     }
                 }
             } else {
@@ -319,7 +334,7 @@
                     body.classList.add('dark-theme');
                     if (clockIcon) clockIcon.innerText = "🌙";
                     if (clockParent) {
-                        clockParent.classList.remove('bg-white/40', 'border-black/5');
+                        clockParent.classList.remove('bg-white/20', 'border-black/5');
                         clockParent.classList.add('bg-black/10', 'border-white/5');
                     }
                 }
@@ -329,17 +344,15 @@
 
         /* --- TRÌNH QUẢN LÝ VÀ ĐIỀU KHIỂN NHẠC NỀN DYNAMIC --- */
         function openMusicModal() {
-            // Đồng bộ màu nền ô tìm kiếm nhạc và ô thêm nhạc theo Theme hệ thống
             const inputs = document.querySelectorAll('#modal-music input[type="text"]');
             inputs.forEach(inp => {
                 if(document.body.classList.contains('light-theme')) {
-                    inp.style.backgroundColor = "#ffffff"; inp.style.borderColor = "rgba(15, 23, 42, 0.1)"; inp.style.color = "#0f172a";
+                    inp.style.backgroundColor = "rgba(255, 255, 255, 0.9)"; inp.style.borderColor = "rgba(244, 63, 94, 0.2)"; inp.style.color = "#0f172a";
                 } else {
-                    inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; inp.style.borderColor = "rgba(255, 255, 255, 0.05)"; inp.style.color = "#f3f4f6";
+                    inp.style.backgroundColor = "rgba(17, 24, 39, 0.5)"; inp.style.borderColor = "rgba(255, 255, 255, 0.08)"; inp.style.color = "#f3f4f6";
                 }
             });
 
-            // Xóa rác chữ tìm kiếm cũ mỗi lần mở modal
             const searchInp = document.getElementById('music-search');
             if (searchInp) searchInp.value = '';
 
@@ -355,7 +368,6 @@
 
         document.getElementById('modal-music').addEventListener('click', function(e) { if (e.target === this) closeMusicModal(); });
 
-        // ĐÃ NÂNG CẤP: Render kết hợp bộ lọc tìm kiếm thời gian thực
         function renderTrackList() {
             const container = document.getElementById('music-track-list');
             container.innerHTML = '';
@@ -365,32 +377,31 @@
             
             let allTracks = [...defaultTracks, ...customTracks];
             
-            // Tiến hành lọc bài hát nếu cô ấy gõ từ khóa tìm kiếm
             if (searchKeyword) {
                 allTracks = allTracks.filter(t => t.title.toLowerCase().includes(searchKeyword));
             }
 
             if (allTracks.length === 0) {
-                container.innerHTML = `<div class="py-8 text-center text-xs opacity-40 italic">Không tìm thấy bài hát nào hợp lệ...</div>`;
+                container.innerHTML = `<div class="py-8 text-center text-xs opacity-50 italic">Không tìm thấy bài hát nào hợp lệ...</div>`;
                 return;
             }
 
             allTracks.forEach(track => {
                 const isCurrent = (audio.src === track.url && !audio.paused);
                 const item = document.createElement('div');
-                item.className = 'w-full h-14 bg-gray-500/5 border border-white/5 rounded-2xl flex items-center justify-between px-4 gap-2 shrink-0';
+                item.className = 'w-full h-14 bg-white/30 dark:bg-white/5 border border-black/5 dark:border-white/5 rounded-2xl flex items-center justify-between px-4 gap-2 shrink-0 shadow-sm';
                 
                 const isDefault = track.id.toString().startsWith('def-');
 
                 item.innerHTML = `
                     <div onclick="playTrack('${track.url}', '${track.title}')" class="flex-1 min-w-0 h-full flex items-center cursor-pointer text-left">
-                        <span class="text-sm font-semibold truncate ${isCurrent ? 'text-indigo-400' : ''}">${track.title}</span>
+                        <span class="text-sm font-semibold truncate ${isCurrent ? 'text-rose-500 dark:text-indigo-400 font-bold' : ''}">${track.title}</span>
                     </div>
                     <div class="flex items-center gap-1.5 shrink-0">
-                        <button onclick="playTrack('${track.url}', '${track.title}')" class="w-10 h-10 rounded-xl bg-indigo-600/10 flex items-center justify-center text-base">
+                        <button onclick="playTrack('${track.url}', '${track.title}')" class="w-10 h-10 rounded-xl bg-rose-500/10 dark:bg-indigo-600/10 text-rose-500 dark:text-indigo-400 flex items-center justify-center text-base active:scale-90 transition duration-300">
                             ${isCurrent ? '⏸️' : '▶️'}
                         </button>
-                        ${!isDefault ? `<button onclick="deleteTrack('${track.id}')" class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center text-sm text-red-400">✕</button>` : ''}
+                        ${!isDefault ? `<button onclick="deleteTrack('${track.id}')" class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center text-sm text-red-500 active:scale-90 transition duration-300">✕</button>` : ''}
                     </div>
                 `;
                 container.appendChild(item);
@@ -410,13 +421,13 @@
             if (audio.src === url && !audio.paused) {
                 audio.pause();
                 btn.innerText = "🎵";
-                btn.classList.remove('spin-slow', 'bg-indigo-500/30');
+                btn.classList.remove('spin-slow', 'bg-indigo-500/20');
                 statusLabel.innerText = "Trạng thái: Đang dừng phát";
                 quickStopBtn.innerText = "▶️";
             } else if (audio.src === url && audio.paused) {
                 audio.play().then(() => {
                     btn.innerText = "💿";
-                    btn.classList.add('spin-slow', 'bg-indigo-500/30');
+                    btn.classList.add('spin-slow', 'bg-indigo-500/20');
                     statusLabel.innerText = `Đang phát: ${name}`;
                     quickStopBtn.innerText = "⏸️";
                 });
@@ -425,14 +436,14 @@
                 savedTrackName = name;
                 audio.play().then(() => {
                     btn.innerText = "💿";
-                    btn.classList.add('spin-slow', 'bg-indigo-500/30');
+                    btn.classList.add('spin-slow', 'bg-indigo-500/20');
                     statusLabel.innerText = `Đang phát: ${name}`;
                     headerTitle.innerText = name;
                     quickStopBtn.innerText = "⏸️";
                     quickStopBtn.classList.remove('hidden');
                     quickMuteBtn.classList.remove('hidden');
                     quickClearBtn.classList.remove('hidden');
-                    miniPlayer.classList.add('bg-indigo-500/10', 'border-indigo-500/20');
+                    miniPlayer.classList.add('bg-rose-500/10', 'border-rose-500/20', 'dark:bg-indigo-500/10', 'dark:border-indigo-500/20');
                 }).catch(() => {
                     showToast("Hãy chạm nhẹ màn hình một phát rồi chọn lại nhạc nhé!", "error");
                 });
@@ -450,14 +461,14 @@
             if (!audio.paused) {
                 audio.pause();
                 btn.innerText = "🎵";
-                btn.classList.remove('spin-slow', 'bg-indigo-500/30');
+                btn.classList.remove('spin-slow', 'bg-indigo-500/20');
                 statusLabel.innerText = "Trạng thái: Đang dừng phát";
                 quickStopBtn.innerText = "▶️";
                 showToast("Đã tạm dừng nhạc!");
             } else {
                 audio.play().then(() => {
                     btn.innerText = "💿";
-                    btn.classList.add('spin-slow', 'bg-indigo-500/30');
+                    btn.classList.add('spin-slow', 'bg-indigo-500/20');
                     statusLabel.innerText = `Đang phát: ${savedTrackName}`;
                     quickStopBtn.innerText = "⏸️";
                     showToast("Tiếp tục phát nhạc!");
@@ -474,12 +485,12 @@
             if (audio.muted) {
                 audio.muted = false;
                 muteBtn.innerText = "🔊";
-                muteBtn.classList.remove('bg-red-500/20', 'text-red-400', 'border-red-500/30');
+                muteBtn.classList.remove('bg-red-500/20', 'text-red-500', 'border-red-500/30');
                 showToast("Đã bật âm thanh!");
             } else {
                 audio.muted = true;
                 muteBtn.innerText = "🔇";
-                muteBtn.classList.add('bg-red-500/20', 'text-red-400', 'border-red-500/30');
+                muteBtn.classList.add('bg-red-500/20', 'text-red-500', 'border-red-500/30');
                 showToast("Đã tắt tiếng!");
             }
         }
@@ -500,14 +511,14 @@
             audio.load();
 
             btn.innerText = "🎵";
-            btn.classList.remove('spin-slow', 'bg-indigo-500/30');
+            btn.classList.remove('spin-slow', 'bg-indigo-500/20');
             statusLabel.innerText = "Trạng thái: Đang dừng phát";
             headerTitle.innerText = "Giai điệu không gian";
             
             quickStopBtn.classList.add('hidden');
             quickMuteBtn.classList.add('hidden');
             quickClearBtn.classList.add('hidden');
-            miniPlayer.classList.remove('bg-indigo-500/10', 'border-indigo-500/20');
+            miniPlayer.classList.remove('bg-rose-500/10', 'border-rose-500/20', 'dark:bg-indigo-500/10', 'dark:border-indigo-500/20');
             
             renderTrackList();
             showToast("Đã tắt hẳn nhạc nền!");
@@ -669,14 +680,14 @@
             if (!container) return;
             const toast = document.createElement('div');
             
-            let colorClass = 'bg-emerald-500 border-emerald-400';
+            let colorClass = 'bg-gradient-to-r from-emerald-500 to-teal-600 border-emerald-400';
             let icon = '✅';
             if (type === 'error') {
-                colorClass = 'bg-red-500 border-red-400';
+                colorClass = 'bg-gradient-to-r from-red-500 to-rose-600 border-rose-400';
                 icon = '❌';
             }
             
-            toast.className = `${colorClass} border-2 px-6 py-4 rounded-2xl text-sm font-bold flex items-center gap-3 shadow-2xl backdrop-blur-md toast-enter text-white pointer-events-auto`;
+            toast.className = `${colorClass} border px-6 py-4 rounded-2xl text-sm font-bold flex items-center gap-3 shadow-2xl backdrop-blur-md toast-enter text-white pointer-events-auto`;
             toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
             
             container.appendChild(toast);
@@ -731,7 +742,7 @@
 
             let fileUpload = '';
             if (currentVaultCategory === 'braindump' && !editId) {
-                fileUpload = `<div class="relative w-full h-32 bg-gray-900/30 border-2 border-gray-400/30 border-dashed rounded-2xl flex flex-col items-center justify-center gap-2 active:border-pink-500 transition-all">
+                fileUpload = `<div class="relative w-full h-32 bg-gray-500/10 border-2 border-dashed rounded-3xl flex flex-col items-center justify-center gap-2 active:border-pink-500 transition-all duration-300">
                                 <input type="file" id="add-vault-file" accept="image/*,video/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="updateFileName(this)">
                                 <span class="text-3xl">📸</span>
                                 <span id="file-status" class="text-xs font-bold uppercase tracking-widest opacity-60">Chọn Ảnh / Video</span>
@@ -739,16 +750,16 @@
             }
 
             fields.innerHTML = `
-                <input type="text" id="add-vault-title" value="${defName}" placeholder="${c.p}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">
-                ${currentVaultCategory !== 'braindump' ? `<input type="text" id="add-vault-url" value="${defUrl}" placeholder="${c.l}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">` : ''}
+                <input type="text" id="add-vault-title" value="${defName}" placeholder="${c.p}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none shadow-inner transition-all">
+                ${currentVaultCategory !== 'braindump' ? `<input type="text" id="add-vault-url" value="${defUrl}" placeholder="${c.l}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none shadow-inner transition-all">` : ''}
                 ${fileUpload}`;
 
             const inputs = fields.querySelectorAll('input[type="text"]');
             inputs.forEach(inp => {
                 if(document.body.classList.contains('light-theme')) {
-                    inp.style.backgroundColor = "#ffffff"; inp.style.borderColor = "rgba(15, 23, 42, 0.1)"; inp.style.color = "#0f172a";
+                    inp.style.backgroundColor = "rgba(255, 255, 255, 0.9)"; inp.style.borderColor = "rgba(244, 63, 94, 0.2)"; inp.style.color = "#0f172a";
                 } else {
-                    inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; inp.style.borderColor = "rgba(255, 255, 255, 0.05)"; inp.style.color = "#f3f4f6";
+                    inp.style.backgroundColor = "rgba(17, 24, 39, 0.5)"; inp.style.borderColor = "rgba(255, 255, 255, 0.08)"; inp.style.color = "#f3f4f6";
                 }
             });
 
@@ -811,30 +822,30 @@
             if(search) items = items.filter(i => i.title.toLowerCase().includes(search));
             
             if(items.length === 0) {
-                return container.innerHTML = `<div class="py-20 text-center opacity-30"><div class="text-6xl mb-4">${currentVaultCategory === 'braindump' ? '🔒' : '📦'}</div><p class="text-sm font-bold uppercase tracking-widest">Kho đồ đang trống</p></div>`;
+                return container.innerHTML = `<div class="py-20 text-center opacity-40"><div class="text-6xl mb-4 filter drop-shadow-md">${currentVaultCategory === 'braindump' ? '🔒' : '📦'}</div><p class="text-sm font-bold uppercase tracking-widest opacity-70">Kho đồ đang trống</p></div>`;
             }
 
             items.forEach(item => {
                 const card = document.createElement('div');
-                card.className = 'glass-card p-5 rounded-3xl flex flex-col gap-4 fade-in';
+                card.className = 'glass-card p-5 rounded-[28px] flex flex-col gap-4 fade-in';
                 
                 let buttonsHTML = `
-                    <button onclick="openFormModal('vault', '${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg">✏️</button>
-                    <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-red-400">✕</button>
+                    <button onclick="openFormModal('vault', '${item.id}')" class="w-11 h-11 flex items-center justify-center bg-black/5 dark:bg-white/5 rounded-2xl text-lg active:scale-90 transition duration-300">✏️</button>
+                    <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-black/5 dark:bg-white/5 rounded-2xl text-lg text-red-400 active:scale-90 transition duration-300">✕</button>
                 `;
 
                 if (item.category === 'braindump' && item.isIndexedDB) {
                     buttonsHTML = `
-                        <button onclick="downloadMediaItem('${item.id}', '${item.title}', '${item.fileType}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-indigo-400" title="Tải về máy">📥</button>
-                        <button onclick="openFormModal('vault', '${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg">✏️</button>
-                        <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-red-400">✕</button>
+                        <button onclick="downloadMediaItem('${item.id}', '${item.title}', '${item.fileType}')" class="w-11 h-11 flex items-center justify-center bg-black/5 dark:bg-white/5 rounded-2xl text-lg text-indigo-500 dark:text-indigo-400 active:scale-90 transition duration-300" title="Tải về máy">📥</button>
+                        <button onclick="openFormModal('vault', '${item.id}')" class="w-11 h-11 flex items-center justify-center bg-black/5 dark:bg-white/5 rounded-2xl text-lg active:scale-90 transition duration-300">✏️</button>
+                        <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-black/5 dark:bg-white/5 rounded-2xl text-lg text-red-400 active:scale-90 transition duration-300">✕</button>
                     `;
                 }
 
                 let content = `<div class="flex justify-between items-start">
                                     <div class="flex-1 overflow-hidden pr-2">
-                                        <h4 class="font-bold text-base truncate h4-title-text">${item.title}</h4>
-                                        ${item.url ? `<a href="${item.url}" target="_blank" class="text-xs text-indigo-400 font-bold mt-1 inline-block">🔗 Mở liên kết</a>` : ''}
+                                        <h4 class="font-bold text-base truncate h4-title-text text-gray-800 dark:text-gray-100">${item.title}</h4>
+                                        ${item.url ? `<a href="${item.url}" target="_blank" class="text-xs text-rose-500 dark:text-indigo-400 font-bold mt-1 inline-block hover:underline">🔗 Mở liên kết</a>` : ''}
                                     </div>
                                     <div class="flex items-center gap-2 shrink-0">
                                         ${buttonsHTML}
@@ -851,8 +862,8 @@
                         if (el && blob) {
                             const url = URL.createObjectURL(blob);
                             el.outerHTML = item.fileType.startsWith('video/') 
-                                ? `<div class="flex justify-center w-full"><video src="${url}" controls class="w-full max-h-[65vh] rounded-2xl shadow-md object-contain" playsinline></video></div>` 
-                                : `<div class="flex justify-center w-full"><img src="${url}" class="w-full max-h-[65vh] rounded-2xl shadow-md object-contain" loading="lazy"></div>`;
+                                ? `<div class="flex justify-center w-full shadow-inner bg-black/20 rounded-2xl overflow-hidden"><video src="${url}" controls class="w-full max-h-[65vh] rounded-2xl shadow-sm object-contain" playsinline></video></div>` 
+                                : `<div class="flex justify-center w-full shadow-inner bg-black/5 dark:bg-black/20 rounded-2xl overflow-hidden"><img src="${url}" class="w-full max-h-[65vh] rounded-2xl shadow-sm object-contain" loading="lazy"></div>`;
                         }
                     });
                 } else {
@@ -863,8 +874,12 @@
 
         function filterVault(cat) { 
             currentVaultCategory = cat; 
-            document.querySelectorAll('.vault-filter-btn').forEach(b => { b.classList.replace('bg-pink-600', 'bg-gray-900/60'); b.classList.add('text-gray-400'); });
-            const active = document.getElementById(`vbtn-${cat}`); active.classList.replace('bg-gray-900/60', 'bg-pink-600'); active.classList.remove('text-gray-400'); active.classList.add('text-white');
+            document.querySelectorAll('.vault-filter-btn').forEach(b => { 
+                b.className = "vault-filter-btn h-14 bg-white/40 dark:bg-gray-900/40 border border-black/5 dark:border-gray-800 rounded-2xl flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 active:scale-95 transition-all shadow-sm"; 
+            });
+            
+            const active = document.getElementById(`vbtn-${cat}`); 
+            active.className = "vault-filter-btn h-14 bg-gradient-to-br from-rose-500 to-pink-500 rounded-2xl flex flex-col items-center justify-center gap-1 active:scale-95 transition-all text-white font-medium shadow-md shadow-rose-500/10";
             
             const titleEl = document.getElementById('vault-title-text'); const descEl = document.getElementById('vault-desc-text');
             if (cat === 'wishlist') { titleEl.innerText = "Kho Lưu Trữ Vô Tận"; descEl.innerText = "Nơi lưu trữ những món đồ riêng tư của bạn"; }
@@ -903,7 +918,7 @@
             if (msgEl) msgEl.innerText = randomMsg;
             
             setTimeout(() => { 
-                const intro = document.getElementById('intro-screen'); if(intro){ intro.classList.add('intro-hide'); setTimeout(()=>intro.remove(), 800); } 
+                const intro = document.getElementById('intro-screen'); if(intro){ intro.classList.add('intro-hide'); setTimeout(()=>intro.remove(), 1200); } 
             }, 2000); 
         });
     </script>

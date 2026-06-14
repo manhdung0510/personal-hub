@@ -310,7 +310,6 @@
         let currentAvatarUrl = null;
         let savedTrackName = "Giai điệu không gian";
 
-        // --- ĐÃ XOÁ BÀI HÁT MẶC ĐỊNH THEO Ý ÔNG ---
         const defaultTracks = [];
 
         const starMessages = [
@@ -383,20 +382,26 @@
             }
         }
 
+        /* --- 🛠️ ĐÃ SỬA LỖI ĐƠ MÀN HÌNH KHÓA TẠI ĐÂY --- */
         function unlockApp() {
             const lockScreen = document.getElementById('lock-screen');
-            lockScreen.classList.add('opacity-0', 'pointer-events-none');
-            setTimeout(() => {
-                lockScreen.remove();
-                const intro = document.getElementById('intro-screen');
-                if (intro) {
-                    intro.classList.remove('hidden');
-                    setTimeout(() => { 
-                        intro.classList.add('intro-hide'); 
-                        setTimeout(() => intro.remove(), 800); 
-                    }, 2000);
-                }
-            }, 500);
+            if (lockScreen) {
+                lockScreen.classList.add('opacity-0', 'pointer-events-none');
+                setTimeout(() => {
+                    lockScreen.style.display = 'none'; // Đóng hẳn block
+                    lockScreen.remove(); // Xóa khỏi DOM hoàn toàn
+                    
+                    // Kích hoạt tiếp Intro màn hình chào mừng
+                    const intro = document.getElementById('intro-screen');
+                    if (intro) {
+                        intro.classList.remove('hidden');
+                        setTimeout(() => { 
+                            intro.classList.add('intro-hide'); 
+                            setTimeout(() => intro.remove(), 800); 
+                        }, 2000);
+                    }
+                }, 500);
+            }
         }
 
         /* --- LOGIC ĐỒNG HỒ & HÌNH NỀN SÁNG TỐI --- */

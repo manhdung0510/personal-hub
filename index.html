@@ -346,6 +346,7 @@
             }
         }
 
+        /* --- FIX FIX FIX BIẾN MẤT TOAST --- */
         function saveProfile() {
             const nameInput = document.getElementById('profile-name-input').value.trim();
             profileData.name = nameInput;
@@ -361,9 +362,13 @@
                 document.getElementById('intro-star-icon').classList.add('hidden');
             }
             
-            // Hiện ngay lập tức, không lằng nhằng delay nữa!
-            showToast("Hồ sơ của bạn đã được lưu! ✨");
+            // Bước 1: Đóng sập modal trước để dọn sạch không gian hiển thị cho Toast
             closeSettings();
+            
+            // Bước 2: Đẩy lệnh bắn Toast vào hàng đợi microtask (giúp DOM ổn định lại) -> Toast sẽ nhảy lên rực rỡ y hệt nút "Nhận niềm vui"
+            setTimeout(() => {
+                showToast("Hồ sơ của bạn đã được lưu! ✨");
+            }, 50);
         }
 
         /* --- UI CONTROLLER --- */

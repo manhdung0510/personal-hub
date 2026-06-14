@@ -213,7 +213,7 @@
             "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."
         ];
 
-        /* --- LOGIC ĐỒNG HỒ & HÌNH NỀN SÁNG TỐI THEO THỜI GIAN THỰC --- */
+        /* --- LOGIC ĐỒNG HỒ & HÌNH NỀN SÁNG TỐI --- */
         function updateTimeAndTheme() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -270,17 +270,33 @@
             transaction.objectStore("mediaFiles").delete(id);
         }
 
+        /* --- CHỨC NĂNG TẢI FILE NGƯỢC VỀ ĐIỆN THOẠI --- */
+        function downloadMediaItem(id, fileName, fileType) {
+            getMediaFromDB(id, (blob) => {
+                if (blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    // Tự động gán đuôi file chuẩn dựa theo loại file để không bị lỗi định dạng khi lưu
+                    const ext = fileType.startsWith('video/') ? 'mp4' : 'jpg';
+                    a.download = `${fileName.replace(/\s+/g, '_')}_moment.${ext}`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    showToast("Đang tải xuống tệp gốc...");
+                } else {
+                    showToast("Không tìm thấy tệp tin!", "error");
+                }
+            });
+        }
+
         /* --- UI HELPERS & SETTINGS --- */
         function openSettings() { document.getElementById('modal-settings').classList.replace('hidden', 'flex'); }
         function closeSettings() { document.getElementById('modal-settings').classList.replace('flex', 'hidden'); }
 
         function triggerConfetti() {
-            confetti({
-                particleCount: 120,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#f472b6', '#818cf8', '#c084fc', '#60a5fa']
-            });
+            confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 }, colors: ['#f472b6', '#818cf8', '#c084fc', '#60a5fa'] });
             showToast("Gửi đến bạn những điều may mắn! ✨");
         }
 
@@ -332,26 +348,20 @@
             const inputs = fields.querySelectorAll('input[type="text"]');
             inputs.forEach(inp => {
                 if(document.body.classList.contains('light-theme')) {
-                    inp.style.backgroundColor = "#ffffff";
-                    inp.style.borderColor = "rgba(15, 23, 42, 0.1)";
-                    inp.style.color = "#0f172a";
+                    inp.style.backgroundColor = "#ffffff"; inp.style.borderColor = "rgba(15, 23, 42, 0.1)"; inp.style.color = "#0f172a";
                 } else {
-                    inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)";
-                    inp.style.borderColor = "rgba(255, 255, 255, 0.05)";
-                    inp.style.color = "#f3f4f6";
+                    inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; inp.style.borderColor = "rgba(255, 255, 255, 0.05)"; inp.style.color = "#f3f4f6";
                 }
             });
 
-            const m = document.getElementById('modal-form');
-            m.classList.remove('hidden'); m.classList.add('flex');
+            const m = document.getElementById('modal-form'); m.classList.remove('hidden'); m.classList.add('flex');
             setTimeout(() => document.getElementById('form-card').classList.remove('translate-y-full'), 10);
         }
 
         function updateFileName(input) {
             const status = document.getElementById('file-status');
             if (input.files && input.files[0]) {
-                status.innerText = `Đã chọn: ${input.files[0].name.slice(0, 15)}...`;
-                status.classList.add('text-pink-500');
+                status.innerText = `Đã chọn: ${input.files[0].name.slice(0, 15)}...`; status.classList.add('text-pink-500');
             }
         }
 
@@ -363,14 +373,12 @@
         function submitForm() {
             const title = document.getElementById('add-vault-title').value.trim();
             if (!title) return showToast("Nhập tiêu đề đã nhé!", "error");
-
             const uuid = () => Math.random().toString(36).substring(2, 15);
 
             if (currentVaultCategory === 'braindump' && !currentEditId) {
                 const fileInput = document.getElementById('add-vault-file');
                 if (!fileInput.files[0]) return showToast("Chọn ảnh/video đã ông!", "error");
-                const file = fileInput.files[0];
-                const itemId = uuid();
+                const file = fileInput.files[0]; const itemId = uuid();
                 saveMediaToDB(itemId, file, () => {
                     vaultItems.push({ id: itemId, title, isIndexedDB: true, fileType: file.type, category: 'braindump' });
                     finalizeSubmit();
@@ -391,11 +399,10 @@
         }
 
         function finalizeSubmit() {
-            localStorage.setItem('local_vault', JSON.stringify(vaultItems));
-            loadVault(); closeFormModal(); showToast("Đã ghi nhớ!");
+            localStorage.setItem('local_vault', JSON.stringify(vaultItems)); loadVault(); closeFormModal(); showToast("Đã ghi nhớ!");
         }
 
-        /* --- CORE LOGIC (ĐÃ SỬA ĐỂ KHÔNG BỊ TRƠ TRỌI) --- */
+        /* --- RENDERING VAULT (TÍCH HỢP NÚT DOWNLOAD) --- */
         function loadVault() {
             if (!db) return;
             const container = document.getElementById('vault-list'); container.innerHTML = '';
@@ -411,23 +418,36 @@
                 const card = document.createElement('div');
                 card.className = 'glass-card p-5 rounded-3xl flex flex-col gap-4 fade-in';
                 
+                // Khởi tạo bộ nút thao tác mặc định cho text danh mục thường
+                let buttonsHTML = `
+                    <button onclick="openFormModal('vault', '${item.id}')" class="w-10 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg">✏️</button>
+                    <button onclick="deleteVaultItem('${item.id}')" class="w-10 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-red-400">✕</button>
+                `;
+
+                // Nếu là tab bí mật, nạp thêm nút Tải về (📥) vào bộ điều hướng
+                if (item.category === 'braindump' && item.isIndexedDB) {
+                    buttonsHTML = `
+                        <button onclick="downloadMediaItem('${item.id}', '${item.title}', '${item.fileType}')" class="w-10 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-indigo-400" title="Tải về máy">📥</button>
+                        <button onclick="openFormModal('vault', '${item.id}')" class="w-10 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg">✏️</button>
+                        <button onclick="deleteVaultItem('${item.id}')" class="w-10 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-red-400">✕</button>
+                    `;
+                }
+
                 let content = `<div class="flex justify-between items-start">
                                     <div class="flex-1 overflow-hidden pr-2">
                                         <h4 class="font-bold text-base truncate h4-title-text">${item.title}</h4>
                                         ${item.url ? `<a href="${item.url}" target="_blank" class="text-xs text-indigo-400 font-bold mt-1 inline-block">🔗 Mở liên kết</a>` : ''}
                                     </div>
-                                    <div class="flex gap-2">
-                                        <button onclick="openFormModal('vault', '${item.id}')" class="w-10 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg">✏️</button>
-                                        <button onclick="deleteVaultItem('${item.id}')" class="w-10 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-red-400">✕</button>
+                                    <div class="flex gap-2 shrink-0">
+                                        ${buttonsHTML}
                                     </div>
                                </div>`;
                 
                 if (item.isIndexedDB) {
                     const mediaId = `media-${item.id}`;
-                    // LOẠI BỎ KHUNG NỀN XÁM CỐ ĐỊNH, ĐỂ MEDIA TỰ DO CO GIÃN THEO TỶ LỆ TRÊN NỀN MỜ KÍNH
                     content += `<div id="${mediaId}" class="flex justify-center items-center w-full text-xs italic opacity-60 py-4">⌛ Đang tải bí mật...</div>`;
-                    container.appendChild(card);
-                    card.innerHTML = content;
+                    container.appendChild(card); card.innerHTML = content;
+                    
                     getMediaFromDB(item.id, (blob) => {
                         const el = document.getElementById(mediaId);
                         if (el && blob) {
@@ -438,50 +458,37 @@
                         }
                     });
                 } else {
-                    card.innerHTML = content;
-                    container.appendChild(card);
+                    card.innerHTML = content; container.appendChild(card);
                 }
             });
         }
 
         function filterVault(cat) { 
             currentVaultCategory = cat; 
-            document.querySelectorAll('.vault-filter-btn').forEach(b => {
-                b.classList.replace('bg-pink-600', 'bg-gray-900/60');
-                b.classList.add('text-gray-400');
-            });
-            const active = document.getElementById(`vbtn-${cat}`);
-            active.classList.replace('bg-gray-900/60', 'bg-pink-600');
-            active.classList.remove('text-gray-400');
-            active.classList.add('text-white');
+            document.querySelectorAll('.vault-filter-btn').forEach(b => { b.classList.replace('bg-pink-600', 'bg-gray-900/60'); b.classList.add('text-gray-400'); });
+            const active = document.getElementById(`vbtn-${cat}`); active.classList.replace('bg-gray-900/60', 'bg-pink-600'); active.classList.remove('text-gray-400'); active.classList.add('text-white');
             
-            const titleEl = document.getElementById('vault-title-text');
-            const descEl = document.getElementById('vault-desc-text');
+            const titleEl = document.getElementById('vault-title-text'); const descEl = document.getElementById('vault-desc-text');
             if (cat === 'wishlist') { titleEl.innerText = "Kho Lưu Trữ Vô Tận"; descEl.innerText = "Nơi lưu trữ những món đồ riêng tư của bạn"; }
             else if (cat === 'media') { titleEl.innerText = "Media Hub 🎬"; descEl.innerText = "Cất giữ phim ảnh, bài hát hoặc video hay"; }
             else if (cat === 'study') { titleEl.innerText = "Study Corner 📚"; descEl.innerText = "Lưu trữ bài viết hoặc link học tập quan trọng"; }
             else if (cat === 'braindump') { titleEl.innerText = "Secret Moments 🤫"; descEl.innerText = "Không gian cất giấu hình ảnh & video thầm kín"; }
-            
             loadVault(); 
         }
 
         let confirmCallback = null;
         function deleteVaultItem(id) {
             confirmCallback = () => {
-                const item = vaultItems.find(i => i.id === id);
-                if (item?.isIndexedDB) deleteMediaFromDB(id);
-                vaultItems = vaultItems.filter(i => i.id !== id);
-                localStorage.setItem('local_vault', JSON.stringify(vaultItems));
+                const item = vaultItems.find(i => i.id === id); if (item?.isIndexedDB) deleteMediaFromDB(id);
+                vaultItems = vaultItems.filter(i => i.id !== id); localStorage.setItem('local_vault', JSON.stringify(vaultItems));
                 loadVault(); showToast("Đã xóa khỏi kho!");
             };
-            const modal = document.getElementById('modal-confirm');
-            modal.classList.replace('hidden', 'flex');
+            const modal = document.getElementById('modal-confirm'); modal.classList.replace('hidden', 'flex');
             setTimeout(() => modal.classList.replace('opacity-0', 'opacity-100'), 10);
         }
 
         function closeConfirmModal() {
-            const modal = document.getElementById('modal-confirm');
-            modal.classList.replace('opacity-100', 'opacity-0');
+            const modal = document.getElementById('modal-confirm'); modal.classList.replace('opacity-100', 'opacity-0');
             setTimeout(() => modal.classList.replace('flex', 'hidden'), 300);
         }
 
@@ -489,13 +496,10 @@
 
         window.addEventListener('DOMContentLoaded', () => { 
             updateTimeAndTheme();
-
             const randomMsg = starMessages[Math.floor(Math.random() * starMessages.length)];
             document.getElementById('star-message').innerText = randomMsg;
-
             setTimeout(() => { 
-                const intro = document.getElementById('intro-screen'); 
-                if(intro){ intro.classList.add('intro-hide'); setTimeout(()=>intro.remove(), 800); } 
+                const intro = document.getElementById('intro-screen'); if(intro){ intro.classList.add('intro-hide'); setTimeout(()=>intro.remove(), 800); } 
             }, 2000); 
         });
     </script>

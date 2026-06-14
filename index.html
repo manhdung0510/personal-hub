@@ -310,10 +310,8 @@
         let currentAvatarUrl = null;
         let savedTrackName = "Giai điệu không gian";
 
-        const defaultTracks = [
-            { id: 'def-1', title: 'Bản nhạc tình ca Lo-Fi ✨', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-            { id: 'def-2', title: 'Tiếng mưa đêm Piano không lời 🌧️', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' }
-        ];
+        // --- ĐÃ XOÁ BÀI HÁT MẶC ĐỊNH THEO Ý ÔNG ---
+        const defaultTracks = [];
 
         const starMessages = [
             "Mong ngày hôm nay sẽ dịu dàng với bạn.",
@@ -479,7 +477,7 @@
             }
 
             if (allTracks.length === 0) {
-                container.innerHTML = `<div class="py-8 text-center text-xs opacity-40 italic">Không tìm thấy bài hát nào hợp lệ...</div>`;
+                container.innerHTML = `<div class="py-8 text-center text-xs opacity-40 italic">Kho nhạc hiện đang trống...</div>`;
                 return;
             }
 

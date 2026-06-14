@@ -165,6 +165,18 @@
 
     <main class="flex-1 overflow-y-auto scroll-container px-5 py-6 space-y-8 pb-32">
         <section id="tab-vault" class="tab-content space-y-6">
+            
+            <div class="glass-card p-4 rounded-2xl flex items-center gap-4 shadow-sm fade-in">
+                <div class="w-14 h-14 rounded-full bg-gray-800 border border-gray-700/50 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+                    <img id="main-avatar-preview" class="w-full h-full object-cover hidden" src="">
+                    <div id="main-avatar-placeholder" class="text-2xl opacity-70">👤</div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-xs font-semibold uppercase tracking-wider text-gray-400" id="main-profile-role">Chủ sở hữu</div>
+                    <div class="text-lg font-bold truncate text-gray-100 mt-0.5" id="main-profile-name">Thành viên quý giá</div>
+                </div>
+            </div>
+            
             <div class="flex justify-between items-end">
                 <div class="space-y-1">
                     <h2 id="vault-title-text" class="text-xl font-bold text-gray-100">Kho Lưu Trữ</h2>
@@ -583,6 +595,15 @@
                     const placeholder = document.getElementById('settings-avatar-placeholder');
                     if (placeholder) placeholder.classList.add('hidden');
                     
+                    // Đồng bộ sang Avatar trên màn hình chính
+                    const mainPreview = document.getElementById('main-avatar-preview');
+                    if (mainPreview) {
+                        mainPreview.src = currentAvatarUrl;
+                        mainPreview.classList.remove('hidden');
+                    }
+                    const mainPlaceholder = document.getElementById('main-avatar-placeholder');
+                    if (mainPlaceholder) mainPlaceholder.classList.add('hidden');
+                    
                     const introImg = document.getElementById('intro-avatar-img');
                     if (introImg) introImg.src = currentAvatarUrl;
                     const introBox = document.getElementById('intro-avatar-box');
@@ -594,6 +615,12 @@
 
             const nameInp = document.getElementById('profile-name-input');
             if (nameInp) nameInp.value = profileData.name || '';
+            
+            // Đồng bộ tên sang màn hình chính
+            const mainName = document.getElementById('main-profile-name');
+            if (mainName && profileData.name) {
+                mainName.innerText = profileData.name;
+            }
             
             const introWelcome = document.getElementById('intro-welcome-text');
             if (profileData.name && introWelcome) {
@@ -624,6 +651,12 @@
             profileData.name = nameInput;
             localStorage.setItem('user_profile', JSON.stringify(profileData));
             
+            // Cập nhật tên hiển thị ngoài màn hình chính
+            const mainName = document.getElementById('main-profile-name');
+            if (mainName && nameInput) {
+                mainName.innerText = nameInput;
+            }
+            
             const introWelcome = document.getElementById('intro-welcome-text');
             if(nameInput && introWelcome) {
                 introWelcome.innerText = `Chào mừng ${nameInput} trở lại...`;
@@ -636,6 +669,17 @@
                 if (introBox) introBox.classList.remove('hidden');
                 const introIcon = document.getElementById('intro-star-icon');
                 if (introIcon) introIcon.classList.add('hidden');
+            }
+            
+            // Cập nhật ảnh đại diện ngoài màn hình chính
+            if (currentAvatarUrl) {
+                const mainPreview = document.getElementById('main-avatar-preview');
+                if (mainPreview) {
+                    mainPreview.src = currentAvatarUrl;
+                    mainPreview.classList.remove('hidden');
+                }
+                const mainPlaceholder = document.getElementById('main-avatar-placeholder');
+                if (mainPlaceholder) mainPlaceholder.classList.add('hidden');
             }
             
             closeSettings();

@@ -333,6 +333,9 @@
         let currentFormType = '', currentEditId = null;
         let currentAvatarUrl = null;
         let savedTrackName = "Giai điệu không gian";
+        
+        // 🛠️ Biến tạm thời để giữ file ảnh khi cô ấy chọn (chỉ lưu thật khi ấn nút)
+        let pendingAvatarFile = null;
 
         const defaultTracks = [];
 
@@ -349,16 +352,16 @@
             "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."
         ];
 
-        /* --- 🙈 HÀM ĐIỀU KHIỂN ẨN / HIỆN MẬT KHẨU HOÀN THIỆN ICON DỨT ĐIỂM --- */
+        /* --- 🙈 HÀM ĐIỀU KHIỂN ẨN / HIỆN MẬT KHẨU --- */
         function toggleInputVisibility(inputId, btnEl) {
             const el = document.getElementById(inputId);
             if (el && btnEl) {
                 if (el.type === 'password') {
                     el.type = 'text';
-                    btnEl.innerText = '👀'; // Khi hiện thì đổi thành mở hai mắt
+                    btnEl.innerText = '👀';
                 } else {
                     el.type = 'password';
-                    btnEl.innerText = '🙈'; // Khi ẩn thì đổi thành giơ tay che mắt
+                    btnEl.innerText = '🙈';
                 }
             }
         }
@@ -446,7 +449,7 @@
             }
         }
 
-        /* --- 🕒 LOGIC ĐỒNG HỒ THEO THỜI GIAN THỰC & ĐỔI NỀN TRỜI SÁNG / TỐI --- */
+        /* --- 🕒 LOGIC ĐỒNG HỒ THEO THỜI GIAN THỰC & ĐỔI NỀN TRỜI SÁNG / TỐ --- */
         function updateTimeAndTheme() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -716,12 +719,13 @@
             request.onsuccess = callback;
         }
 
-        function getMediaFromDB(id, callback) {
+        getMediaFromDB = function(id, callback) {
+            if (!db) return callback(null);
             let transaction = db.transaction(["mediaFiles"], "readonly");
             let store = transaction.objectStore("mediaFiles");
             let request = store.get(id);
             request.onsuccess = function(e) { callback(e.target.result ? e.target.result.data : null); };
-        }
+        };
 
         function deleteMediaFromDB(id) {
             let transaction = db.transaction(["mediaFiles"], "readwrite");
@@ -775,61 +779,47 @@
             }
         }
 
-        /* --- 🛠️ FIX: THÊM THÔNG BÁO NGAY KHI THAY ẢNH ĐẠI DIỆN THÀNH CÔNG --- */
+        /* --- 🛠️ FIX: CHỈ ĐỔI PREVIEW TẠM THỜI, KHÔNG ĐƯỢC LƯU HAY BẮN THÔNG BÁO TẠI ĐÂY --- */
         function uploadProfileAvatar(input) {
             if (input.files && input.files[0]) {
                 const file = input.files[0];
-                if (!db) return;
-                saveMediaToDB("user_avatar_blob", file, function() {
-                    if (currentAvatarUrl) URL.revokeObjectURL(currentAvatarUrl);
-                    currentAvatarUrl = URL.createObjectURL(file);
-                    const preview = document.getElementById('settings-avatar-preview');
-                    if (preview) {
-                        preview.src = currentAvatarUrl;
-                        preview.classList.remove('hidden');
-                    }
-                    const placeholder = document.getElementById('settings-avatar-placeholder');
-                    if (placeholder) placeholder.classList.add('hidden');
-                    
-                    showToast("Đã cập nhật ảnh đại diện mới!"); // Thêm thông báo phản hồi dứt điểm luồng đổi ảnh
-                });
+                pendingAvatarFile = file; // Giữ file vào biến tạm
+                
+                // Đổi ảnh preview trong Setting để cô ấy nhìn thấy trước
+                const previewUrl = URL.createObjectURL(file);
+                const preview = document.getElementById('settings-avatar-preview');
+                if (preview) {
+                    preview.src = previewUrl;
+                    preview.classList.remove('hidden');
+                }
+                const placeholder = document.getElementById('settings-avatar-placeholder');
+                if (placeholder) placeholder.classList.add('hidden');
             }
         }
 
+        /* --- 🛠️ FIX: CHỈ LƯU VÀ HIỆN THÔNG BÁO SAU KHI ẤN NÚT LƯU THAY ĐỔI --- */
         function saveProfile() {
             const nameInput = document.getElementById('profile-name-input').value.trim();
-            profileData.name = nameInput;
-            localStorage.setItem('user_profile', JSON.stringify(profileData));
-            
-            const mainName = document.getElementById('main-profile-name');
-            if (mainName && nameInput) {
-                mainName.innerText = nameInput;
-            }
-            
-            const introWelcome = document.getElementById('intro-welcome-text');
-            if(nameInput && introWelcome) {
-                introWelcome.innerText = `Chào mừng ${nameInput} trở lại...`;
-            }
-            
-            const introImg = document.getElementById('intro-avatar-img');
-            if (currentAvatarUrl && introImg) {
-                introImg.src = currentAvatarUrl;
-                const introBox = document.getElementById('intro-avatar-box');
-                if (introBox) introBox.classList.remove('hidden');
-                const introIcon = document.getElementById('intro-star-icon');
-                if (introIcon) introIcon.classList.add('hidden');
-            }
-            
-            if (currentAvatarUrl) {
-                const mainPreview = document.getElementById('main-avatar-preview');
-                if (mainPreview) {
-                    mainPreview.src = currentAvatarUrl;
-                    mainPreview.classList.remove('hidden');
-                }
-                const mainPlaceholder = document.getElementById('main-avatar-placeholder');
-                if (mainPlaceholder) mainPlaceholder.classList.add('hidden');
+            let hasChanges = false;
+            let avatarChanged = false;
+            let nameChanged = false;
+
+            // Kiểm tra đổi tên biệt danh
+            if (nameInput !== (profileData.name || '')) {
+                profileData.name = nameInput;
+                localStorage.setItem('user_profile', JSON.stringify(profileData));
+                
+                const mainName = document.getElementById('main-profile-name');
+                if (mainName && nameInput) mainName.innerText = nameInput;
+                
+                const introWelcome = document.getElementById('intro-welcome-text');
+                if (introWelcome && nameInput) introWelcome.innerText = `Chào mừng ${nameInput} trở lại...`;
+                
+                nameChanged = true;
+                hasChanges = true;
             }
 
+            // Kiểm tra kiểm soát mật mã
             const newPassInput = document.getElementById('change-app-password').value.trim();
             const confirmPassInput = document.getElementById('change-app-password-confirm').value.trim();
 
@@ -841,18 +831,42 @@
                 document.getElementById('change-app-password').value = '';
                 document.getElementById('change-app-password-confirm').value = '';
                 showToast("Đã cập nhật mật mã bảo mật mới!");
+                hasChanges = true;
             }
-            
-            closeSettings();
+
+            // Nếu có ảnh đang chờ duyệt ở biến tạm thì mới tiến hành lưu thật vào database
+            if (pendingAvatarFile) {
+                avatarChanged = true;
+                hasChanges = true;
+                saveMediaToDB("user_avatar_blob", pendingAvatarFile, function() {
+                    pendingAvatarFile = null; // Xóa biến tạm sau khi lưu thành công
+                    loadProfileImages(); // Đồng bộ toàn bộ ảnh đại diện ra ngoài màn hình chính
+                    showToast("Đã cập nhật ảnh đại diện mới!");
+                });
+            }
+
+            if (nameChanged) {
+                showToast("Đã cập nhật biệt danh mới!");
+            }
+
+            if (hasChanges) {
+                closeSettings();
+            } else {
+                closeSettings();
+            }
         }
 
         /* --- UI CONTROLLER --- */
         function openSettings() {
+            pendingAvatarFile = null; // Reset biến tạm mỗi khi mở lại cài đặt
+            
             const inp = document.getElementById('profile-name-input');
             const passInp = document.getElementById('change-app-password');
             const passConfirmInp = document.getElementById('change-app-password-confirm');
             
-            // Trả về nút Ẩn (che mắt) mặc định ban đầu khi mở hộp thoại
+            // Đồng bộ lại ảnh đại diện chuẩn từ database phòng trường hợp cô ấy chọn ảnh trước đó rồi bấm hủy
+            loadProfileImages();
+
             const buttons = document.querySelectorAll('#modal-settings button[onclick^="toggleInputVisibility"]');
             buttons.forEach(btn => btn.innerText = '🙈');
 
@@ -873,6 +887,7 @@
         }
         
         function closeSettings() { 
+            pendingAvatarFile = null; // Xóa dữ liệu tạm
             document.getElementById('modal-settings').classList.replace('flex', 'hidden'); 
         }
 

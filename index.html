@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Trợ Lý Nhỏ">
-
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -47,7 +47,7 @@
             color: #0f172a !important;
         }
 
-        /* --- GIỮ NGUYÊN NỀN TÍM TỐI NGUYÊN BẢN CỦA ÔNG --- */
+        /* --- NỀN TÍM TỐI NGUYÊN BẢN --- */
         body.dark-theme {
             background-color: #05070a !important;
             color: #f3f4f6 !important;
@@ -164,7 +164,7 @@
                 <div class="flex flex-col gap-2">
                     <input type="text" id="track-title-input" placeholder="Tên bài hát (Ví dụ: Lo-Fi ban đêm...)" class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
                     <input type="text" id="track-url-input" placeholder="Dán link nhạc trực tiếp (.mp3)..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
-                    <button onclick="addNewTrack()" class="h-12 w-full bg-indigo-600 rounded-xl font-bold text-white text-xs active:scale-95 transition shadow-md">Thêm vào kho nhạc</button>
+                    <input type="hidden" id="realtime-clock"> <button onclick="addNewTrack()" class="h-12 w-full bg-indigo-600 rounded-xl font-bold text-white text-xs active:scale-95 transition shadow-md">Thêm vào kho nhạc</button>
                 </div>
             </div>
 
@@ -223,23 +223,23 @@
                 </button>
             </div>
 
-            <div id="study-sub-tabs" class="hidden grid grid-cols-2 gap-2 bg-black/20 p-1 rounded-xl border border-white/5">
-                <button onclick="changeStudySubTab('learn')" id="sub-study-learn" class="py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20">
+            <div id="study-sub-tabs" class="hidden flex gap-2 bg-black/20 p-1 rounded-xl border border-white/5 w-full">
+                <button onclick="changeStudySubTab('learn')" id="sub-study-learn" class="flex-1 py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20">
                     📖 Nghiên cứu / Tự học
                 </button>
-                <button onclick="changeStudySubTab('teach')" id="sub-study-teach" class="py-2.5 rounded-lg text-xs font-bold transition-all text-gray-400">
+                <button onclick="changeStudySubTab('teach')" id="sub-study-teach" class="flex-1 py-2.5 rounded-lg text-xs font-bold transition-all text-gray-400">
                     🏫 Tài liệu giảng dạy
                 </button>
             </div>
 
-            <div id="media-sub-tabs" class="hidden grid grid-cols-3 gap-1 bg-black/20 p-1 rounded-xl border border-white/5">
-                <button onclick="changeMediaSubTab('movie')" id="sub-media-movie" class="py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate">
+            <div id="media-sub-tabs" class="hidden flex gap-1 bg-black/20 p-1 rounded-xl border border-white/5 w-full">
+                <button onclick="changeMediaSubTab('movie')" id="sub-media-movie" class="flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate">
                     🎬 Phim ảnh
                 </button>
-                <button onclick="changeMediaSubTab('youtube')" id="sub-media-youtube" class="py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate">
-                    ❤️ YouTube
+                <button onclick="changeMediaSubTab('youtube')" id="sub-media-youtube" class="flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate">
+                    📺 YouTube
                 </button>
-                <button onclick="changeMediaSubTab('tiktok')" id="sub-media-tiktok" class="py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate">
+                <button onclick="changeMediaSubTab('tiktok')" id="sub-media-tiktok" class="flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate">
                     🎵 TikTok
                 </button>
             </div>
@@ -318,7 +318,7 @@
         let customTracks = JSON.parse(localStorage.getItem('custom_tracks')) || [];
         let currentVaultCategory = 'wishlist';
         let currentStudySubTab = 'learn'; 
-        let currentMediaSubTab = 'movie'; // Thêm biến theo dõi tab con của Media
+        let currentMediaSubTab = 'movie'; 
         let currentFormType = '', currentEditId = null;
         let currentAvatarUrl = null;
         let savedTrackName = "Giai điệu không gian";
@@ -412,44 +412,24 @@
             }
         }
 
-        /* --- LOGIC ĐỒNG HỒ & HÌNH NỀN SÁNG TỐI --- */
+        /* --- LOGIC HÌNH NỀN SÁNG TỐI --- */
         function updateTimeAndTheme() {
             const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            
-            const clockEl = document.getElementById('realtime-clock');
-            if (clockEl) clockEl.innerText = `${hours}:${minutes}:${seconds}`;
-            
             const currentHour = now.getHours();
             const body = document.body;
-            const clockIcon = document.getElementById('clock-status-icon');
-            const clockParent = clockEl ? clockEl.parentElement : null;
             
             if (currentHour >= 6 && currentHour < 18) {
                 if (!body.classList.contains('light-theme')) {
                     body.classList.remove('dark-theme');
                     body.classList.add('light-theme');
-                    if (clockIcon) clockIcon.innerText = "☀️";
-                    if (clockParent) {
-                        clockParent.classList.remove('bg-black/10', 'border-white/5');
-                        clockParent.classList.add('bg-white/40', 'border-black/5');
-                    }
                 }
             } else {
                 if (!body.classList.contains('dark-theme')) {
                     body.classList.remove('light-theme');
                     body.classList.add('dark-theme');
-                    if (clockIcon) clockIcon.innerText = "🌙";
-                    if (clockParent) {
-                        clockParent.classList.remove('bg-white/40', 'border-black/5');
-                        clockParent.classList.add('bg-black/10', 'border-white/5');
-                    }
                 }
             }
         }
-        setInterval(updateTimeAndTheme, 1000);
 
         /* --- TRÌNH QUẢN LÝ VÀ ĐIỀU KHIỂN NHẠC NỀN DYNAMIC --- */
         function openMusicModal() {
@@ -875,30 +855,30 @@
         function changeStudySubTab(subtype) {
             currentStudySubTab = subtype;
             document.getElementById('sub-study-learn').className = subtype === 'learn' 
-                ? 'py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20' 
-                : 'py-2.5 rounded-lg text-xs font-bold transition-all text-gray-400';
+                ? 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20' 
+                : 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all text-gray-400';
             document.getElementById('sub-study-teach').className = subtype === 'teach' 
-                ? 'py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20' 
-                : 'py-2.5 rounded-lg text-xs font-bold transition-all text-gray-400';
+                ? 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20' 
+                : 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all text-gray-400';
             loadVault();
         }
 
-        /* --- 🎬 NEW: CHUYỂN ĐỔI TAB CON TRONG MEDIA HUB --- */
+        /* --- 🎬 CHUYỂN ĐỔI TAB CON TRONG MEDIA HUB --- */
         function changeMediaSubTab(subtype) {
             currentMediaSubTab = subtype;
             const tabs = ['movie', 'youtube', 'tiktok'];
             tabs.forEach(t => {
                 const el = document.getElementById(`sub-media-${t}`);
                 if (t === subtype) {
-                    el.className = 'py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate';
+                    el.className = 'flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate';
                 } else {
-                    el.className = 'py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate';
+                    el.className = 'flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate';
                 }
             });
             loadVault();
         }
 
-        /* --- THEO DÕI TÊN FILE TÀI LIỆU KHI ĐIỆN THOẠI CHỌN --- */
+        /* --- THEO DÕI TÊN FILE TÀI LIỆU --- */
         function updateStudyFileName(input) {
             const status = document.getElementById('study-file-status');
             if (status && input.files && input.files[0]) {
@@ -920,7 +900,7 @@
 
             const configs = {
                 'wishlist': { t: editId ? "Sửa mục mua sắm" : "Mục mua sắm mới", d: "Bạn đang muốn mua gì thế?", p: "Tên món đồ...", l: "Link sản phẩm..." },
-                'media': { t: editId ? "Sửa nội dung" : "Lưu liên kết giải trí 🎬", d: `Sẽ tự động gom vào nhánh bạn đang chọn ở màn hình chính.`, p: "Tên bộ phim / video...", l: "Dán đường dẫn Link phim / video tại đây..." },
+                'media': { t: editId ? "Sửa nội dung" : "Lưu liên kết giải trí 🎬", d: `Sẽ tự động gom vào nhánh con bạn đang chọn ở màn hình chính.`, p: "Tên bộ phim / video...", l: "Dán đường dẫn Link phim / video tại đây..." },
                 'study': { t: editId ? "Sửa tài liệu" : "Cất tài liệu học & dạy 📚", d: "Hỗ trợ dán Link Drive hoặc Tải trực tiếp file giáo án từ máy lên. Sẽ tự lưu vào nhánh bạn đang xem ngoài màn hình.", p: "Tên tài liệu / giáo án...", l: "Dán Link Drive/Website tài liệu tại đây..." },
                 'braindump': { t: editId ? "Sửa ghi chú" : "Khoảnh khắc bí mật 🔒", d: "Ảnh và Video sẽ lưu kín trên máy.", p: "Cảm xúc lúc này...", l: "" }
             };
@@ -1027,7 +1007,6 @@
                 } else {
                     const url = document.getElementById('add-vault-url').value.trim();
                     let itemObj = { id: uuid(), title, url, category: currentVaultCategory };
-                    // Tự gán nhánh sub-tab cho Media dựa trên màn hình chính đang chọn
                     if (currentVaultCategory === 'media') {
                         itemObj.mediaType = currentMediaSubTab;
                     }
@@ -1053,7 +1032,6 @@
                 items = items.filter(i => (i.studyType || 'learn') === currentStudySubTab);
             }
 
-            // 🎬 Lọc danh sách Media theo nhánh con đang active
             if (currentVaultCategory === 'media') {
                 items = items.filter(i => (i.mediaType || 'movie') === currentMediaSubTab);
             }
@@ -1090,7 +1068,6 @@
                     `;
                 }
 
-                // Thiết lập icon/logo phân loại động
                 let iconType = "📄";
                 if (item.category === 'study' && item.isIndexedDB) {
                     if (item.fileType && item.fileType.includes('pdf')) iconType = "📕";
@@ -1098,7 +1075,6 @@
                     else if (item.fileType && (item.fileType.includes('excel') || item.fileType.includes('officedocument.spreadsheetml'))) iconType = "💚";
                     else if (item.fileType && (item.fileType.includes('presentation') || item.fileType.includes('powerpoint'))) iconType = "🍊";
                 } else if (item.category === 'media') {
-                    // 🎬 Tạo logo xịn cho các nhánh Media theo ý ông
                     const mediaBranch = item.mediaType || 'movie';
                     if (mediaBranch === 'movie') {
                         iconType = "🎬";
@@ -1108,8 +1084,6 @@
                         iconType = `<span class="font-black tracking-tighter flex items-center" style="font-size:14px; text-shadow: 1px 1px #00f7ff, -1px -1px #ff007f; color:#fff; margin-top:1px;">🎵</span>`;
                     }
                 }
-
-                const needCustomLogo = (item.category === 'media' && (item.mediaType === 'youtube' || item.mediaType === 'tiktok'));
 
                 let content = `<div class="flex justify-between items-start">
                                     <div class="flex-1 overflow-hidden pr-2 flex items-start gap-2.5">
@@ -1145,10 +1119,11 @@
             });
         }
 
+        /* --- ĐIỀU KHIỂN CHUYỂN TAB CHUẨN --- */
         function filterVault(cat) { 
             currentVaultCategory = cat; 
             document.querySelectorAll('.vault-filter-btn').forEach(b => { b.classList.replace('bg-pink-600', 'bg-gray-900/60'); b.classList.add('text-gray-400'); });
-            const active = document.getElementById(`vbtn-${cat}`); active.classList.replace('bg-gray-900/60', 'bg-pink-600'); active.classList.remove('text-gray-400'); active.classList.add('text-white');
+            const active = document.getElementById(`vbtn-${cat}`); if(active) { active.classList.replace('bg-gray-900/60', 'bg-pink-600'); active.classList.remove('text-gray-400'); active.classList.add('text-white'); }
             
             const titleEl = document.getElementById('vault-title-text'); 
             const descEl = document.getElementById('vault-desc-text');
@@ -1156,18 +1131,18 @@
             const mediaTabs = document.getElementById('media-sub-tabs');
 
             if (cat === 'study') {
-                studyTabs.classList.replace('hidden', 'grid');
-                mediaTabs.classList.replace('grid', 'hidden');
+                studyTabs.classList.remove('hidden'); studyTabs.classList.add('flex');
+                mediaTabs.classList.remove('flex'); mediaTabs.classList.add('hidden');
                 titleEl.innerText = "Study Center 📚"; 
                 descEl.innerText = "Nơi cất giữ File, Link tài liệu và Giáo án giảng dạy.";
             } else if (cat === 'media') {
-                studyTabs.classList.replace('grid', 'hidden');
-                mediaTabs.classList.replace('hidden', 'grid'); // Hiện bộ sub-tab Media mới
+                studyTabs.classList.remove('flex'); studyTabs.classList.add('hidden');
+                mediaTabs.classList.remove('hidden'); mediaTabs.classList.add('flex');
                 titleEl.innerText = "Media Hub 🎬"; 
                 descEl.innerText = "Kho lưu trữ phim ảnh, nhạc và video yêu thích.";
             } else {
-                studyTabs.classList.replace('grid', 'hidden');
-                mediaTabs.classList.replace('grid', 'hidden');
+                studyTabs.classList.remove('flex'); studyTabs.classList.add('hidden');
+                mediaTabs.classList.remove('flex'); mediaTabs.classList.add('hidden');
                 if (cat === 'wishlist') { titleEl.innerText = "Kho Lưu Trữ Vô Tận"; descEl.innerText = "Nơi lưu trữ những món đồ riêng tư của bạn"; }
                 else if (cat === 'braindump') { titleEl.innerText = "Secret Moments 🔒"; descEl.innerText = "Không gian cất giấu hình ảnh & video thầm kín"; }
             }
@@ -1195,6 +1170,7 @@
         window.addEventListener('DOMContentLoaded', () => { 
             updateTimeAndTheme();
             initPasswordScreen(); 
+            filterVault('wishlist'); // 🛠️ FIX: TỰ ĐỘNG CHẠY HÀM KHỞI TẠO ĐỂ ĐỒNG BỘ GIAO DIỆN NGAY TỪ ĐẦU
             if(db) loadProfileImages();
             else setTimeout(loadProfileImages, 300);
 

@@ -111,7 +111,7 @@
             <div class="w-full space-y-3 pt-2" id="lock-inputs-container"></div>
             
             <button onclick="checkOrSetPassword()" class="h-14 w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold text-sm shadow-lg shadow-indigo-600/20 active:scale-95 transition-all">
-                Xác Nhận 🔑
+                Xác Nhận Nhập 🔑
             </button>
         </div>
     </div>
@@ -188,7 +188,7 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <div class="text-[11px] font-bold uppercase tracking-widest text-indigo-400 opacity-80">Chủ sở hữu</div>
-                    <div class="text-2xl font-extrabold truncate text-gray-100 tracking-tight mt-1" id="main-profile-name">Người đẹp chưa biết tên</div>
+                    <div class="text-2xl font-extrabold truncate text-gray-100 tracking-tight mt-1" id="main-profile-name">Thành viên quý giá</div>
                 </div>
             </div>
             
@@ -231,6 +231,18 @@
                     🏫 Tài liệu giảng dạy
                 </button>
             </div>
+
+            <div id="media-sub-tabs" class="hidden grid grid-cols-3 gap-1 bg-black/20 p-1 rounded-xl border border-white/5">
+                <button onclick="changeMediaSubTab('movie')" id="sub-media-movie" class="py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate">
+                    🎬 Phim ảnh
+                </button>
+                <button onclick="changeMediaSubTab('youtube')" id="sub-media-youtube" class="py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate">
+                    ❤️ YouTube
+                </button>
+                <button onclick="changeMediaSubTab('tiktok')" id="sub-media-tiktok" class="py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate">
+                    🎵 TikTok
+                </button>
+            </div>
             
             <div id="vault-list" class="space-y-4"></div>
         </section>
@@ -255,7 +267,7 @@
         <div class="glass-card w-full max-w-sm rounded-[32px] p-6 space-y-5 text-center shadow-2xl">
             <div class="text-center space-y-1">
                 <h3 class="text-lg font-bold text-gray-100">⚙️ Hồ Sơ & Hệ Thống</h3>
-                <p class="text-xs text-gray-400">Tùy chỉnh không gian mật thất của riêng em</p>
+                <p class="text-xs text-gray-400">Tùy chỉnh không gian mật thất của riêng bạn</p>
             </div>
 
             <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-4 text-left flex flex-col items-center">
@@ -267,7 +279,7 @@
                 <span class="text-[11px] text-indigo-400 font-bold uppercase tracking-wider -mt-2">Chạm để đổi ảnh đại diện</span>
                 
                 <div class="w-full">
-                    <label class="text-[11px] text-gray-400 font-bold block mb-1">Biệt danh</label>
+                    <label class="text-[11px] text-gray-400 font-bold block mb-1">Biệt danh của bạn</label>
                     <input type="text" id="profile-name-input" placeholder="Nhập tên biệt danh..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
                 </div>
 
@@ -278,7 +290,7 @@
             </div>
 
             <p class="text-xs text-gray-400 leading-relaxed px-2 italic">
-                "Mật thất an toàn này thuộc về em. Phản ứng thích thú của em lần trước là lý do ra đời cho cái này."
+                "Mật thất an toàn này thuộc về bạn. Được hoàn thiện với tất cả sự trân trọng từ một người bạn phương xa."
             </p>
             
             <div class="flex gap-2">
@@ -306,6 +318,7 @@
         let customTracks = JSON.parse(localStorage.getItem('custom_tracks')) || [];
         let currentVaultCategory = 'wishlist';
         let currentStudySubTab = 'learn'; 
+        let currentMediaSubTab = 'movie'; // Thêm biến theo dõi tab con của Media
         let currentFormType = '', currentEditId = null;
         let currentAvatarUrl = null;
         let savedTrackName = "Giai điệu không gian";
@@ -313,15 +326,15 @@
         const defaultTracks = [];
 
         const starMessages = [
-            "Mong ngày hôm nay sẽ dịu dàng với em.",
-            "Dù bận rộn đến đâu, cũng nhớ ăn uống điều độ nhé.",
-            "Em đã làm rất tốt rồi, hôm nay hãy nghỉ ngơi thôi.",
-            "Một ngày nhiều niềm vui nhỏ và ít chuyện buồn nhé.",
+            "Mong ngày hôm nay sẽ dịu dàng với bạn.",
+            "Dù bận rộn đến đâu, cũng nhớ uống đủ nước nhé.",
+            "Bạn đã làm rất tốt rồi, hôm nay hãy nghỉ ngơi thôi.",
+            "Một ngày nhiều niềm vui nhỏ và ít deadline nha.",
+            "Mong bầu trời nơi bạn đang ở hôm nay thật đẹp.",
             "Bất cứ lúc nào mệt mỏi, trạm trú ẩn này luôn ở đây.",
-            "Dù có chuyên gì xảy ra, cũng không được buồn nhé.",
-            "Cố lên em, sắp đạt được điều mong muốn rồi.",
+            "Mong bạn luôn bình an dưới những cơn mưa.",
             "Gửi một chút năng lượng tích cực qua màn hình này.",
-            "Hãy mỉm cười một cái, em cười trông xinh lắm đấy.",
+            "Hãy mỉm cười một cái, bạn cười trông xinh lắm đấy.",
             "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."
         ];
 
@@ -342,7 +355,7 @@
                 `;
             } else {
                 title.innerText = "Không Gian Bảo Mật";
-                desc.innerText = "Hãy nhập mật mã để truy cập mật thất";
+                desc.innerText = "Vui lòng nhập mật mã để truy cập mật thất";
                 container.innerHTML = `
                     <input type="password" id="lock-pwd-input" placeholder="Nhập mật mã bí mật..." class="w-full h-16 border rounded-2xl px-5 text-base text-center outline-none focus:border-pink-500 shadow-inner tracking-widest transition-all">
                 `;
@@ -365,7 +378,7 @@
                 const p1 = document.getElementById('lock-pwd-1').value.trim();
                 const p2 = document.getElementById('lock-pwd-2').value.trim();
                 
-                if (!p1) return showToast("Hãy nhập mật mã thiết lập!", "error");
+                if (!p1) return showToast("Vui lòng nhập mật mã thiết lập!", "error");
                 if (p1 !== p2) return showToast("Hai mật mã không khớp nhau!", "error");
                 
                 localStorage.setItem('app_password', p1);
@@ -382,18 +395,12 @@
             }
         }
 
-        /* --- 🛠️ CHỈNH LẠI THỨ TỰ LUỒNG HIỂN THỊ TRỰC QUAN MƯỢT MÀ --- */
         function unlockApp() {
             const lockScreen = document.getElementById('lock-screen');
             if (lockScreen) {
-                // Biến mất màn hình khoá trước để lộ ra màn hình Intro đang đợi sẵn phía dưới
                 lockScreen.classList.add('opacity-0', 'pointer-events-none');
-                
-                // Chờ hiệu ứng mờ nhạt dần (fade) của màn hình khóa xong thì dọn dẹp nó
                 setTimeout(() => {
                     lockScreen.remove();
-                    
-                    // Kích hoạt chạy đếm ngược 2 giây của màn hình chào Intro
                     const intro = document.getElementById('intro-screen');
                     if (intro) {
                         setTimeout(() => { 
@@ -876,6 +883,21 @@
             loadVault();
         }
 
+        /* --- 🎬 NEW: CHUYỂN ĐỔI TAB CON TRONG MEDIA HUB --- */
+        function changeMediaSubTab(subtype) {
+            currentMediaSubTab = subtype;
+            const tabs = ['movie', 'youtube', 'tiktok'];
+            tabs.forEach(t => {
+                const el = document.getElementById(`sub-media-${t}`);
+                if (t === subtype) {
+                    el.className = 'py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate';
+                } else {
+                    el.className = 'py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate';
+                }
+            });
+            loadVault();
+        }
+
         /* --- THEO DÕI TÊN FILE TÀI LIỆU KHI ĐIỆN THOẠI CHỌN --- */
         function updateStudyFileName(input) {
             const status = document.getElementById('study-file-status');
@@ -898,7 +920,7 @@
 
             const configs = {
                 'wishlist': { t: editId ? "Sửa mục mua sắm" : "Mục mua sắm mới", d: "Bạn đang muốn mua gì thế?", p: "Tên món đồ...", l: "Link sản phẩm..." },
-                'media': { t: editId ? "Sửa nội dung" : "Lưu Media hay", d: "Phim hay nhạc đều được nhé!", p: "Tên phim/nhạc...", l: "Link xem/nghe..." },
+                'media': { t: editId ? "Sửa nội dung" : "Lưu liên kết giải trí 🎬", d: `Sẽ tự động gom vào nhánh bạn đang chọn ở màn hình chính.`, p: "Tên bộ phim / video...", l: "Dán đường dẫn Link phim / video tại đây..." },
                 'study': { t: editId ? "Sửa tài liệu" : "Cất tài liệu học & dạy 📚", d: "Hỗ trợ dán Link Drive hoặc Tải trực tiếp file giáo án từ máy lên. Sẽ tự lưu vào nhánh bạn đang xem ngoài màn hình.", p: "Tên tài liệu / giáo án...", l: "Dán Link Drive/Website tài liệu tại đây..." },
                 'braindump': { t: editId ? "Sửa ghi chú" : "Khoảnh khắc bí mật 🔒", d: "Ảnh và Video sẽ lưu kín trên máy.", p: "Cảm xúc lúc này...", l: "" }
             };
@@ -1005,6 +1027,10 @@
                 } else {
                     const url = document.getElementById('add-vault-url').value.trim();
                     let itemObj = { id: uuid(), title, url, category: currentVaultCategory };
+                    // Tự gán nhánh sub-tab cho Media dựa trên màn hình chính đang chọn
+                    if (currentVaultCategory === 'media') {
+                        itemObj.mediaType = currentMediaSubTab;
+                    }
                     vaultItems.push(itemObj);
                 }
                 finalizeSubmit();
@@ -1027,12 +1053,21 @@
                 items = items.filter(i => (i.studyType || 'learn') === currentStudySubTab);
             }
 
+            // 🎬 Lọc danh sách Media theo nhánh con đang active
+            if (currentVaultCategory === 'media') {
+                items = items.filter(i => (i.mediaType || 'movie') === currentMediaSubTab);
+            }
+
             if(search) items = items.filter(i => i.title.toLowerCase().includes(search));
             
             if(items.length === 0) {
                 let msg = "Kho đồ đang trống";
                 if(currentVaultCategory === 'study') {
                     msg = currentStudySubTab === 'learn' ? "Chưa lưu tài liệu tự học nào" : "Chưa lưu giáo án/tài liệu đi dạy nào";
+                } else if(currentVaultCategory === 'media') {
+                    if(currentMediaSubTab === 'movie') msg = "Chưa lưu liên kết phim ảnh nào";
+                    else if(currentMediaSubTab === 'youtube') msg = "Chưa lưu liên kết YouTube nào";
+                    else if(currentMediaSubTab === 'tiktok') msg = "Chưa lưu liên kết TikTok nào";
                 }
                 return container.innerHTML = `<div class="py-20 text-center opacity-30"><div class="text-6xl mb-4">${currentVaultCategory === 'braindump' ? '🔒' : '📦'}</div><p class="text-sm font-bold uppercase tracking-widest">${msg}</p></div>`;
             }
@@ -1055,20 +1090,33 @@
                     `;
                 }
 
+                // Thiết lập icon/logo phân loại động
                 let iconType = "📄";
-                if (item.isIndexedDB && item.category === 'study') {
+                if (item.category === 'study' && item.isIndexedDB) {
                     if (item.fileType && item.fileType.includes('pdf')) iconType = "📕";
                     else if (item.fileType && (item.fileType.includes('word') || item.fileType.includes('officedocument.wordprocessingml'))) iconType = "📘";
                     else if (item.fileType && (item.fileType.includes('excel') || item.fileType.includes('officedocument.spreadsheetml'))) iconType = "💚";
                     else if (item.fileType && (item.fileType.includes('presentation') || item.fileType.includes('powerpoint'))) iconType = "🍊";
+                } else if (item.category === 'media') {
+                    // 🎬 Tạo logo xịn cho các nhánh Media theo ý ông
+                    const mediaBranch = item.mediaType || 'movie';
+                    if (mediaBranch === 'movie') {
+                        iconType = "🎬";
+                    } else if (mediaBranch === 'youtube') {
+                        iconType = `<span class="text-red-500 font-bold flex items-center tracking-tighter" style="font-size:15px; margin-top:2px;">▶️<span class="text-[10px] bg-red-600 text-white px-0.5 rounded ml-0.5 font-black">YT</span></span>`;
+                    } else if (mediaBranch === 'tiktok') {
+                        iconType = `<span class="font-black tracking-tighter flex items-center" style="font-size:14px; text-shadow: 1px 1px #00f7ff, -1px -1px #ff007f; color:#fff; margin-top:1px;">🎵</span>`;
+                    }
                 }
 
+                const needCustomLogo = (item.category === 'media' && (item.mediaType === 'youtube' || item.mediaType === 'tiktok'));
+
                 let content = `<div class="flex justify-between items-start">
-                                    <div class="flex-1 overflow-hidden pr-2 flex items-start gap-2">
-                                        ${item.category === 'study' && item.isIndexedDB ? `<span class="text-xl pt-0.5">${iconType}</span>` : ''}
+                                    <div class="flex-1 overflow-hidden pr-2 flex items-start gap-2.5">
+                                        ${(item.category === 'study' && item.isIndexedDB) || item.category === 'media' ? `<div class="w-6 h-6 flex items-center justify-center shrink-0 mt-0.5">${iconType}</div>` : ''}
                                         <div class="flex-1 min-w-0">
                                             <h4 class="font-bold text-base truncate h4-title-text">${item.title}</h4>
-                                            ${item.url ? `<a href="${item.url}" target="_blank" class="text-xs text-indigo-400 font-bold mt-1 inline-block">🔗 Mở tài liệu / liên kết</a>` : ''}
+                                            ${item.url ? `<a href="${item.url}" target="_blank" class="text-xs text-indigo-400 font-bold mt-1 inline-block">🔗 Mở nội dung / liên kết</a>` : ''}
                                             ${item.isIndexedDB && item.category === 'study' ? `<span class="text-[10px] text-gray-500 block truncate mt-0.5">Tệp lưu trên máy: ${item.fileName || 'Chưa rõ tên'}</span>` : ''}
                                         </div>
                                     </div>
@@ -1104,16 +1152,23 @@
             
             const titleEl = document.getElementById('vault-title-text'); 
             const descEl = document.getElementById('vault-desc-text');
-            const subTabs = document.getElementById('study-sub-tabs');
+            const studyTabs = document.getElementById('study-sub-tabs');
+            const mediaTabs = document.getElementById('media-sub-tabs');
 
             if (cat === 'study') {
-                subTabs.classList.replace('hidden', 'grid');
+                studyTabs.classList.replace('hidden', 'grid');
+                mediaTabs.classList.replace('grid', 'hidden');
                 titleEl.innerText = "Study Center 📚"; 
                 descEl.innerText = "Nơi cất giữ File, Link tài liệu và Giáo án giảng dạy.";
+            } else if (cat === 'media') {
+                studyTabs.classList.replace('grid', 'hidden');
+                mediaTabs.classList.replace('hidden', 'grid'); // Hiện bộ sub-tab Media mới
+                titleEl.innerText = "Media Hub 🎬"; 
+                descEl.innerText = "Kho lưu trữ phim ảnh, nhạc và video yêu thích.";
             } else {
-                subTabs.classList.replace('grid', 'hidden');
+                studyTabs.classList.replace('grid', 'hidden');
+                mediaTabs.classList.replace('grid', 'hidden');
                 if (cat === 'wishlist') { titleEl.innerText = "Kho Lưu Trữ Vô Tận"; descEl.innerText = "Nơi lưu trữ những món đồ riêng tư của bạn"; }
-                else if (cat === 'media') { titleEl.innerText = "Media Hub 🎬"; descEl.innerText = "Cất giữ phim ảnh, bài hát hoặc video hay"; }
                 else if (cat === 'braindump') { titleEl.innerText = "Secret Moments 🔒"; descEl.innerText = "Không gian cất giấu hình ảnh & video thầm kín"; }
             }
             loadVault(); 

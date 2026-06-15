@@ -71,7 +71,6 @@
             border: 1px solid rgba(99, 102, 241, 0.4); 
         }
 
-        /* 🔄 HIỆU ỨNG TRƯỢT SMOOTH KHI ĐỔI TAB / SUB-TAB */
         .tab-slide-fade {
             animation: tabSlideFade 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
@@ -107,7 +106,6 @@
         }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* 🎵 🛠️ HIỆU ỨNG SÓNG NHẠC AUDIO WAVEFORM CHO MINI PLAYER */
         .wave-bar {
             width: 2px;
             height: 3px;
@@ -132,7 +130,7 @@
             
             <div class="w-full space-y-3 pt-2" id="lock-inputs-container"></div>
             
-            <button onclick="checkOrSetPassword()" class="h-14 w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold text-sm shadow-lg shadow-indigo-600/20 active:scale-[0.97] cubic-bezier(0.4, 0, 0.2, 1) transition-all">
+            <button onclick="checkOrSetPassword()" class="h-14 w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold text-sm shadow-lg shadow-indigo-600/20 active:scale-[0.97] transition-all">
                 Xác Nhận Nhập 🔑
             </button>
         </div>
@@ -363,8 +361,8 @@
             <div class="text-5xl">⚠️</div>
             <h3 class="text-lg font-bold text-gray-100" id="confirm-msg">Xác nhận xóa mục này?</h3>
             <div class="flex flex-col gap-3">
-                <button id="btn-confirm-action" class="h-14 w-full bg-red-600 rounded-2xl font-bold shadow-lg shadow-red-600/20 text-white">Xóa vĩnh viễn</button>
-                <button onclick="closeConfirmModal()" class="h-14 w-full bg-gray-900 border border-gray-800 rounded-2xl font-bold text-gray-400">Quay lại</button>
+                <button id="btn-confirm-action" class="h-14 w-full bg-red-600 hover:bg-red-500 rounded-2xl font-bold shadow-xl shadow-red-600/20 text-white active:scale-95 transition-all">Xóa vĩnh viễn</button>
+                <button onclick="closeConfirmModal()" class="h-14 w-full bg-gray-900 border border-gray-800 rounded-2xl font-bold text-gray-400 active:scale-95 transition-all">Quay lại</button>
             </div>
         </div>
     </div>
@@ -452,6 +450,7 @@
             });
         }
 
+        /* 🛠️ UPDATE: THÊM PHẢN HỒI LỖI TỐT (MỤC 6) CHỈ RÕ NGUYÊN NHÂN VÀ HƯỚNG KHẮC PHỤC */
         function checkOrSetPassword() {
             const hasPassword = localStorage.getItem('app_password');
             
@@ -459,8 +458,8 @@
                 const p1 = document.getElementById('lock-pwd-1').value.trim();
                 const p2 = document.getElementById('lock-pwd-2').value.trim();
                 
-                if (!p1) return showToast("Vui lòng nhập mật mã thiết lập!", "error");
-                if (p1 !== p2) return showToast("Hai mật mã không khớp nhau!", "error");
+                if (!p1) return showToast("Mật mã trống! Vui lòng thiết lập mật mã để bảo vệ dữ liệu.", "error");
+                if (p1 !== p2) return showToast("Mật mã không khớp! Vui lòng nhập lại chính xác ô xác nhận.", "error");
                 
                 localStorage.setItem('app_password', p1);
                 showToast("Đã thiết lập mật mã thành công!");
@@ -471,7 +470,7 @@
                     showToast("Mật mã chính xác!");
                     unlockApp();
                 } else {
-                    showToast("Sai mật mã, vui lòng nhập lại!", "error");
+                    showToast("Sai mật mã! Vui lòng kiểm tra lại ký tự hoa/thường hoặc Unikey.", "error");
                 }
             }
         }
@@ -599,7 +598,6 @@
             });
         }
 
-        /* 🛠️ UPDATE: BẬT / TẮT ANIMATION SÓNG NHẠC AUDIO WAVEFORM LIVE TRÊN HEADER */
         function playTrack(url, name) {
             const audio = document.getElementById('bg-audio');
             const btn = document.getElementById('music-btn');
@@ -615,14 +613,14 @@
                 audio.pause();
                 btn.innerText = "🎵";
                 btn.classList.remove('spin-slow', 'bg-indigo-500/30');
-                if (wave) wave.classList.replace('flex', 'hidden'); // Tắt sóng nhạc
+                if (wave) wave.classList.replace('flex', 'hidden'); 
                 statusLabel.innerText = "Trạng thái: Đang dừng phát";
                 quickStopBtn.innerText = "▶️";
             } else if (audio.src === url && audio.paused) {
                 audio.play().then(() => {
                     btn.innerText = "💿";
                     btn.classList.add('spin-slow', 'bg-indigo-500/30');
-                    if (wave) wave.classList.replace('hidden', 'flex'); // Bật sóng nhạc
+                    if (wave) wave.classList.replace('hidden', 'flex'); 
                     statusLabel.innerText = `Đang phát: ${name}`;
                     quickStopBtn.innerText = "⏸️";
                 });
@@ -632,7 +630,7 @@
                 audio.play().then(() => {
                     btn.innerText = "💿";
                     btn.classList.add('spin-slow', 'bg-indigo-500/30');
-                    if (wave) wave.classList.replace('hidden', 'flex'); // Bật sóng nhạc
+                    if (wave) wave.classList.replace('hidden', 'flex'); 
                     statusLabel.innerText = `Đang phát: ${name}`;
                     headerTitle.innerText = name;
                     quickStopBtn.innerText = "⏸️";
@@ -716,9 +714,9 @@
             statusLabel.innerText = "Trạng thái: Đang dừng phát";
             headerTitle.innerText = "Giai điệu không gian";
             
-            quickStopBtn.classList.add('hidden');
-            quickMuteBtn.classList.add('hidden');
-            quickClearBtn.classList.add('hidden');
+            quickStopBtn.add('hidden');
+            quickMuteBtn.add('hidden');
+            quickClearBtn.add('hidden');
             miniPlayer.classList.remove('bg-indigo-500/10', 'border-indigo-500/20');
             
             renderTrackList();
@@ -823,6 +821,7 @@
             }
         }
 
+        /* 🛠️ UPDATE: SỬA THÔNG BÁO LỖI THEO NGUYÊN TẮC (MỤC 6), NÓI RÕ NGUYÊN NHÂN VÀ CÁCH KHẮC PHỤC CHỨ ĐỪNG CHỈ BÁO CHUNG CHUNG */
         function saveProfile() {
             const nameInput = document.getElementById('profile-name-input').value.trim();
             let hasChanges = false;
@@ -843,8 +842,8 @@
             const confirmPassInput = document.getElementById('change-app-password-confirm').value.trim();
 
             if (newPassInput || confirmPassInput) {
-                if (!newPassInput) return showToast("Vui lòng điền mật mã mới!", "error");
-                if (newPassInput !== confirmPassInput) return showToast("Mật mã xác nhận không khớp!", "error");
+                if (!newPassInput) return showToast("Ô mật mã trống! Vui lòng nhập chuỗi mật mã mới trước.", "error");
+                if (newPassInput !== confirmPassInput) return showToast("Không khớp! Chuỗi nhập lại phải trùng khớp hoàn toàn với ô trên.", "error");
                 
                 localStorage.setItem('app_password', newPassInput);
                 document.getElementById('change-app-password').value = '';
@@ -953,7 +952,6 @@
             showToast("Gửi đến bạn những điều may mắn! ✨");
         }
 
-        /* --- CHUYỂN ĐỔI TAB CON TRONG STUDY CORNER --- */
         function changeStudySubTab(subtype) {
             currentStudySubTab = subtype;
             document.getElementById('sub-study-learn').className = subtype === 'learn' 
@@ -963,11 +961,10 @@
                 ? 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20' 
                 : 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all text-gray-400';
             
-            triggerTabAnimation(); // Kích hoạt hiệu ứng trượt mượt
+            triggerTabAnimation(); 
             loadVault();
         }
 
-        /* --- 🎬 CHUYỂN ĐỔI TAB CON TRONG MEDIA HUB --- */
         function changeMediaSubTab(subtype) {
             currentMediaSubTab = subtype;
             const tabs = ['movie', 'youtube', 'tiktok'];
@@ -979,11 +976,10 @@
                     el.className = 'flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate';
                 }
             });
-            triggerTabAnimation(); // Kích hoạt hiệu ứng trượt mượt
+            triggerTabAnimation(); 
             loadVault();
         }
 
-        /* --- 📱 CHUYỂN ĐỔI TAB CON CHO SOCIAL HUB --- */
         function changeSocialSubTab(subtype) {
             currentSocialSubTab = subtype;
             const tabs = ['threads', 'instagram', 'facebook'];
@@ -995,16 +991,15 @@
                     el.className = 'flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate';
                 }
             });
-            triggerTabAnimation(); // Kích hoạt hiệu ứng trượt mượt
+            triggerTabAnimation(); 
             loadVault();
         }
 
-        /* 🔄 HÀM KÍCH HOẠT HIỆU ỨNG TRƯỢT XOAY VÒNG CHO DANH SÁCH TÀI LIỆU */
         function triggerTabAnimation() {
             const list = document.getElementById('vault-list');
             if (list) {
                 list.classList.remove('tab-slide-fade');
-                void list.offsetWidth; // Kích hoạt reflow ép trình duyệt nhận diện lại class
+                void list.offsetWidth; 
                 list.classList.add('tab-slide-fade');
             }
         }
@@ -1092,14 +1087,15 @@
 
         document.getElementById('modal-form').addEventListener('click', function(e) { if (e.target === this) closeFormModal(); });
 
+        /* 🛠️ UPDATE: SỬA THÔNG BÁO LỖI THEO NGUYÊN TẮC (MỤC 6), NÓI RÕ NGUYÊN NHÂN VÀ CÁCH KHẮC PHỤC CHỨ ĐỪNG CHỈ BÁO CHUNG CHUNG */
         function submitForm() {
             const title = document.getElementById('add-vault-title').value.trim();
-            if (!title) return showToast("Nhập tiêu đề đã nhé!", "error");
+            if (!title) return showToast("Trường tiêu đề bị bỏ trống! Vui lòng nhập tên mục lưu trữ để dễ nhận diện.", "error");
             const uuid = () => Math.random().toString(36).substring(2, 15);
 
             if (currentVaultCategory === 'braindump' && !currentEditId) {
                 const fileInput = document.getElementById('add-vault-file');
-                if (!fileInput.files[0]) return showToast("Chọn ảnh/video đã ông!", "error");
+                if (!fileInput.files[0]) return showToast("Chưa chọn file! Bạn cần đính kèm 1 tệp ảnh hoặc video bí mật từ máy.", "error");
                 const file = fileInput.files[0]; const itemId = uuid();
                 saveMediaToDB(itemId, file, () => {
                     vaultItems.push({ id: itemId, title, isIndexedDB: true, fileType: file.type, category: 'braindump' });
@@ -1154,7 +1150,7 @@
             localStorage.setItem('local_vault', JSON.stringify(vaultItems)); loadVault(); closeFormModal(); showToast("Đã ghi nhớ!");
         }
 
-        /* 🛠️ CORE LOGIC: NÂNG CẤP TOÀN DIỆN EMPTY STATE CHỦ ĐỘNG & GRID VIEW CHO SECRET CORNER */
+        /* --- CORE LOGIC --- */
         function loadVault() {
             if (!db) return;
             const container = document.getElementById('vault-list'); container.innerHTML = '';
@@ -1174,10 +1170,9 @@
 
             if(search) items = items.filter(i => i.title.toLowerCase().includes(search));
             
-            // 💡 TỐI ƯU TRẠNG THÁI TRỐNG (EMPTY STATE) DẪN DẮT UX CHO CÔ ẤY
             if(items.length === 0) {
                 container.removeAttribute('class');
-                container.className = 'space-y-4 tab-slide-fade'; // Trả về dạng list thường cho thông báo trống
+                container.className = 'space-y-4 tab-slide-fade'; 
 
                 let msg = "Kho đồ đang trống";
                 if(currentVaultCategory === 'study') {
@@ -1199,20 +1194,18 @@
                 return;
             }
 
-            // 🛠️ TỐI ƯU GIAO DIỆN LƯỚI 2 CỘT (GRID VIEW) RIÊNG CHO MỤC SECRET MOMENTS
             if (currentVaultCategory === 'braindump') {
                 container.removeAttribute('class');
-                container.className = 'grid grid-cols-2 gap-3 tab-slide-fade'; // Bật chế độ lưới cho album ảnh bảo mật
+                container.className = 'grid grid-cols-2 gap-3 tab-slide-fade'; 
             } else {
                 container.removeAttribute('class');
-                container.className = 'space-y-4 tab-slide-fade'; // Các mục thông thường giữ dạng list
+                container.className = 'space-y-4 tab-slide-fade'; 
             }
 
             items.forEach(item => {
                 let card = document.createElement('div');
                 
                 if (currentVaultCategory === 'braindump') {
-                    // Cấu trúc thẻ dạng Album ảnh cho mục Bí Mật
                     card.className = 'glass-card p-3 rounded-2xl flex flex-col justify-between gap-3 relative overflow-hidden group shadow-md';
                     
                     let mediaId = `media-${item.id}`;
@@ -1241,7 +1234,6 @@
                     });
                     
                 } else {
-                    // Cấu trúc danh sách chuẩn gốc cho các mục còn lại
                     card.className = 'glass-card p-5 rounded-3xl flex flex-col gap-4';
                     let buttonsHTML = `
                         <button onclick="openFormModal('vault', '${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg">✏️</button>
@@ -1329,7 +1321,7 @@
                 if (cat === 'wishlist') { titleEl.innerText = "Kho Lưu Trữ Vô Tận"; descEl.innerText = "Nơi lưu trữ những món đồ riêng tư của bạn"; }
                 else if (cat === 'braindump') { titleEl.innerText = "Secret Moments 🔒"; descEl.innerText = "Không gian cất giấu hình ảnh & video thầm kín"; }
             }
-            triggerTabAnimation(); // Kích hoạt hiệu ứng trượt mượt danh mục dữ liệu chính
+            triggerTabAnimation(); 
             loadVault(); 
         }
 

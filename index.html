@@ -208,22 +208,26 @@
                 <input type="text" id="vault-search" oninput="loadVault()" placeholder="🔍 Tìm nhanh trong kho..." class="w-full h-14 border rounded-2xl px-5 text-sm outline-none focus:border-pink-500 transition-all shadow-inner">
             </div>
             
-            <div class="grid grid-cols-4 gap-2">
-                <button onclick="filterVault('wishlist')" id="vbtn-wishlist" class="vault-filter-btn h-14 bg-pink-600 rounded-2xl flex flex-col items-center justify-center gap-1 active:scale-95 transition-all text-white font-medium">
-                    <span class="text-lg">🛍️</span>
-                    <span class="text-[9px] font-bold uppercase tracking-wider">Shopping</span>
+            <div class="grid grid-cols-5 gap-1.5">
+                <button onclick="filterVault('wishlist')" id="vbtn-wishlist" class="vault-filter-btn h-14 bg-pink-600 rounded-xl flex flex-col items-center justify-center gap-1 active:scale-95 transition-all text-white font-medium">
+                    <span class="text-base">🛍️</span>
+                    <span class="text-[8px] font-bold uppercase tracking-wider">Shopping</span>
                 </button>
-                <button onclick="filterVault('media')" id="vbtn-media" class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-2xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-95 transition-all">
-                    <span class="text-lg">🎬</span>
-                    <span class="text-[9px] font-bold uppercase tracking-wider">Media</span>
+                <button onclick="filterVault('media')" id="vbtn-media" class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-95 transition-all">
+                    <span class="text-base">🎬</span>
+                    <span class="text-[8px] font-bold uppercase tracking-wider">Media</span>
                 </button>
-                <button onclick="filterVault('study')" id="vbtn-study" class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-2xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-95 transition-all">
-                    <span class="text-lg">📚</span>
-                    <span class="text-[9px] font-bold uppercase tracking-wider">Study</span>
+                <button onclick="filterVault('social')" id="vbtn-social" class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-95 transition-all">
+                    <span class="text-base">📱</span>
+                    <span class="text-[8px] font-bold uppercase tracking-wider">Social</span>
                 </button>
-                <button onclick="filterVault('braindump')" id="vbtn-braindump" class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-2xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-95 transition-all">
-                    <span class="text-lg">🔒</span>
-                    <span class="text-[9px] font-bold uppercase tracking-wider">Secret</span>
+                <button onclick="filterVault('study')" id="vbtn-study" class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-95 transition-all">
+                    <span class="text-base">📚</span>
+                    <span class="text-[8px] font-bold uppercase tracking-wider">Study</span>
+                </button>
+                <button onclick="filterVault('braindump')" id="vbtn-braindump" class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-95 transition-all">
+                    <span class="text-base">🔒</span>
+                    <span class="text-[8px] font-bold uppercase tracking-wider">Secret</span>
                 </button>
             </div>
 
@@ -245,6 +249,18 @@
                 </button>
                 <button onclick="changeMediaSubTab('tiktok')" id="sub-media-tiktok" class="flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate">
                     🎵 TikTok
+                </button>
+            </div>
+
+            <div id="social-sub-tabs" class="hidden flex gap-1 bg-black/20 p-1 rounded-xl border border-white/5 w-full">
+                <button onclick="changeSocialSubTab('threads')" id="sub-social-threads" class="flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate">
+                    🧵 Threads
+                </button>
+                <button onclick="changeSocialSubTab('instagram')" id="sub-social-instagram" class="flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate">
+                    📸 Instagram
+                </button>
+                <button onclick="changeSocialSubTab('facebook')" id="sub-social-facebook" class="flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate">
+                    👥 Facebook
                 </button>
             </div>
             
@@ -330,11 +346,11 @@
         let currentVaultCategory = 'wishlist';
         let currentStudySubTab = 'learn'; 
         let currentMediaSubTab = 'movie'; 
+        let currentSocialSubTab = 'threads'; // 🛠️ Biến tạm theo dõi nhánh Social con
         let currentFormType = '', currentEditId = null;
         let currentAvatarUrl = null;
         let savedTrackName = "Giai điệu không gian";
         
-        // 🛠️ Biến tạm thời để giữ file ảnh khi cô ấy chọn (chỉ lưu thật khi ấn nút)
         let pendingAvatarFile = null;
 
         const defaultTracks = [];
@@ -352,7 +368,6 @@
             "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."
         ];
 
-        /* --- 🙈 HÀM ĐIỀU KHIỂN ẨN / HIỆN MẬT KHẨU --- */
         function toggleInputVisibility(inputId, btnEl) {
             const el = document.getElementById(inputId);
             if (el && btnEl) {
@@ -366,7 +381,6 @@
             }
         }
 
-        /* --- 🔐 LOGIC KIỂM TRA & THIẾT LẬP MẬT KHẨU BAN ĐẦU --- */
         function initPasswordScreen() {
             const hasPassword = localStorage.getItem('app_password');
             const container = document.getElementById('lock-inputs-container');
@@ -449,7 +463,6 @@
             }
         }
 
-        /* --- 🕒 LOGIC ĐỒNG HỒ THEO THỜI GIAN THỰC & ĐỔI NỀN TRỜI SÁNG / TỐ --- */
         function updateTimeAndTheme() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -493,7 +506,6 @@
         }
         setInterval(updateTimeAndTheme, 1000);
 
-        /* --- TRÌNH QUẢN LÝ VÀ ĐIỀU KHIỂN NHẠC NỀN DYNAMIC --- */
         function openMusicModal() {
             const inputs = document.querySelectorAll('#modal-music input[type="text"]');
             inputs.forEach(inp => {
@@ -673,30 +685,6 @@
             showToast("Đã tắt hẳn nhạc nền!");
         }
 
-        function addNewTrack() {
-            const title = document.getElementById('track-title-input').value.trim();
-            const url = document.getElementById('track-url-input').value.trim();
-
-            if (!title || !url) return showToast("Nhập tên và dán link nhạc đã nhé!", "error");
-            if (!url.startsWith('http://') && !url.startsWith('https://')) return showToast("Link nhạc phải có http hoặc https!", "error");
-
-            const newTrack = { id: Date.now(), title, url };
-            customTracks.push(newTrack);
-            localStorage.setItem('custom_tracks', JSON.stringify(customTracks));
-
-            document.getElementById('track-title-input').value = '';
-            document.getElementById('track-url-input').value = '';
-            renderTrackList();
-            showToast("Đã lưu bài hát mới!");
-        }
-
-        function deleteTrack(id) {
-            customTracks = customTracks.filter(t => t.id.toString() !== id.toString());
-            localStorage.setItem('custom_tracks', JSON.stringify(customTracks));
-            renderTrackList();
-            showToast("Đã xóa bài hát!");
-        }
-
         /* --- INDEXEDDB STORAGE --- */
         let db;
         const dbRequest = indexedDB.open("SecureMomentsDB", 1);
@@ -779,13 +767,11 @@
             }
         }
 
-        /* --- 🛠️ FIX: CHỈ ĐỔI PREVIEW TẠM THỜI, KHÔNG ĐƯỢC LƯU HAY BẮN THÔNG BÁO TẠI ĐÂY --- */
         function uploadProfileAvatar(input) {
             if (input.files && input.files[0]) {
                 const file = input.files[0];
-                pendingAvatarFile = file; // Giữ file vào biến tạm
+                pendingAvatarFile = file;
                 
-                // Đổi ảnh preview trong Setting để cô ấy nhìn thấy trước
                 const previewUrl = URL.createObjectURL(file);
                 const preview = document.getElementById('settings-avatar-preview');
                 if (preview) {
@@ -797,29 +783,22 @@
             }
         }
 
-        /* --- 🛠️ FIX: CHỈ LƯU VÀ HIỆN THÔNG BÁO SAU KHI ẤN NÚT LƯU THAY ĐỔI --- */
         function saveProfile() {
             const nameInput = document.getElementById('profile-name-input').value.trim();
             let hasChanges = false;
-            let avatarChanged = false;
             let nameChanged = false;
 
-            // Kiểm tra đổi tên biệt danh
             if (nameInput !== (profileData.name || '')) {
                 profileData.name = nameInput;
                 localStorage.setItem('user_profile', JSON.stringify(profileData));
-                
                 const mainName = document.getElementById('main-profile-name');
                 if (mainName && nameInput) mainName.innerText = nameInput;
-                
                 const introWelcome = document.getElementById('intro-welcome-text');
                 if (introWelcome && nameInput) introWelcome.innerText = `Chào mừng ${nameInput} trở lại...`;
-                
                 nameChanged = true;
                 hasChanges = true;
             }
 
-            // Kiểm tra kiểm soát mật mã
             const newPassInput = document.getElementById('change-app-password').value.trim();
             const confirmPassInput = document.getElementById('change-app-password-confirm').value.trim();
 
@@ -834,13 +813,11 @@
                 hasChanges = true;
             }
 
-            // Nếu có ảnh đang chờ duyệt ở biến tạm thì mới tiến hành lưu thật vào database
             if (pendingAvatarFile) {
-                avatarChanged = true;
                 hasChanges = true;
                 saveMediaToDB("user_avatar_blob", pendingAvatarFile, function() {
-                    pendingAvatarFile = null; // Xóa biến tạm sau khi lưu thành công
-                    loadProfileImages(); // Đồng bộ toàn bộ ảnh đại diện ra ngoài màn hình chính
+                    pendingAvatarFile = null;
+                    loadProfileImages();
                     showToast("Đã cập nhật ảnh đại diện mới!");
                 });
             }
@@ -849,22 +826,16 @@
                 showToast("Đã cập nhật biệt danh mới!");
             }
 
-            if (hasChanges) {
-                closeSettings();
-            } else {
-                closeSettings();
-            }
+            closeSettings();
         }
 
         /* --- UI CONTROLLER --- */
         function openSettings() {
-            pendingAvatarFile = null; // Reset biến tạm mỗi khi mở lại cài đặt
-            
+            pendingAvatarFile = null;
             const inp = document.getElementById('profile-name-input');
             const passInp = document.getElementById('change-app-password');
             const passConfirmInp = document.getElementById('change-app-password-confirm');
             
-            // Đồng bộ lại ảnh đại diện chuẩn từ database phòng trường hợp cô ấy chọn ảnh trước đó rồi bấm hủy
             loadProfileImages();
 
             const buttons = document.querySelectorAll('#modal-settings button[onclick^="toggleInputVisibility"]');
@@ -887,7 +858,7 @@
         }
         
         function closeSettings() { 
-            pendingAvatarFile = null; // Xóa dữ liệu tạm
+            pendingAvatarFile = null;
             document.getElementById('modal-settings').classList.replace('flex', 'hidden'); 
         }
 
@@ -914,7 +885,6 @@
             }, 3000);
         }
 
-        /* --- DOWNLOAD FILE --- */
         function downloadMediaItem(id, fileName, fileType) {
             getMediaFromDB(id, (blob) => {
                 if (blob) {
@@ -970,6 +940,21 @@
             loadVault();
         }
 
+        /* --- 📱 🛠️ UPDATE: CHUYỂN ĐỔI TAB CON CHO SOCIAL HUB --- */
+        function changeSocialSubTab(subtype) {
+            currentSocialSubTab = subtype;
+            const tabs = ['threads', 'instagram', 'facebook'];
+            tabs.forEach(t => {
+                const el = document.getElementById(`sub-social-${t}`);
+                if (t === subtype) {
+                    el.className = 'flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate';
+                } else {
+                    el.className = 'flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate';
+                }
+            });
+            loadVault();
+        }
+
         /* --- THEO DÕI TÊN FILE TÀI LIỆU --- */
         function updateStudyFileName(input) {
             const status = document.getElementById('study-file-status');
@@ -993,6 +978,8 @@
             const configs = {
                 'wishlist': { t: editId ? "Sửa mục mua sắm" : "Mục mua sắm mới", d: "Bạn đang muốn mua gì thế?", p: "Tên món đồ...", l: "Link sản phẩm..." },
                 'media': { t: editId ? "Sửa nội dung" : "Lưu liên kết giải trí 🎬", d: `Sẽ tự động gom vào nhánh con bạn đang chọn ở màn hình chính.`, p: "Tên bộ phim / video...", l: "Dán đường dẫn Link phim / video tại đây..." },
+                // 🛠️ UPDATE CẤU HÌNH FORM CHO SOCIAL HUB
+                'social': { t: editId ? "Sửa liên kết" : "Lưu bài viết Social 📱", d: `Sẽ tự động lưu vào nhánh ${currentSocialSubTab.toUpperCase()} bạn đang xem ở màn hình chính.`, p: "Tiêu đề bài viết / nội dung ngắn...", l: "Dán đường dẫn Link của Threads, Instagram hoặc Facebook..." },
                 'study': { t: editId ? "Sửa tài liệu" : "Cất tài liệu học & dạy 📚", d: "Hỗ trợ dán Link Drive hoặc Tải trực tiếp file giáo án từ máy lên. Sẽ tự lưu vào nhánh bạn đang xem ngoài màn hình.", p: "Tên tài liệu / giáo án...", l: "Dán Link Drive/Website tài liệu tại đây..." },
                 'braindump': { t: editId ? "Sửa ghi chú" : "Khoảnh khắc bí mật 🔒", d: "Ảnh và Video sẽ lưu kín trên máy.", p: "Cảm xúc lúc này...", l: "" }
             };
@@ -1102,6 +1089,10 @@
                     if (currentVaultCategory === 'media') {
                         itemObj.mediaType = currentMediaSubTab;
                     }
+                    // 🛠️ UPDATE: LƯU ĐÚNG NHÁNH CON CHO SOCIAL HUB
+                    if (currentVaultCategory === 'social') {
+                        itemObj.socialType = currentSocialSubTab;
+                    }
                     vaultItems.push(itemObj);
                 }
                 finalizeSubmit();
@@ -1128,6 +1119,11 @@
                 items = items.filter(i => (i.mediaType || 'movie') === currentMediaSubTab);
             }
 
+            // 🛠️ UPDATE: LỌC NỘI DUNG THEO NHÁNH CON SOCIAL HUB
+            if (currentVaultCategory === 'social') {
+                items = items.filter(i => (i.socialType || 'threads') === currentSocialSubTab);
+            }
+
             if(search) items = items.filter(i => i.title.toLowerCase().includes(search));
             
             if(items.length === 0) {
@@ -1138,6 +1134,10 @@
                     if(currentMediaSubTab === 'movie') msg = "Chưa lưu liên kết phim ảnh nào";
                     else if(currentMediaSubTab === 'youtube') msg = "Chưa lưu liên kết YouTube nào";
                     else if(currentMediaSubTab === 'tiktok') msg = "Chưa lưu liên kết TikTok nào";
+                } else if(currentVaultCategory === 'social') {
+                    if(currentSocialSubTab === 'threads') msg = "Chưa lưu nội dung Threads nào";
+                    else if(currentSocialSubTab === 'instagram') msg = "Chưa lưu nội dung Instagram nào";
+                    else if(currentSocialSubTab === 'facebook') msg = "Chưa lưu nội dung Facebook nào";
                 }
                 return container.innerHTML = `<div class="py-20 text-center opacity-30"><div class="text-6xl mb-4">${currentVaultCategory === 'braindump' ? '🔒' : '📦'}</div><p class="text-sm font-bold uppercase tracking-widest">${msg}</p></div>`;
             }
@@ -1168,18 +1168,20 @@
                     else if (item.fileType && (item.fileType.includes('presentation') || item.fileType.includes('powerpoint'))) iconType = "🍊";
                 } else if (item.category === 'media') {
                     const mediaBranch = item.mediaType || 'movie';
-                    if (mediaBranch === 'movie') {
-                        iconType = "🎬";
-                    } else if (mediaBranch === 'youtube') {
-                        iconType = `<span class="text-red-500 font-bold flex items-center tracking-tighter" style="font-size:15px; margin-top:2px;">▶️<span class="text-[10px] bg-red-600 text-white px-0.5 rounded ml-0.5 font-black">YT</span></span>`;
-                    } else if (mediaBranch === 'tiktok') {
-                        iconType = `<span class="font-black tracking-tighter flex items-center" style="font-size:14px; text-shadow: 1px 1px #00f7ff, -1px -1px #ff007f; color:#fff; margin-top:1px;">🎵</span>`;
-                    }
+                    if (mediaBranch === 'movie') iconType = "🎬";
+                    else if (mediaBranch === 'youtube') iconType = `🍿`;
+                    else if (mediaBranch === 'tiktok') iconType = `🎵`;
+                } else if (item.category === 'social') {
+                    // 🛠️ UPDATE: THÊM ICON ĐẶC TRƯNG CHO TỪNG MXH TRONG DANH SÁCH HỒ SƠ
+                    const socialBranch = item.socialType || 'threads';
+                    if (socialBranch === 'threads') iconType = "🧵";
+                    else if (socialBranch === 'instagram') iconType = "📸";
+                    else if (socialBranch === 'facebook') iconType = "👥";
                 }
 
                 let content = `<div class="flex justify-between items-start">
                                     <div class="flex-1 overflow-hidden pr-2 flex items-start gap-2.5">
-                                        ${(item.category === 'study' && item.isIndexedDB) || item.category === 'media' ? `<div class="w-6 h-6 flex items-center justify-center shrink-0 mt-0.5">${iconType}</div>` : ''}
+                                        ${(item.category === 'study' && item.isIndexedDB) || item.category === 'media' || item.category === 'social' ? `<div class="w-6 h-6 flex items-center justify-center shrink-0 mt-0.5">${iconType}</div>` : ''}
                                         <div class="flex-1 min-w-0">
                                             <h4 class="font-bold text-base truncate h4-title-text">${item.title}</h4>
                                             ${item.url ? `<a href="${item.url}" target="_blank" class="text-xs text-indigo-400 font-bold mt-1 inline-block">🔗 Mở nội dung / liên kết</a>` : ''}
@@ -1220,20 +1222,31 @@
             const descEl = document.getElementById('vault-desc-text');
             const studyTabs = document.getElementById('study-sub-tabs');
             const mediaTabs = document.getElementById('media-sub-tabs');
+            const socialTabs = document.getElementById('social-sub-tabs'); // 🛠️ Tab con Social Hub
 
             if (cat === 'study') {
                 studyTabs.classList.remove('hidden'); studyTabs.classList.add('flex');
                 mediaTabs.classList.remove('flex'); mediaTabs.classList.add('hidden');
+                socialTabs.classList.remove('flex'); socialTabs.classList.add('hidden');
                 titleEl.innerText = "Study Center 📚"; 
                 descEl.innerText = "Nơi cất giữ File, Link tài liệu và Giáo án giảng dạy.";
             } else if (cat === 'media') {
                 studyTabs.classList.remove('flex'); studyTabs.classList.add('hidden');
                 mediaTabs.classList.remove('hidden'); mediaTabs.classList.add('flex');
+                socialTabs.classList.remove('flex'); socialTabs.classList.add('hidden');
                 titleEl.innerText = "Media Hub 🎬"; 
                 descEl.innerText = "Kho lưu trữ phim ảnh, nhạc và video yêu thích.";
+            } else if (cat === 'social') {
+                // 🛠️ UPDATE: BẬT HIỂN THỊ CÁC NHÁNH CON CHO SOCIAL HUB
+                studyTabs.classList.remove('flex'); studyTabs.classList.add('hidden');
+                mediaTabs.classList.remove('flex'); mediaTabs.classList.add('hidden');
+                socialTabs.classList.remove('hidden'); socialTabs.classList.add('flex');
+                titleEl.innerText = "Social Hub 📱";
+                descEl.innerText = "Nơi lưu trữ ảnh, video ngắn, bài viết Threads, Instagram, Facebook.";
             } else {
                 studyTabs.classList.remove('flex'); studyTabs.classList.add('hidden');
                 mediaTabs.classList.remove('flex'); mediaTabs.classList.add('hidden');
+                socialTabs.classList.remove('flex'); socialTabs.classList.add('hidden');
                 if (cat === 'wishlist') { titleEl.innerText = "Kho Lưu Trữ Vô Tận"; descEl.innerText = "Nơi lưu trữ những món đồ riêng tư của bạn"; }
                 else if (cat === 'braindump') { titleEl.innerText = "Secret Moments 🔒"; descEl.innerText = "Không gian cất giấu hình ảnh & video thầm kín"; }
             }

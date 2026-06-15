@@ -47,7 +47,6 @@
             color: #0f172a !important;
         }
 
-        /* --- NỀN TÍM TỐI NGUYÊN BẢN --- */
         body.dark-theme {
             background-color: #05070a !important;
             color: #f3f4f6 !important;
@@ -417,7 +416,7 @@
             }
         }
 
-        /* --- 🕒 LOGIC ĐỒNG HỒ THEO THỜI GIAN THỰC & ĐỔI NỀN TRỜI SÁNG / TỐI --- */
+        /* --- 🕒 LOGIC ĐỒNG HỒ THEO THỜI GIAN THỰC & ĐỔI NỀN TRỜI SÁNG / TỐI (6h - 18h SÁNG, 18h - 6h TỐI) --- */
         function updateTimeAndTheme() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -427,7 +426,6 @@
             const month = String(now.getMonth() + 1).padStart(2, '0');
             const year = now.getFullYear();
             
-            // Cập nhật chuỗi nội dung đồng hồ hiển thị gồm cả ngày tháng năm
             const clockEl = document.getElementById('realtime-clock');
             if (clockEl) {
                 clockEl.innerText = `${hours}:${minutes}:${seconds} - ${day}/${month}/${year}`;
@@ -438,7 +436,6 @@
             const clockIcon = document.getElementById('clock-status-icon');
             const clockParent = clockEl ? clockEl.parentElement : null;
             
-            // Từ 6h đến 18h là trời sáng, còn lại từ 18h đến 6h là trời tối
             if (currentHour >= 6 && currentHour < 18) {
                 if (!body.classList.contains('light-theme')) {
                     body.classList.remove('dark-theme');

@@ -172,10 +172,10 @@
 
                 <div id="header-track-title" class="text-[11px] font-bold tracking-wide opacity-80 truncate max-w-[90px]">Giai điệu không gian</div>
                 
-                <div class="flex items-center gap-2 ml-2 shrink-0">
-                    <button onclick="handleQuickPlayPause(event)" id="quick-stop-btn" class="hidden text-[10px] w-7 h-7 flex items-center justify-center bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 rounded-lg font-bold active:scale-75 transition shadow-sm" title="Tạm dừng / Phát tiếp"></button>
-                    <button onclick="handleQuickMute(event)" id="quick-mute-btn" class="hidden text-[10px] w-7 h-7 flex items-center justify-center bg-gray-500/20 text-gray-400 border border-white/10 rounded-lg font-bold active:scale-75 transition shadow-sm" title="Tắt tiếng nhanh">🔊</button>
-                    <button onclick="handleQuickClear(event)" id="quick-clear-btn" class="hidden text-[10px] w-7 h-7 flex items-center justify-center bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg font-bold active:scale-75 transition shadow-sm" title="Tắt hẳn nhạc">✕</button>
+                <div class="flex items-center gap-3 ml-3 shrink-0">
+                    <button onclick="handleQuickPlayPause(event)" id="quick-stop-btn" class="hidden text-xs w-9 h-9 flex items-center justify-center bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 rounded-xl font-bold active:scale-75 transition shadow-md" title="Tạm dừng / Phát tiếp"></button>
+                    <button onclick="handleQuickMute(event)" id="quick-mute-btn" class="hidden text-xs w-9 h-9 flex items-center justify-center bg-gray-500/20 text-gray-400 border border-white/10 rounded-xl font-bold active:scale-75 transition shadow-md" title="Tắt tiếng nhanh">🔊</button>
+                    <button onclick="handleQuickClear(event)" id="quick-clear-btn" class="hidden text-xs w-9 h-9 flex items-center justify-center bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl font-bold active:scale-75 transition shadow-md" title="Tắt hẳn nhạc">✕</button>
                 </div>
             </div>
         </div>
@@ -938,7 +938,7 @@
                     a.click();
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
-                    showToast("Đang tải tài liệu về máy...");
+                    showToast("Đang tải dữ liệu gốc về máy...");
                 } else {
                     showToast("Không tìm thấy tệp tin!", "error");
                 }
@@ -1207,16 +1207,18 @@
                     
                     let mediaId = `media-${item.id}`;
                     
-                    // 🛠️ UPDATE: TĂNG KHOẢNG CÁCH GIỮA HAI NÚT SỬA VÀ XÓA (GAP-2.5) ĐỂ TRÁNH BẤM NHẦM THEO IMAGE_84B062.JPG
                     card.innerHTML = `
                         <div class="w-full aspect-square bg-gray-900/40 border border-white/5 rounded-xl flex items-center justify-center overflow-hidden relative shadow-inner">
                             <div id="${mediaId}" class="absolute inset-0 flex items-center justify-center text-[11px] italic opacity-50">⌛ Đang tải...</div>
                         </div>
-                        <div class="flex flex-col gap-1.5 min-w-0 px-1">
+                        <div class="flex flex-col gap-2 min-w-0 px-0.5">
                             <h4 class="font-bold text-xs truncate text-gray-200" title="${item.title}">${item.title}</h4>
-                            <div class="flex items-center justify-end gap-2.5 pt-1 border-t border-white/5">
-                                <button onclick="openFormModal('vault', '${item.id}')" class="text-xs px-2.5 py-1.5 bg-white/5 rounded-lg opacity-80 hover:opacity-100 active:scale-75 transition shadow-sm">✏️</button>
-                                <button onclick="deleteVaultItem('${item.id}')" class="text-xs px-2.5 py-1.5 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 active:scale-75 transition shadow-sm">✕</button>
+                            <div class="flex items-center justify-between gap-4 pt-1.5 border-t border-white/5">
+                                <button onclick="downloadMediaItem('${item.id}', '${item.title}', '${item.fileType}')" class="flex-1 h-10 flex items-center justify-center bg-indigo-600/10 text-indigo-400 rounded-xl font-bold active:scale-75 transition shadow-sm" title="Tải file gốc bảo mật về máy">📥</button>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="openFormModal('vault', '${item.id}')" class="w-12 h-10 flex items-center justify-center bg-white/5 rounded-xl opacity-80 active:scale-75 transition shadow-sm">✏️</button>
+                                    <button onclick="deleteVaultItem('${item.id}')" class="w-12 h-10 flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl active:scale-75 transition shadow-sm">✕</button>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -1235,7 +1237,7 @@
                 } else {
                     card.className = 'glass-card p-5 rounded-3xl flex flex-col gap-4';
                     
-                    // 🛠️ UPDATE: TĂNG KHOẢNG CÁCH CHO DANH SÁCH DẠNG LIST (GAP-2.5)
+                    // 🛠️ FIX TYPO BẢN TRƯỚC: BỌC CHUỖI TEMPLATE STRING KHỐI NÚT ĐIỀU KHIỂN CHO DANH SÁCH LIST
                     let buttonsHTML = `
                         <button onclick="openFormModal('vault', '${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg active:scale-90 transition">✏️</button>
                         <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-red-400 active:scale-90 transition">✕</button>
@@ -1246,7 +1248,7 @@
                         buttonsHTML = `
                             <button onclick="downloadMediaItem('${item.id}', '${nameToDownload}', '${item.fileType}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-indigo-400 active:scale-90 transition" title="Tải file về máy">📥</button>
                             <button onclick="openFormModal('vault', '${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg active:scale-90 transition">✏️</button>
-                            <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-red-400 active:scale-90 transition">✕</button>
+                            <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl text-lg active:scale-90 transition">✕</button>
                         `;
                     }
 
@@ -1277,8 +1279,8 @@
                                                 ${item.isIndexedDB && item.category === 'study' ? `<span class="text-[10px] text-gray-500 block truncate mt-0.5">Tệp lưu trên máy: ${item.fileName || 'Chưa rõ tên'}</span>` : ''}
                                             </div>
                                         </div>
-                                        <div class="flex items-center gap-2.5 shrink-0">
-                                            buttonsHTML
+                                        <div class="flex items-center gap-3 shrink-0">
+                                            ${buttonsHTML}
                                         </div>
                                    </div>`;
                     container.appendChild(card);

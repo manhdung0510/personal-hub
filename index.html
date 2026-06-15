@@ -136,6 +136,11 @@
         <div class="flex flex-col max-w-[75%]">
             <h1 class="text-2xl font-bold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Infinite Vault ✨</h1>
             
+            <div class="flex items-center gap-1.5 mt-1 bg-black/10 px-2.5 py-1 rounded-xl border border-white/5 w-fit shadow-inner">
+                <span id="clock-status-icon" class="text-xs">🌙</span>
+                <span id="realtime-clock" class="text-[11px] font-bold tracking-wider opacity-80">00:00:00 - 01/01/2026</span>
+            </div>
+
             <div onclick="openMusicModal()" id="header-mini-player" class="flex items-center gap-2 mt-1.5 bg-black/10 px-3 py-2 rounded-2xl border border-white/5 w-fit shadow-inner max-w-full overflow-hidden transition-all duration-300 cursor-pointer active:scale-95">
                 <span id="music-btn" class="text-sm shrink-0 w-5 h-5 flex items-center justify-center">🎵</span>
                 <div id="header-track-title" class="text-[11px] font-bold tracking-wide opacity-80 truncate max-w-[90px]">Giai điệu không gian</div>
@@ -164,7 +169,7 @@
                 <div class="flex flex-col gap-2">
                     <input type="text" id="track-title-input" placeholder="Tên bài hát (Ví dụ: Lo-Fi ban đêm...)" class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
                     <input type="text" id="track-url-input" placeholder="Dán link nhạc trực tiếp (.mp3)..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
-                    <input type="hidden" id="realtime-clock"> <button onclick="addNewTrack()" class="h-12 w-full bg-indigo-600 rounded-xl font-bold text-white text-xs active:scale-95 transition shadow-md">Thêm vào kho nhạc</button>
+                    <button onclick="addNewTrack()" class="h-12 w-full bg-indigo-600 rounded-xl font-bold text-white text-xs active:scale-95 transition shadow-md">Thêm vào kho nhạc</button>
                 </div>
             </div>
 
@@ -412,24 +417,51 @@
             }
         }
 
-        /* --- LOGIC HÌNH NỀN SÁNG TỐI --- */
+        /* --- 🕒 LOGIC ĐỒNG HỒ THEO THỜI GIAN THỰC & ĐỔI NỀN TRỜI SÁNG / TỐI --- */
         function updateTimeAndTheme() {
             const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            
+            // Cập nhật chuỗi nội dung đồng hồ hiển thị gồm cả ngày tháng năm
+            const clockEl = document.getElementById('realtime-clock');
+            if (clockEl) {
+                clockEl.innerText = `${hours}:${minutes}:${seconds} - ${day}/${month}/${year}`;
+            }
+            
             const currentHour = now.getHours();
             const body = document.body;
+            const clockIcon = document.getElementById('clock-status-icon');
+            const clockParent = clockEl ? clockEl.parentElement : null;
             
+            // Từ 6h đến 18h là trời sáng, còn lại từ 18h đến 6h là trời tối
             if (currentHour >= 6 && currentHour < 18) {
                 if (!body.classList.contains('light-theme')) {
                     body.classList.remove('dark-theme');
                     body.classList.add('light-theme');
+                    if (clockIcon) clockIcon.innerText = "☀️";
+                    if (clockParent) {
+                        clockParent.classList.remove('bg-black/10', 'border-white/5');
+                        clockParent.classList.add('bg-white/40', 'border-black/5');
+                    }
                 }
             } else {
                 if (!body.classList.contains('dark-theme')) {
                     body.classList.remove('light-theme');
                     body.classList.add('dark-theme');
+                    if (clockIcon) clockIcon.innerText = "🌙";
+                    if (clockParent) {
+                        clockParent.classList.remove('bg-white/40', 'border-black/5');
+                        clockParent.classList.add('bg-black/10', 'border-white/5');
+                    }
                 }
             }
         }
+        setInterval(updateTimeAndTheme, 1000);
 
         /* --- TRÌNH QUẢN LÝ VÀ ĐIỀU KHIỂN NHẠC NỀN DYNAMIC --- */
         function openMusicModal() {
@@ -1119,7 +1151,6 @@
             });
         }
 
-        /* --- ĐIỀU KHIỂN CHUYỂN TAB CHUẨN --- */
         function filterVault(cat) { 
             currentVaultCategory = cat; 
             document.querySelectorAll('.vault-filter-btn').forEach(b => { b.classList.replace('bg-pink-600', 'bg-gray-900/60'); b.classList.add('text-gray-400'); });
@@ -1170,7 +1201,7 @@
         window.addEventListener('DOMContentLoaded', () => { 
             updateTimeAndTheme();
             initPasswordScreen(); 
-            filterVault('wishlist'); // 🛠️ FIX: TỰ ĐỘNG CHẠY HÀM KHỞI TẠO ĐỂ ĐỒNG BỘ GIAO DIỆN NGAY TỪ ĐẦU
+            filterVault('wishlist'); 
             if(db) loadProfileImages();
             else setTimeout(loadProfileImages, 300);
 

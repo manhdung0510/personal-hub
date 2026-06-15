@@ -287,9 +287,16 @@
                     <input type="text" id="profile-name-input" placeholder="Nhập tên biệt danh..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
                 </div>
 
-                <div class="w-full pt-2 border-t border-white/5 mt-2">
-                    <label class="text-[11px] text-pink-400 font-bold block mb-1">Cài đặt mật mã bảo mật mới</label>
-                    <input type="password" id="change-app-password" placeholder="Nhập mật mã mới nếu muốn đổi..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-pink-500 transition-all bg-transparent">
+                <div class="w-full pt-2 border-t border-white/5 mt-2 space-y-2">
+                    <label class="text-[11px] text-pink-400 font-bold block">Cài đặt mật mã bảo mật mới</label>
+                    <div class="relative w-full">
+                        <input type="password" id="change-app-password" placeholder="Nhập mật mã mới..." class="w-full h-12 border rounded-xl pl-4 pr-10 text-sm outline-none focus:border-pink-500 transition-all bg-transparent">
+                        <button onclick="toggleInputVisibility('change-app-password')" class="absolute right-3 top-1/2 -translate-y-1/2 text-sm opacity-60 active:scale-75 transition" type="button">👁️</button>
+                    </div>
+                    <div class="relative w-full">
+                        <input type="password" id="change-app-password-confirm" placeholder="Nhập lại mật mã mới để xác nhận..." class="w-full h-12 border rounded-xl pl-4 pr-10 text-sm outline-none focus:border-pink-500 transition-all bg-transparent">
+                        <button onclick="toggleInputVisibility('change-app-password-confirm')" class="absolute right-3 top-1/2 -translate-y-1/2 text-sm opacity-60 active:scale-75 transition" type="button">👁️</button>
+                    </div>
                 </div>
             </div>
 
@@ -342,6 +349,14 @@
             "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."
         ];
 
+        /* --- 👁️ HÀM ĐIỀU KHIỂN ẨN / HIỆN MẬT KHẨU CHO CÔ ẤY --- */
+        function toggleInputVisibility(inputId) {
+            const el = document.getElementById(inputId);
+            if (el) {
+                el.type = el.type === 'password' ? 'text' : 'password';
+            }
+        }
+
         /* --- 🔐 LOGIC KIỂM TRA & THIẾT LẬP MẬT KHẨU BAN ĐẦU --- */
         function initPasswordScreen() {
             const hasPassword = localStorage.getItem('app_password');
@@ -354,14 +369,23 @@
                 title.innerText = "Thiết Lập Mật Mã";
                 desc.innerText = "Tạo mật mã riêng tư để bảo vệ không gian bí mật này";
                 container.innerHTML = `
-                    <input type="password" id="lock-pwd-1" placeholder="Nhập mật mã mới..." class="w-full h-16 border rounded-2xl px-5 text-base text-center outline-none focus:border-indigo-500 shadow-inner tracking-widest transition-all">
-                    <input type="password" id="lock-pwd-2" placeholder="Xác nhận lại mật mã..." class="w-full h-16 border rounded-2xl px-5 text-base text-center outline-none focus:border-indigo-500 shadow-inner tracking-widest transition-all">
+                    <div class="relative w-full">
+                        <input type="password" id="lock-pwd-1" placeholder="Nhập mật mã mới..." class="w-full h-16 border rounded-2xl pl-5 pr-12 text-base text-center outline-none focus:border-indigo-500 shadow-inner tracking-widest transition-all">
+                        <button onclick="toggleInputVisibility('lock-pwd-1')" class="absolute right-4 top-1/2 -translate-y-1/2 text-lg opacity-60 active:scale-75 transition" type="button">👁️</button>
+                    </div>
+                    <div class="relative w-full">
+                        <input type="password" id="lock-pwd-2" placeholder="Xác nhận lại mật mã..." class="w-full h-16 border rounded-2xl pl-5 pr-12 text-base text-center outline-none focus:border-indigo-500 shadow-inner tracking-widest transition-all">
+                        <button onclick="toggleInputVisibility('lock-pwd-2')" class="absolute right-4 top-1/2 -translate-y-1/2 text-lg opacity-60 active:scale-75 transition" type="button">👁️</button>
+                    </div>
                 `;
             } else {
                 title.innerText = "Không Gian Bảo Mật";
                 desc.innerText = "Vui lòng nhập mật mã để truy cập mật thất";
                 container.innerHTML = `
-                    <input type="password" id="lock-pwd-input" placeholder="Nhập mật mã bí mật..." class="w-full h-16 border rounded-2xl px-5 text-base text-center outline-none focus:border-pink-500 shadow-inner tracking-widest transition-all">
+                    <div class="relative w-full">
+                        <input type="password" id="lock-pwd-input" placeholder="Nhập mật mã bí mật..." class="w-full h-16 border rounded-2xl pl-5 pr-12 text-base text-center outline-none focus:border-pink-500 shadow-inner tracking-widest transition-all">
+                        <button onclick="toggleInputVisibility('lock-pwd-input')" class="absolute right-4 top-1/2 -translate-y-1/2 text-lg opacity-60 active:scale-75 transition" type="button">👁️</button>
+                    </div>
                 `;
             }
 
@@ -416,7 +440,7 @@
             }
         }
 
-        /* --- 🕒 LOGIC ĐỒNG HỒ THEO THỜI GIAN THỰC & ĐỔI NỀN TRỜI SÁNG / TỐI (6h - 18h SÁNG, 18h - 6h TỐI) --- */
+        /* --- 🕒 LOGIC ĐỒNG HỒ THEO THỜI GIAN THỰC & ĐỔI NỀN TRỜI SÁNG / TỐI --- */
         function updateTimeAndTheme() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -750,7 +774,7 @@
                 const file = input.files[0];
                 if (!db) return;
                 saveMediaToDB("user_avatar_blob", file, function() {
-                    if (currentAvatarUrl) URL.revokeObjectURL(currentAvatarUrl);
+                    if (currentAvatarUrl)URL.revokeObjectURL(currentAvatarUrl);
                     currentAvatarUrl = URL.createObjectURL(file);
                     const preview = document.getElementById('settings-avatar-preview');
                     if (preview) {
@@ -763,6 +787,7 @@
             }
         }
 
+        /* --- 🛠️ XỬ LÝ LƯU HỒ SƠ & DỨT ĐIỂM LUỒNG ĐỔI MẬT KHẨU MỚI BẮT BUỘC 2 LẦN --- */
         function saveProfile() {
             const nameInput = document.getElementById('profile-name-input').value.trim();
             profileData.name = nameInput;
@@ -798,9 +823,16 @@
             }
 
             const newPassInput = document.getElementById('change-app-password').value.trim();
-            if (newPassInput) {
+            const confirmPassInput = document.getElementById('change-app-password-confirm').value.trim();
+
+            // Nếu cô ấy nhập một trong hai ô mật mã thì tiến hành kiểm tra bắt buộc nhập xác nhận
+            if (newPassInput || confirmPassInput) {
+                if (!newPassInput) return showToast("Vui lòng điền mật mã mới!", "error");
+                if (newPassInput !== confirmPassInput) return showToast("Mật mã xác nhận không khớp!", "error");
+                
                 localStorage.setItem('app_password', newPassInput);
                 document.getElementById('change-app-password').value = '';
+                document.getElementById('change-app-password-confirm').value = '';
                 showToast("Đã cập nhật mật mã bảo mật mới!");
             }
             
@@ -811,7 +843,13 @@
         function openSettings() {
             const inp = document.getElementById('profile-name-input');
             const passInp = document.getElementById('change-app-password');
-            const ctrls = [inp, passInp];
+            const passConfirmInp = document.getElementById('change-app-password-confirm');
+            
+            // Đảm bảo kiểu nhập trả về mật khẩu ẩn ban đầu khi mở lại cài đặt
+            if(passInp) passInp.type = 'password';
+            if(passConfirmInp) passConfirmInp.type = 'password';
+
+            const ctrls = [inp, passInp, passConfirmInp];
             ctrls.forEach(ctrl => {
                 if (ctrl) {
                     if(document.body.classList.contains('light-theme')) {

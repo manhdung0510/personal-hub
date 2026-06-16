@@ -24,7 +24,7 @@
             transition: background-color 1.5s ease-in-out, color 0.4s ease-in-out; 
         }
 
-        /* 🍦 TONE NỀN SÁNG MÀU KEM CÁT NHẸ - KHÔNG TRẮNG XÓA CHÓI MẮT */
+        /* 🍦 TỐI ƯU MÀU NỀN SÁNG THEO TONE KEM CÁT - DỊU MẮT, KHÔNG TRẮNG XÓA */
         body.light-theme {
             background-color: #f4eae1 !important; 
             color: #2b221a !important;
@@ -70,6 +70,7 @@
             color: #5c4d41 !important;
         }
 
+        /* 🌙 DARK THEME GIỮ NGUYÊN */
         body.dark-theme {
             background-color: #05070a !important;
             color: #f3f4f6 !important;
@@ -161,11 +162,7 @@
 
     <div id="intro-screen" class="fixed inset-0 bg-[#05070a] z-[1000] flex flex-col items-center justify-center text-center px-6">
         <div class="space-y-6 fade-in flex flex-col items-center">
-            <div id="intro-avatar-box" class="w-24 h-24 rounded-full border-2 border-indigo-500/30 overflow-hidden shadow-2xl bg-gray-900 hidden">
-                <img id="intro-avatar-img" class="w-full h-full object-cover" src="">
-            </div>
-            <div id="intro-star-icon" class="text-6xl animate-bounce">✨</div>
-            
+            <div class="text-6xl animate-bounce">✨</div>
             <h2 id="intro-welcome-text" class="text-2xl font-semibold tracking-wide bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300 bg-clip-text text-transparent">
                 Xin chào kho báu...
             </h2>
@@ -692,7 +689,7 @@
             renderTrackList();
         }
 
-        /* --- INDEXEDDB --- */
+        /* --- INDEXEDDB STUFF --- */
         let db;
         const dbRequest = indexedDB.open("SecureMomentsDB", 1);
         dbRequest.onupgradeneeded = function(e) {
@@ -934,35 +931,36 @@
 
         function finalizeSubmit() { localStorage.setItem('local_vault', JSON.stringify(vaultItems)); loadVault(); closeFormModal(); showToast("Đã ghi nhớ!"); }
 
-        /* --- LOAD CORE VAULT --- */
+        /* --- KHÔI PHỤC LOGIC HIỂN THỊ NÚT THÊM NGUYÊN BẢN --- */
         function loadVault() {
             if (!db) return;
             const container = document.getElementById('vault-list'); container.innerHTML = '';
             const search = document.getElementById('vault-search').value.toLowerCase();
             
-            // 🛑 LỌC LẠI CHUẨN CHỈ THEO ĐÚNG CATEGORY CỦA MÀN HÌNH CHÍNH
             let items = vaultItems.filter(i => i.category === currentVaultCategory);
-            
-            if (currentVaultCategory === 'study') {
-                items = items.filter(i => (i.studyType || 'learn') === currentStudySubTab);
-            }
-            // 🛠️ SỬA LỖI TRỘN TAB: Lọc chuẩn nhánh Media
-            if (currentVaultCategory === 'media') {
-                items = items.filter(i => (i.mediaType || 'movie') === currentMediaSubTab);
-            }
-            // 🛠️ SỬA LỖI TRỘN TAB: Lọc chuẩn nhánh Social (Không để Media lọt qua nữa)
-            if (currentVaultCategory === 'social') {
-                items = items.filter(i => (i.socialType || 'threads') === currentSocialSubTab);
-            }
+            if (currentVaultCategory === 'study') items = items.filter(i => (i.studyType || 'learn') === currentStudySubTab);
+            if (currentVaultCategory === 'media') items = items.filter(i => (i.mediaType || 'movie') === currentMediaSubTab);
+            if (currentVaultCategory === 'social') items = items.filter(i => (i.socialType || 'threads') === currentSocialSubTab);
 
             if(search) items = items.filter(i => i.title.toLowerCase().includes(search));
             
+            // ✨ KHÔI PHỤC NÚT THÊM KHI DANH SÁCH RỖNG
             if(items.length === 0) {
                 container.removeAttribute('class'); container.className = 'space-y-4 tab-slide-fade';
+                let msg = "CHƯA LƯU LIÊN KẾT NÀO";
+                if (currentVaultCategory === 'study') msg = (currentStudySubTab === 'learn') ? "CHƯA LƯU TÀI LIỆU TỰ HỌC NÀO" : "CHƯA LƯU TÀI LIỆU GIẢNG DẠY NÀO";
+                if (currentVaultCategory === 'media') msg = "CHƯA LƯU LIÊN KẾT GIẢI TRÍ NÀO";
+                if (currentVaultCategory === 'social') msg = `CHƯA LƯU NỘI DUNG ${currentSocialSubTab.toUpperCase()} NÀO`;
+                if (currentVaultCategory === 'wishlist') msg = "KHO ĐỒ ĐANG TRỐNG";
+                if (currentVaultCategory === 'braindump') msg = "KHO ĐỒ ĐANG TRỐNG";
+
                 container.innerHTML = `
                     <div class="py-16 text-center opacity-40 flex flex-col items-center justify-center">
                         <div class="text-6xl mb-4">📦</div>
-                        <p class="text-sm font-bold uppercase tracking-widest mb-4">Kho đang trống...</p>
+                        <p class="text-sm font-bold uppercase tracking-widest mb-4">${msg}</p>
+                        <button onclick="openFormModal('vault')" class="px-5 py-2.5 bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 rounded-xl text-xs font-bold active:scale-90 transition shadow-inner">
+                            ✨ Thêm mục đầu tiên ngay
+                        </button>
                     </div>`;
                 return;
             }

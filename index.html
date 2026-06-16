@@ -21,30 +21,52 @@
             padding-top: env(safe-area-inset-top);
             padding-bottom: env(safe-area-inset-bottom);
             font-size: 16px;
-            transition: background-color 1.5s ease-in-out, color 0.5s ease-in-out; 
+            transition: background-color 1.5s ease-in-out, color 0.4s ease-in-out; 
         }
 
         body.light-theme {
-            background-color: #e2e8f0 !important;
+            background-color: #f1f5f9 !important; 
             color: #0f172a !important;
         }
         body.light-theme .text-gray-100,
-        body.light-theme .text-gray-200 { color: #1e293b !important; }
+        body.light-theme .text-gray-200,
+        body.light-theme .h4-title-text,
+        body.light-theme h1, body.light-theme h2, body.light-theme h3, body.light-theme h4 { 
+            color: #0f172a !important; 
+        }
         body.light-theme .text-gray-400,
-        body.light-theme .text-gray-500 { color: #475569 !important; }
+        body.light-theme .text-gray-500,
+        body.light-theme p { 
+            color: #334155 !important; 
+        }
         body.light-theme .glass {
-            background: rgba(15, 23, 42, 0.04);
-            border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+            background: rgba(255, 255, 255, 0.8) !important;
+            backdrop-blur: 12px;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.06);
         }
         body.light-theme .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(15, 23, 42, 0.08);
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+            background: #ffffff !important; 
+            border: 1px solid rgba(15, 23, 42, 0.05);
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
         }
         body.light-theme input[type="text"], body.light-theme input[type="password"], body.light-theme select {
-            background-color: rgba(255, 255, 255, 0.9) !important;
-            border-color: rgba(15, 23, 42, 0.1) !important;
+            background-color: #f8fafc !important;
+            border-color: #cbd5e1 !important;
             color: #0f172a !important;
+        }
+        body.light-theme .vault-filter-btn:not(.bg-pink-600) {
+            background-color: #e2e8f0 !important;
+            color: #475569 !important;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+        body.light-theme #study-sub-tabs, 
+        body.light-theme #media-sub-tabs, 
+        body.light-theme #social-sub-tabs {
+            background-color: #e2e8f0 !important;
+            border-color: rgba(0, 0, 0, 0.05);
+        }
+        body.light-theme .sub-tab-inactive-etc {
+            color: #475569 !important;
         }
 
         body.dark-theme {
@@ -156,7 +178,7 @@
         <div class="flex flex-col max-w-[75%]">
             <h1 class="text-2xl font-bold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Infinite Vault ✨</h1>
             
-            <div class="flex items-center gap-1.5 mt-1 bg-black/10 px-2.5 py-1 rounded-xl border border-white/5 w-fit shadow-inner">
+            <div id="clock-parent-box" class="flex items-center gap-1.5 mt-1 bg-black/10 px-2.5 py-1 rounded-xl border border-white/5 w-fit shadow-inner">
                 <span id="clock-status-icon" class="text-xs">🌙</span>
                 <span id="realtime-clock" class="text-[11px] font-bold tracking-wider opacity-80">00:00:00 - 01/01/2026</span>
             </div>
@@ -259,35 +281,35 @@
                 </button>
             </div>
 
-            <div id="study-sub-tabs" class="hidden flex gap-2 bg-black/20 p-1 rounded-xl border border-white/5 w-full">
+            <div id="study-sub-tabs" class="hidden gap-2 bg-black/20 p-1 rounded-xl border border-white/5 w-full">
                 <button onclick="changeStudySubTab('learn')" id="sub-study-learn" class="flex-1 py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 active:scale-[0.96]">
                     📖 Nghiên cứu / Tự học
                 </button>
-                <button onclick="changeStudySubTab('teach')" id="sub-study-teach" class="flex-1 py-2.5 rounded-lg text-xs font-bold transition-all text-gray-400 active:scale-[0.96]">
+                <button onclick="changeStudySubTab('teach')" id="sub-study-teach" class="sub-tab-inactive-etc flex-1 py-2.5 rounded-lg text-xs font-bold transition-all text-gray-400 active:scale-[0.96]">
                     🏫 Tài liệu giảng dạy
                 </button>
             </div>
 
-            <div id="media-sub-tabs" class="hidden flex gap-1 bg-black/20 p-1 rounded-xl border border-white/5 w-full">
+            <div id="media-sub-tabs" class="hidden gap-1 bg-black/20 p-1 rounded-xl border border-white/5 w-full">
                 <button onclick="changeMediaSubTab('movie')" id="sub-media-movie" class="flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate active:scale-[0.96]">
                     🎬 Phim ảnh
                 </button>
-                <button onclick="changeMediaSubTab('youtube')" id="sub-media-youtube" class="flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate active:scale-[0.96]">
+                <button onclick="changeMediaSubTab('youtube')" id="sub-media-youtube" class="sub-tab-inactive-etc flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate active:scale-[0.96]">
                     📺 YouTube
                 </button>
-                <button onclick="changeMediaSubTab('tiktok')" id="sub-media-tiktok" class="flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate active:scale-[0.96]">
+                <button onclick="changeMediaSubTab('tiktok')" id="sub-media-tiktok" class="sub-tab-inactive-etc flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate active:scale-[0.96]">
                     🎵 TikTok
                 </button>
             </div>
 
-            <div id="social-sub-tabs" class="hidden flex gap-1 bg-black/20 p-1 rounded-xl border border-white/5 w-full">
+            <div id="social-sub-tabs" class="hidden gap-1 bg-black/20 p-1 rounded-xl border border-white/5 w-full">
                 <button onclick="changeSocialSubTab('threads')" id="sub-social-threads" class="flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate active:scale-[0.96]">
                     🧵 Threads
                 </button>
-                <button onclick="changeSocialSubTab('instagram')" id="sub-social-instagram" class="flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate active:scale-[0.96]">
+                <button onclick="changeSocialSubTab('instagram')" id="sub-social-instagram" class="sub-tab-inactive-etc flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate active:scale-[0.96]">
                     📸 Instagram
                 </button>
-                <button onclick="changeSocialSubTab('facebook')" id="sub-social-facebook" class="flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate active:scale-[0.96]">
+                <button onclick="changeSocialSubTab('facebook')" id="sub-social-facebook" class="sub-tab-inactive-etc flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate active:scale-[0.96]">
                     👥 Facebook
                 </button>
             </div>
@@ -314,11 +336,16 @@
     <div id="modal-settings" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-center justify-center p-6 z-[60]">
         <div class="glass-card w-full max-w-sm rounded-[32px] p-6 space-y-5 text-center shadow-2xl">
             <div class="text-center space-y-1">
-                <h3 class="text-lg font-bold text-gray-100">⚙️ Hồ Sơ & Hệ Thống</h3>
+                <h3 class="text-lg font-bold text-gray-100">⚙️ Hồ Sơ & Hệ Thông</h3>
                 <p class="text-xs text-gray-400">Tùy chỉnh không gian mật thất của riêng bạn</p>
             </div>
 
             <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-4 text-left flex flex-col items-center">
+                
+                <button onclick="forceToggleThemeTesting()" class="w-full h-11 bg-gradient-to-r from-amber-500/20 to-indigo-500/20 border border-amber-500/30 rounded-xl font-bold text-xs active:scale-95 transition text-center mb-2 text-amber-500">
+                    🛠️ Đổi Giao Diện Nhanh (Đang Test)
+                </button>
+
                 <div class="relative w-20 h-20 rounded-full bg-gray-900 border border-gray-700 overflow-hidden group cursor-pointer shadow-xl">
                     <img id="settings-avatar-preview" class="w-full h-full object-cover hidden" src="">
                     <div id="settings-avatar-placeholder" class="absolute inset-0 flex items-center justify-center text-2xl opacity-60">👤</div>
@@ -378,6 +405,7 @@
         let currentFormType = '', currentEditId = null;
         let currentAvatarUrl = null;
         let savedTrackName = "Giai điệu không gian";
+        let isForceTestingTheme = false; // Cờ kiểm soát chế độ test
         
         let pendingAvatarFile = null;
 
@@ -395,6 +423,35 @@
             "Hãy mỉm cười một cái, bạn cười trông xinh lắm đấy.",
             "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."
         ];
+
+        // 🛠️ LOGIC ÉP GIAO DIỆN PHỤC VỤ QUY TRÌNH TESTING BAN ĐÊM
+        function forceToggleThemeTesting() {
+            isForceTestingTheme = true;
+            const body = document.body;
+            const clockIcon = document.getElementById('clock-status-icon');
+            const clockParent = document.getElementById('clock-parent-box');
+
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                if (clockIcon) clockIcon.innerText = "☀️";
+                if (clockParent) {
+                    clockParent.classList.remove('bg-black/10', 'border-white/5');
+                    clockParent.classList.add('bg-white/60', 'border-black/5');
+                }
+                showToast("Đã ép sang Light Theme để ông kiểm tra độ tương phản!");
+            } else {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                if (clockIcon) clockIcon.innerText = "🌙";
+                if (clockParent) {
+                    clockParent.classList.remove('bg-white/60', 'border-black/5');
+                    clockParent.classList.add('bg-black/10', 'border-white/5');
+                }
+                showToast("Đã ép ngược lại Dark Theme!");
+            }
+            filterVault(currentVaultCategory); // Render lại màu tab phụ theo đúng theme vừa ép
+        }
 
         function toggleInputVisibility(inputId, btnEl) {
             const el = document.getElementById(inputId);
@@ -443,7 +500,7 @@
             const inputs = container.querySelectorAll('input');
             inputs.forEach(inp => {
                 if(document.body.classList.contains('light-theme')) {
-                    inp.style.backgroundColor = "#ffffff"; inp.style.borderColor = "rgba(15, 23, 42, 0.1)"; inp.style.color = "#0f172a";
+                    inp.style.backgroundColor = "#f8fafc"; inp.style.borderColor = "#cbd5e1"; inp.style.color = "#0f172a";
                 } else {
                     inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; inp.style.borderColor = "rgba(255, 255, 255, 0.05)"; inp.style.color = "#f3f4f6";
                 }
@@ -505,28 +562,31 @@
                 clockEl.innerText = `${hours}:${minutes}:${seconds} - ${day}/${month}/${year}`;
             }
             
+            // Nếu đang trong chế độ Cưỡng ép bấm nút Test thì tạm khóa cơ chế tự động chuyển đổi theo thời gian
+            if (isForceTestingTheme) return;
+
             const currentHour = now.getHours();
             const body = document.body;
             const clockIcon = document.getElementById('clock-status-icon');
-            const clockParent = clockEl ? clockEl.parentElement : null;
+            const clockParent = document.getElementById('clock-parent-box');
             
             if (currentHour >= 6 && currentHour < 18) {
                 if (!body.classList.contains('light-theme')) {
-                    body.classList.remove('dark-theme');
                     body.classList.add('light-theme');
+                    body.classList.remove('dark-theme');
                     if (clockIcon) clockIcon.innerText = "☀️";
                     if (clockParent) {
                         clockParent.classList.remove('bg-black/10', 'border-white/5');
-                        clockParent.classList.add('bg-white/40', 'border-black/5');
+                        clockParent.classList.add('bg-white/60', 'border-black/5');
                     }
                 }
             } else {
                 if (!body.classList.contains('dark-theme')) {
-                    body.classList.remove('light-theme');
                     body.classList.add('dark-theme');
+                    body.classList.remove('light-theme');
                     if (clockIcon) clockIcon.innerText = "🌙";
                     if (clockParent) {
-                        clockParent.classList.remove('bg-white/40', 'border-black/5');
+                        clockParent.classList.remove('bg-white/60', 'border-black/5');
                         clockParent.classList.add('bg-black/10', 'border-white/5');
                     }
                 }
@@ -538,7 +598,7 @@
             const inputs = document.querySelectorAll('#modal-music input[type="text"]');
             inputs.forEach(inp => {
                 if(document.body.classList.contains('light-theme')) {
-                    inp.style.backgroundColor = "#ffffff"; inp.style.borderColor = "rgba(15, 23, 42, 0.1)"; inp.style.color = "#0f172a";
+                    inp.style.backgroundColor = "#f8fafc"; inp.style.borderColor = "#cbd5e1"; inp.style.color = "#0f172a";
                 } else {
                     inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; inp.style.borderColor = "rgba(255, 255, 255, 0.05)"; inp.style.color = "#f3f4f6";
                 }
@@ -885,7 +945,7 @@
             ctrls.forEach(ctrl => {
                 if (ctrl) {
                     if(document.body.classList.contains('light-theme')) {
-                        ctrl.style.backgroundColor = "#ffffff"; ctrl.style.borderColor = "rgba(15, 23, 42, 0.1)"; ctrl.style.color = "#0f172a";
+                        ctrl.style.backgroundColor = "#f8fafc"; ctrl.style.borderColor = "#cbd5e1"; ctrl.style.color = "#0f172a";
                     } else {
                         ctrl.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; ctrl.style.borderColor = "rgba(255, 255, 255, 0.05)"; ctrl.style.color = "#f3f4f6";
                     }
@@ -952,12 +1012,13 @@
 
         function changeStudySubTab(subtype) {
             currentStudySubTab = subtype;
-            document.getElementById('sub-study-learn').className = subtype === 'learn' 
-                ? 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20' 
-                : 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all text-gray-400';
-            document.getElementById('sub-study-teach').className = subtype === 'teach' 
-                ? 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20' 
-                : 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all text-gray-400';
+            
+            const isLight = document.body.classList.contains('light-theme');
+            const activeClass = 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20';
+            const inactiveClass = `flex-1 py-2.5 rounded-lg text-xs font-bold transition-all ${isLight ? 'text-slate-600 sub-tab-inactive-etc' : 'text-gray-400'}`;
+
+            document.getElementById('sub-study-learn').className = subtype === 'learn' ? activeClass : inactiveClass;
+            document.getElementById('sub-study-teach').className = subtype === 'teach' ? activeClass : inactiveClass;
             
             triggerTabAnimation(); 
             loadVault();
@@ -966,12 +1027,14 @@
         function changeMediaSubTab(subtype) {
             currentMediaSubTab = subtype;
             const tabs = ['movie', 'youtube', 'tiktok'];
+            const isLight = document.body.classList.contains('light-theme');
+            
             tabs.forEach(t => {
                 const el = document.getElementById(`sub-media-${t}`);
                 if (t === subtype) {
                     el.className = 'flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate';
                 } else {
-                    el.className = 'flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate';
+                    el.className = `flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all ${isLight ? 'text-slate-600 sub-tab-inactive-etc' : 'text-gray-400'} truncate`;
                 }
             });
             triggerTabAnimation(); 
@@ -981,12 +1044,14 @@
         function changeSocialSubTab(subtype) {
             currentSocialSubTab = subtype;
             const tabs = ['threads', 'instagram', 'facebook'];
+            const isLight = document.body.classList.contains('light-theme');
+            
             tabs.forEach(t => {
                 const el = document.getElementById(`sub-social-${t}`);
                 if (t === subtype) {
                     el.className = 'flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate';
                 } else {
-                    el.className = 'flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate';
+                    el.className = `flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all ${isLight ? 'text-slate-600 sub-tab-inactive-etc' : 'text-gray-400'} truncate`;
                 }
             });
             triggerTabAnimation(); 
@@ -1061,7 +1126,7 @@
             const inputs = fields.querySelectorAll('input[type="text"]');
             inputs.forEach(inp => {
                 if(document.body.classList.contains('light-theme')) {
-                    inp.style.backgroundColor = "#ffffff"; inp.style.borderColor = "rgba(15, 23, 42, 0.1)"; inp.style.color = "#0f172a";
+                    inp.style.backgroundColor = "#f8fafc"; inp.style.borderColor = "#cbd5e1"; inp.style.color = "#0f172a";
                 } else {
                     inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; inp.style.borderColor = "rgba(255, 255, 255, 0.05)"; inp.style.color = "#f3f4f6";
                 }
@@ -1212,7 +1277,7 @@
                             <div id="${mediaId}" class="absolute inset-0 flex items-center justify-center text-[11px] italic opacity-50">⌛ Đang tải...</div>
                         </div>
                         <div class="flex flex-col gap-2 min-w-0 px-0.5">
-                            <h4 class="font-bold text-xs truncate text-gray-200" title="${item.title}">${item.title}</h4>
+                            <h4 class="font-bold text-xs truncate h4-title-text" title="${item.title}">${item.title}</h4>
                             <div class="flex items-center justify-between gap-4 pt-1.5 border-t border-white/5">
                                 <button onclick="downloadMediaItem('${item.id}', '${item.title}', '${item.fileType}')" class="flex-1 h-10 flex items-center justify-center bg-indigo-600/10 text-indigo-400 rounded-xl font-bold active:scale-75 transition shadow-sm" title="Tải file gốc bảo mật về máy">📥</button>
                                 <div class="flex items-center gap-2">
@@ -1237,7 +1302,6 @@
                 } else {
                     card.className = 'glass-card p-5 rounded-3xl flex flex-col gap-4';
                     
-                    // 🛠️ FIX TYPO BẢN TRƯỚC: BỌC CHUỖI TEMPLATE STRING KHỐI NÚT ĐIỀU KHIỂN CHO DANH SÁCH LIST
                     let buttonsHTML = `
                         <button onclick="openFormModal('vault', '${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg active:scale-90 transition">✏️</button>
                         <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-lg text-red-400 active:scale-90 transition">✕</button>
@@ -1299,24 +1363,51 @@
             const mediaTabs = document.getElementById('media-sub-tabs');
             const socialTabs = document.getElementById('social-sub-tabs');
 
+            const isLight = document.body.classList.contains('light-theme');
+            const activeClass = 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20';
+            
             if (cat === 'study') {
                 studyTabs.classList.remove('hidden'); studyTabs.classList.add('flex');
                 mediaTabs.classList.remove('flex'); mediaTabs.classList.add('hidden');
                 socialTabs.classList.remove('flex'); socialTabs.classList.add('hidden');
                 titleEl.innerText = "Study Center 📚"; 
                 descEl.innerText = "Nơi cất giữ File, Link tài liệu và Giáo án giảng dạy.";
+                
+                const inactiveClass = `flex-1 py-2.5 rounded-lg text-xs font-bold transition-all ${isLight ? 'text-slate-600 sub-tab-inactive-etc' : 'text-gray-400'}`;
+                document.getElementById('sub-study-learn').className = currentStudySubTab === 'learn' ? activeClass : inactiveClass;
+                document.getElementById('sub-study-teach').className = currentStudySubTab === 'teach' ? activeClass : inactiveClass;
             } else if (cat === 'media') {
                 studyTabs.classList.remove('flex'); studyTabs.classList.add('hidden');
                 mediaTabs.classList.remove('hidden'); mediaTabs.classList.add('flex');
                 socialTabs.classList.remove('flex'); socialTabs.classList.add('hidden');
                 titleEl.innerText = "Media Hub 🎬"; 
                 descEl.innerText = "Kho lưu trữ phim ảnh, nhạc và video yêu thích.";
+                
+                const tabs = ['movie', 'youtube', 'tiktok'];
+                tabs.forEach(t => {
+                    const el = document.getElementById(`sub-media-${t}`);
+                    if (t === currentMediaSubTab) {
+                        el.className = 'flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate';
+                    } else {
+                        el.className = `flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all ${isLight ? 'text-slate-600 sub-tab-inactive-etc' : 'text-gray-400'} truncate`;
+                    }
+                });
             } else if (cat === 'social') {
                 studyTabs.classList.remove('flex'); studyTabs.classList.add('hidden');
-                mediaTabs.classList.remove('flex'); mediaTabs.classList.add('hidden');
+                mediaTabs.classList.remove('hidden'); mediaTabs.classList.add('flex');
                 socialTabs.classList.remove('hidden'); socialTabs.classList.add('flex');
                 titleEl.innerText = "Social Hub 📱";
                 descEl.innerText = "Nơi lưu trữ ảnh, video ngắn, bài viết Threads, Instagram, Facebook.";
+                
+                const tabs = ['threads', 'instagram', 'facebook'];
+                tabs.forEach(t => {
+                    const el = document.getElementById(`sub-social-${t}`);
+                    if (t === currentSocialSubTab) {
+                        el.className = 'flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate';
+                    } else {
+                        el.className = `flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all ${isLight ? 'text-slate-600 sub-tab-inactive-etc' : 'text-gray-400'} truncate`;
+                    }
+                });
             } else {
                 studyTabs.classList.remove('flex'); studyTabs.classList.add('hidden');
                 mediaTabs.classList.remove('flex'); mediaTabs.classList.add('hidden');

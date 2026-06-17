@@ -24,7 +24,7 @@
             transition: background-color 1.5s ease-in-out, color 0.4s ease-in-out; 
         }
 
-        /* 🍦 TONE NỀN SÁNG MÀU KEM CÁT DỊU MẮT */
+        /* 🍦 TỐI ƯU MÀU NỀN SÁNG THEO TONE KEM CÁT - DỊU MẮT, KHÔNG TRẮNG XÓA */
         body.light-theme {
             background-color: #f4eae1 !important; 
             color: #2b221a !important;
@@ -70,6 +70,7 @@
             color: #5c4d41 !important;
         }
 
+        /* 🌙 DARK THEME GIỮ NGUYÊN */
         body.dark-theme {
             background-color: #05070a !important;
             color: #f3f4f6 !important;
@@ -120,8 +121,13 @@
             overscroll-behavior-y: contain;
         }
 
-        input, select, textarea { font-size: 16px !important; }
-        .spin-slow { animation: spin 6s linear infinite; }
+        input, select, textarea {
+            font-size: 16px !important;
+        }
+
+        .spin-slow {
+            animation: spin 6s linear infinite;
+        }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         .wave-bar {
@@ -132,7 +138,10 @@
         }
         .wave-bar:nth-child(2) { animation-delay: 0.15s; }
         .wave-bar:nth-child(3) { animation-delay: 0.3s; }
-        @keyframes bounceWave { from { height: 3px; } to { height: 12px; } }
+        @keyframes bounceWave {
+            from { height: 3px; }
+            to { height: 12px; }
+        }
     </style>
 </head>
 <body class="h-full flex flex-col justify-between overflow-hidden select-none pt-safe pb-safe dark-theme">
@@ -153,11 +162,7 @@
 
     <div id="intro-screen" class="fixed inset-0 bg-[#05070a] z-[1000] flex flex-col items-center justify-center text-center px-6">
         <div class="space-y-6 fade-in flex flex-col items-center">
-            <div id="intro-avatar-box" class="w-24 h-24 rounded-full border-2 border-indigo-500/30 overflow-hidden shadow-2xl bg-gray-900 hidden">
-                <img id="intro-avatar-img" class="w-full h-full object-cover" src="">
-            </div>
-            <div id="intro-star-icon" class="text-6xl animate-bounce">✨</div>
-            
+            <div class="text-6xl animate-bounce">✨</div>
             <h2 id="intro-welcome-text" class="text-2xl font-semibold tracking-wide bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300 bg-clip-text text-transparent">
                 Xin chào kho báu...
             </h2>
@@ -490,13 +495,9 @@
             }
         }
 
-        // ✨ LUỒNG UNLOCK KHỚP HOÀN TOÀN LOGIC CŨ: HIỂN THỊ INTRO KÈM AVATAR VÀ LỜI CHÀO CÔ ẤY
         function unlockApp() {
             const lockScreen = document.getElementById('lock-screen');
             if (lockScreen) {
-                // Đọc ngay ảnh đại diện và biệt danh từ IndexedDB trước khi hiện màn hình Intro
-                loadProfileImages();
-
                 lockScreen.classList.add('opacity-0', 'pointer-events-none');
                 setTimeout(() => {
                     lockScreen.remove();
@@ -505,7 +506,7 @@
                         setTimeout(() => { 
                             intro.classList.add('intro-hide'); 
                             setTimeout(() => intro.remove(), 800); 
-                        }, 2500); // Giữ màn hình Intro chào mừng khoảng 2.5 giây cho lãng mạn
+                        }, 2000);
                     }
                 }, 500);
             }
@@ -688,7 +689,7 @@
             renderTrackList();
         }
 
-        /* --- INDEXEDDB STORAGE --- */
+        /* --- INDEXEDDB STUFF --- */
         let db;
         const dbRequest = indexedDB.open("SecureMomentsDB", 1);
         dbRequest.onupgradeneeded = function(e) {
@@ -714,39 +715,22 @@
             db.transaction(["mediaFiles"], "readwrite").objectStore("mediaFiles").delete(id);
         }
 
-        /* --- XỬ LÝ ĐỒNG BỘ ẢNH ĐẠI DIỆN --- */
         function loadProfileImages() {
             if (!db) return;
             getMediaFromDB("user_avatar_blob", function(blobFile) {
                 if (blobFile) {
                     if (currentAvatarUrl) URL.revokeObjectURL(currentAvatarUrl);
                     currentAvatarUrl = URL.createObjectURL(blobFile);
-                    
                     const settingsPreview = document.getElementById('settings-avatar-preview');
                     if (settingsPreview) { settingsPreview.src = currentAvatarUrl; settingsPreview.classList.remove('hidden'); }
                     if (document.getElementById('settings-avatar-placeholder')) document.getElementById('settings-avatar-placeholder').classList.add('hidden');
-                    
                     const mainPreview = document.getElementById('main-avatar-preview');
                     if (mainPreview) { mainPreview.src = currentAvatarUrl; mainPreview.classList.remove('hidden'); }
                     if (document.getElementById('main-avatar-placeholder')) document.getElementById('main-avatar-placeholder').classList.add('hidden');
-                    
-                    // ✨ ĐỒNG BỘ HIỂN THỊ AVATAR TRÊN MÀN HÌNH INTRO CHÀO MỪNG CŨ CỦA ÔNG
-                    const introImg = document.getElementById('intro-avatar-img');
-                    if (introImg) introImg.src = currentAvatarUrl;
-                    const introBox = document.getElementById('intro-avatar-box');
-                    if (introBox) introBox.classList.remove('hidden');
-                    const introIcon = document.getElementById('intro-star-icon');
-                    if (introIcon) introIcon.classList.add('hidden');
                 }
             });
             if (document.getElementById('profile-name-input')) document.getElementById('profile-name-input').value = profileData.name || '';
             if (document.getElementById('main-profile-name') && profileData.name) document.getElementById('main-profile-name').innerText = profileData.name;
-            
-            // ✨ ĐỒNG BỘ BIỆT DANH CỦA CÔ ẤY VÀO LỜI CHÀO INTRO CŨ
-            const introWelcome = document.getElementById('intro-welcome-text');
-            if (profileData.name && introWelcome) {
-                introWelcome.innerText = `Chào mừng ${profileData.name} trở lại...`;
-            }
         }
 
         function uploadProfileAvatar(input) {
@@ -947,6 +931,7 @@
 
         function finalizeSubmit() { localStorage.setItem('local_vault', JSON.stringify(vaultItems)); loadVault(); closeFormModal(); showToast("Đã ghi nhớ!"); }
 
+        /* --- KHÔI PHỤC LOGIC HIỂN THỊ NÚT THÊM NGUYÊN BẢN --- */
         function loadVault() {
             if (!db) return;
             const container = document.getElementById('vault-list'); container.innerHTML = '';
@@ -959,7 +944,7 @@
 
             if(search) items = items.filter(i => i.title.toLowerCase().includes(search));
             
-            // ✨ GIỮ NGUYÊN NÚT THÊM CHUẨN CŨ CỦA ÔNG KHI KHO TRỐNG
+            // ✨ KHÔI PHỤC NÚT THÊM KHI DANH SÁCH RỖNG
             if(items.length === 0) {
                 container.removeAttribute('class'); container.className = 'space-y-4 tab-slide-fade';
                 let msg = "CHƯA LƯU LIÊN KẾT NÀO";
@@ -1070,7 +1055,7 @@
 
         window.addEventListener('DOMContentLoaded', () => { 
             updateTimeAndTheme(); initPasswordScreen(); filterVault('wishlist'); 
-            // Ban đầu chưa đăng nhập thì chỉ quét ngầm IndexedDB, không ép hiển thị avatar lên màn hình chào trước
+            setTimeout(loadProfileImages, 300);
             if (document.getElementById('star-message')) document.getElementById('star-message').innerText = starMessages[Math.floor(Math.random() * starMessages.length)];
         });
     </script>

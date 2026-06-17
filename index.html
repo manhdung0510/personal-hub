@@ -1054,11 +1054,12 @@
                 if (currentVaultCategory === 'wishlist') msg = "KHO ĐỒ ĐANG TRỐNG";
                 if (currentVaultCategory === 'braindump') msg = "KHO ĐỒ ĐANG TRỐNG";
 
+                // ✨ ĐÃ XÓA OPACITY-40 KHỎI CỤM NÀY, TEXT RÕ RÀNG VÀ BUTTON NỔI BẬT HOÀN TOÀN
                 container.innerHTML = `
-                    <div class="py-16 text-center opacity-40 flex flex-col items-center justify-center">
-                        <div class="text-6xl mb-4">📦</div>
-                        <p class="text-sm font-bold uppercase tracking-widest mb-4">${msg}</p>
-                        <button onclick="openFormModal('vault')" class="px-5 py-2.5 bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 rounded-xl text-xs font-bold active:scale-90 transition shadow-inner">
+                    <div class="py-16 text-center flex flex-col items-center justify-center">
+                        <div class="text-6xl mb-4 opacity-60">📦</div>
+                        <p class="text-sm font-bold uppercase tracking-widest mb-5 text-gray-400">${msg}</p>
+                        <button onclick="openFormModal('vault')" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold active:scale-95 transition shadow-lg shadow-indigo-600/20">
                             ✨ Thêm mục đầu tiên ngay
                         </button>
                     </div>`;
@@ -1077,12 +1078,13 @@
                         <div class="w-full aspect-square bg-gray-900/40 border border-white/5 rounded-xl flex items-center justify-center overflow-hidden relative shadow-inner">
                             <div id="${mediaId}" class="absolute inset-0 flex items-center justify-center text-[11px] italic opacity-50">⌛ Đang tải...</div>
                         </div>
-                        <div class="flex flex-col gap-2 min-w-0 px-0.5">
+                        <div class="flex flex-col gap-2 min-w-0 px-0.5 mt-1">
                             <h4 class="font-bold text-xs truncate h4-title-text">${item.title}</h4>
-                            <div class="flex items-center justify-between pt-1.5 border-t border-white/5 gap-2">
-                                <button onclick="downloadMediaItem('${item.id}', '${item.title}', '${item.fileType}')" class="flex-1 h-10 flex items-center justify-center bg-indigo-600/10 text-indigo-400 rounded-xl font-bold">📥</button>
-                                <button onclick="openFormModal('vault', '${item.id}')" class="flex-1 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl font-bold text-white">✏️</button>
-                                <button onclick="deleteVaultItem('${item.id}')" class="w-10 h-10 bg-red-500/10 text-red-400 rounded-xl">✕</button>
+                            
+                            <div class="flex items-center w-full pt-2 border-t border-white/5 gap-2">
+                                <button onclick="downloadMediaItem('${item.id}', '${item.title}', '${item.fileType}')" class="flex-1 h-10 flex items-center justify-center bg-indigo-600/10 text-indigo-400 rounded-xl font-bold active:scale-95 transition">📥</button>
+                                <button onclick="openFormModal('vault', '${item.id}')" class="flex-1 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl font-bold text-white active:scale-95 transition">✏️</button>
+                                <button onclick="deleteVaultItem('${item.id}')" class="flex-1 h-10 flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl font-bold active:scale-95 transition">✕</button>
                             </div>
                         </div>`;
                     container.appendChild(card);
@@ -1157,7 +1159,7 @@
 
         window.addEventListener('DOMContentLoaded', () => { 
             updateTimeAndTheme(); initPasswordScreen(); filterVault('wishlist'); 
-            setTimeout(loadProfileImages, 300);
+            // Ban đầu chưa đăng nhập thì chỉ quét ngầm IndexedDB, không ép hiển thị avatar lên màn hình chào trước
             if (document.getElementById('star-message')) document.getElementById('star-message').innerText = starMessages[Math.floor(Math.random() * starMessages.length)];
         });
     </script>

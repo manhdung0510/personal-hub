@@ -158,10 +158,10 @@
             </div>
             <div id="intro-star-icon" class="text-6xl animate-bounce">✨</div>
             
-            <h2 id="intro-welcome-text" class="text-2xl font-semibold tracking-wide bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300 bg-clip-text text-transparent">
+            <h2 id="intro-welcome-text" class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-lg">
                 Xin chào kho báu...
             </h2>
-            <p id="star-message" class="text-xs text-gray-400 max-w-xs font-medium italic opacity-80 leading-relaxed pt-2 border-t border-gray-900"></p>
+            <p id="star-message" class="text-base text-gray-100 max-w-xs font-semibold italic leading-relaxed pt-3 border-t border-white/20 opacity-100"></p>
         </div>
     </div>
 
@@ -1054,7 +1054,6 @@
                 if (currentVaultCategory === 'wishlist') msg = "KHO ĐỒ ĐANG TRỐNG";
                 if (currentVaultCategory === 'braindump') msg = "KHO ĐỒ ĐANG TRỐNG";
 
-                // ✨ ĐÃ XÓA OPACITY-40 KHỎI CỤM NÀY, TEXT RÕ RÀNG VÀ BUTTON NỔI BẬT HOÀN TOÀN
                 container.innerHTML = `
                     <div class="py-16 text-center flex flex-col items-center justify-center">
                         <div class="text-6xl mb-4 opacity-60">📦</div>
@@ -1159,7 +1158,6 @@
 
         window.addEventListener('DOMContentLoaded', () => { 
             updateTimeAndTheme(); initPasswordScreen(); filterVault('wishlist'); 
-            // Ban đầu chưa đăng nhập thì chỉ quét ngầm IndexedDB, không ép hiển thị avatar lên màn hình chào trước
             if (document.getElementById('star-message')) document.getElementById('star-message').innerText = starMessages[Math.floor(Math.random() * starMessages.length)];
         });
     </script>

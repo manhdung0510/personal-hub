@@ -151,17 +151,23 @@
         </div>
     </div>
 
-    <div id="intro-screen" class="fixed inset-0 bg-[#05070a] z-[1000] flex flex-col items-center justify-center text-center px-6">
-        <div class="space-y-6 fade-in flex flex-col items-center">
-            <div id="intro-avatar-box" class="w-24 h-24 rounded-full border-2 border-indigo-500/30 overflow-hidden shadow-2xl bg-gray-900 hidden">
+    <div id="intro-screen" class="fixed inset-0 bg-[#05070a] z-[1000] flex flex-col items-center justify-center text-center px-6 overflow-hidden">
+        
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="w-72 h-72 bg-indigo-500/30 rounded-full blur-[80px]"></div>
+            <div class="w-72 h-72 bg-pink-500/20 rounded-full blur-[80px] absolute translate-y-10"></div>
+        </div>
+
+        <div class="space-y-6 fade-in flex flex-col items-center relative z-10">
+            <div id="intro-avatar-box" class="w-24 h-24 rounded-full border-2 border-indigo-400 overflow-hidden shadow-[0_0_20px_rgba(99,102,241,0.5)] bg-gray-900 hidden">
                 <img id="intro-avatar-img" class="w-full h-full object-cover" src="">
             </div>
-            <div id="intro-star-icon" class="text-6xl animate-bounce">✨</div>
+            <div id="intro-star-icon" class="text-6xl animate-bounce drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]">✨</div>
             
-            <h2 id="intro-welcome-text" class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-lg">
+            <h2 id="intro-welcome-text" class="text-3xl font-black tracking-tight text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">
                 Xin chào kho báu...
             </h2>
-            <p id="star-message" class="text-base text-gray-100 max-w-xs font-semibold italic leading-relaxed pt-3 border-t border-white/20 opacity-100"></p>
+            <p id="star-message" class="text-base text-white max-w-xs font-bold italic leading-relaxed pt-3 border-t border-white/40 drop-shadow-md"></p>
         </div>
     </div>
 

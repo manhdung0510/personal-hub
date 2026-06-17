@@ -196,7 +196,7 @@
         </div>
         
         <div class="flex items-center gap-2 shrink-0">
-            <button onclick="openInfoModal()" class="text-xl p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl active:scale-90 transition-transform">💡</button>
+            <button onclick="openInfoModal()" class="text-xl p-2 bg-white/5 border border-white/10 rounded-xl active:scale-90 transition-transform">💡</button>
             <button onclick="openSettings()" class="text-3xl p-2 active:scale-90 transition-transform">⚙️</button>
         </div>
     </header>
@@ -206,24 +206,24 @@
             <div class="w-12 h-1.5 bg-gray-700 rounded-full mx-auto mb-1 shrink-0"></div>
             <div class="text-center space-y-1 shrink-0">
                 <h3 class="text-xl font-bold text-gray-100">Cẩm Nang Sử Dụng 💡</h3>
-                <p class="text-xs text-indigo-400 italic font-medium">Hướng dẫn giữ an toàn dữ liệu mật thất</p>
+                <p class="text-xs text-indigo-400 italic font-medium">Hướng dẫn bảo vệ dữ liệu trên thiết bị</p>
             </div>
             <div class="flex-1 overflow-y-auto pr-1 space-y-4 text-sm leading-relaxed text-left scroll-container p-2 bg-black/20 rounded-2xl border border-white/5">
                 <div class="space-y-1.5">
-                    <h4 class="font-bold text-indigo-400 flex items-center gap-1.5">🔒 1. Cơ chế bảo mật cục bộ</h4>
-                    <p class="opacity-80 text-xs">Mọi thông tin như hình ảnh, video, danh sách mua sắm, tài liệu và mật mã của bạn đều được lưu trữ trực tiếp và duy nhất ngay trên bộ nhớ trình duyệt máy bạn, hoàn toàn không tải lên mạng nên bảo mật an toàn tuyệt đối.</p>
+                    <h4 class="font-bold text-indigo-400 flex items-center gap-1.5">🔒 1. Cơ chế lưu trữ cục bộ</h4>
+                    <p class="opacity-80 text-xs">Mọi thông tin gồm hình ảnh, video, danh sách shopping, tài liệu học tập và mật mã đều được lưu trữ trực tiếp và duy nhất trên bộ nhớ máy bạn, hoàn toàn không đẩy lên mạng nên bảo mật an toàn tuyệt đối.</p>
                 </div>
                 <div class="space-y-1.5 border-t border-white/5 pt-3">
-                    <h4 class="font-bold text-pink-400 flex items-center gap-1.5">⚠️ 2. Tránh làm mất dữ liệu</h4>
-                    <p class="opacity-80 text-xs">Vì ứng dụng lưu hoàn toàn trên máy, bạn **không nên** sử dụng tính năng *"Xóa lịch sử và dữ liệu trang web"* trong mục Cài đặt Safari của iPhone, vì hành động đó sẽ dọn sạch bộ nhớ của mật thất.</p>
+                    <h4 class="font-bold text-pink-400 flex items-center gap-1.5">⚠️ 2. Làm thế nào để không mất dữ liệu?</h4>
+                    <p class="opacity-80 text-xs">Vì ứng dụng lưu hoàn toàn trên máy, bạn **không được** chọn tính năng *"Xóa lịch sử và dữ liệu trang web"* trong cài đặt trình duyệt (Safari/Chrome), nếu không toàn bộ bộ nhớ mật thất sẽ bị dọn sạch vĩnh viễn.</p>
                 </div>
                 <div class="space-y-1.5 border-t border-white/5 pt-3">
-                    <h4 class="font-bold text-emerald-400 flex items-center gap-1.5">📱 3. Cách chuyển dữ liệu khi đổi điện thoại</h4>
-                    <p class="opacity-80 text-xs">Khi bạn thay điện thoại mới hoặc cần khôi phục lại dữ liệu, hãy làm theo các bước sau:</p>
+                    <h4 class="font-bold text-emerald-400 flex items-center gap-1.5">📱 3. Cách sao lưu dữ liệu khi thay máy</h4>
+                    <p class="opacity-80 text-xs">Khi bạn chuẩn bị đổi điện thoại mới hoặc muốn phòng hờ mất dữ liệu, hãy làm theo các bước sau:</p>
                     <ol class="list-decimal pl-4 text-xs opacity-70 space-y-1">
                         <li>Mở phần Cài đặt (⚙️) của ứng dụng này lên.</li>
-                        <li>Chạm vào nút **"📤 Xuất Sao Lưu"** để tải tệp dữ liệu về máy, chọn lưu file vào ứng dụng Tệp hoặc iCloud.</li>
-                        <li>Trên thiết bị mới, mở lại link ứng dụng, truy cập Cài đặt (⚙️) -> nhấn nút **"📥 Khôi Phục"** rồi tải tệp tin `.json` vừa lưu lên là mọi dữ liệu sẽ quay trở lại nguyên vẹn!</li>
+                        <li>Chạm vào nút **"📤 Xuất Sao Lưu"** để tải file dữ liệu về máy, chọn lưu file vào app Tệp hoặc iCloud/Drive.</li>
+                        <li>Trên thiết bị mới, mở ứng dụng lên, truy cập vào Cài đặt (⚙️) -> nhấn nút **"📥 Khôi Phục"** và chọn tệp tin `.json` vừa lưu lên là mọi kỷ niệm sẽ quay trở lại 100%!</li>
                     </ol>
                 </div>
             </div>
@@ -360,7 +360,7 @@
     </div>
 
     <div id="modal-settings" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-center justify-center p-6 z-[60]">
-        <div class="glass-card w-full max-w-sm rounded-[32px] p-6 space-y-5 text-center shadow-2xl overflow-y-auto max-h-[90vh]">
+        <div class="glass-card w-full max-w-sm rounded-[32px] p-6 space-y-5 text-center shadow-2xl">
             <div class="text-center space-y-1">
                 <h3 class="text-lg font-bold text-gray-100">⚙️ Hồ Sơ & Hệ Thống</h3>
                 <p class="text-xs text-gray-400">Tùy chỉnh không gian riêng tư</p>
@@ -442,7 +442,6 @@
         const defaultTracks = [];
         const starMessages = ["Mong ngày hôm nay sẽ dịu dàng với bạn.", "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."];
 
-        // 💡 HÀM ĐIỀU KHIỂN POPUP BẢNG LƯU Ý
         function openInfoModal() {
             const m = document.getElementById('modal-info');
             m.classList.remove('hidden'); m.classList.add('flex');
@@ -454,7 +453,6 @@
         }
         document.getElementById('modal-info').addEventListener('click', function(e) { if (e.target === this) closeInfoModal(); });
 
-        // 📤 HÀM XUẤT FILE BACKUP .JSON CHUẨN TÀI KHOẢN CỤ CỦA ÔNG
         function exportAppDataBackup() {
             try {
                 const dataObj = {
@@ -474,7 +472,6 @@
             } catch (err) { showToast("Lỗi hệ thống khi sao lưu!", "error"); }
         }
 
-        // 📥 HÀM NHẬP VÀ ĐỔ DỮ LIỆU TỪ FILE .JSON CHUẨN ĐIỆN THOẠI
         function importAppDataBackup(input) {
             if (!input.files || !input.files[0]) return;
             const reader = new FileReader();
@@ -528,12 +525,6 @@
                 else { el.type = 'password'; btnEl.innerText = '🙈'; }
             }
         }
-
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'F12' || (event.ctrlKey && event.shiftKey && event.key === 'I')) {
-                // Giữ nguyên thiết lập trống theo form gốc của ông
-            }
-        });
 
         function initPasswordScreen() {
             const hasPassword = localStorage.getItem('app_password');
@@ -1164,7 +1155,7 @@
 
         window.addEventListener('DOMContentLoaded', () => { 
             updateTimeAndTheme(); initPasswordScreen(); filterVault('wishlist'); 
-            setTimeout(loadProfileImages, 300);
+            // Ban đầu chưa đăng nhập thì chỉ quét ngầm IndexedDB, không ép hiển thị avatar lên màn hình chào trước
             if (document.getElementById('star-message')) document.getElementById('star-message').innerText = starMessages[Math.floor(Math.random() * starMessages.length)];
         });
     </script>

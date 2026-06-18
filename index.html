@@ -528,7 +528,7 @@
         const defaultTracks = [];
         const starMessages = ["Mong ngày hôm nay sẽ dịu dàng với bạn.", "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."];
 
-        // 🎄 LOGIC QUÉT TỰ ĐỘNG CHÚC MỪNG CÁC NGÀY LỄ - CHỈ XUẤT HIỆN 1 LẦN DUY NHẤT TRONG NGÀY
+        // 🎄 LOGIC TỰ ĐỘNG CHÚC MỪNG CÁC NGÀY LỄ - CHỈ XUẤT HIỆN 1 LẦN DUY NHẤT TRONG NGÀY
         function checkHolidayGreeting() {
             const now = new Date();
             const date = now.getDate();
@@ -546,12 +546,12 @@
             let hasConfetti = false;
 
             // Định nghĩa dữ liệu các ngày lễ
-            if (date === 19 && month === 6) {
+            if (date === 2 && month === 10) {
                 holidayId = `birthday_${year}`;
                 currentTitle = "Happy Birthday Princess! 🎂";
                 currentMsg = "Chúc mừng sinh nhật cô gái tuyệt vời nhất vũ trụ! Tuổi mới thật hạnh phúc, rạng rỡ và luôn là kho báu quý giá nhất nhé. Yêu em! 💕";
                 currentIcon = "🎉";
-                hasConfetti = true;
+                hasConfetti = true; // Sẽ chỉ bắn loạt pháo hoa ngắn gọn, không lặp vô tận
             } else if (date === 25 && month === 12) {
                 holidayId = `noel_${year}`;
                 currentTitle = "Merry Christmas! 🎄";
@@ -573,32 +573,30 @@
                 currentMsg = "Chúc em một ngày 20/11 thật ý nghĩa, nhiều đóa hoa thơm và nụ cười rạng rỡ trên môi. Cảm ơn em vì những điều tuyệt vời em luôn mang lại!";
                 currentIcon = "👩‍🏫";
             } else if ((date >= 1 && date <= 4) && (month === 1 || month === 2)) {
-                holidayId = `tet_${month}_${date}_${year}`; // Đánh dấu mốc cụ thể của ngày Tết năm đó
+                holidayId = `tet_${month}_${date}_${year}`;
                 currentTitle = "Chúc Mừng Năm Mới! 🧧";
                 currentMsg = "Năm mới đến rồi, chúc kho báu nhỏ của anh luôn bình an, vạn điều may mắn, mọi dự định đều thành công rực rỡ và nụ cười mãi nở trên môi nhé!";
                 currentIcon = "🧨";
             }
 
-            // Nếu hôm nay là ngày lễ
+            // Nếu hôm nay đúng ngày lễ
             if (holidayId !== "") {
-                // Kiểm tra xem trong bộ nhớ cục bộ đã lưu dấu hiệu "đã hiển thị lời chúc này" chưa
                 const isAlreadyShown = localStorage.getItem('last_holiday_shown');
-                
                 if (isAlreadyShown === holidayId) {
-                    // Nếu trùng id nghĩa là hôm nay cô ấy đã mở app nhìn thấy rồi, lần vào app này sẽ bỏ qua intro đặc biệt
-                    return false;
+                    return false; // Đã xem rồi thì bỏ qua intro đặc biệt, tải giao diện bình thường
                 }
 
-                // Nếu chưa từng hiển thị trong ngày hôm nay, nạp text lời chúc và lưu vết lại
+                // Nếu chưa xem, nạp nội dung lời chúc vào màn hình Intro
                 if (welcomeText) welcomeText.innerText = currentTitle;
                 if (starMsgText) starMsgText.innerText = currentMsg;
                 if (iconBox) iconBox.innerText = currentIcon;
                 
+                // Kích hoạt bắn pháo hoa chào mừng ngắn gọn (đã xóa bỏ setInterval lặp vô hạn gây đơ)
                 if (hasConfetti) {
-                    setTimeout(() => { triggerConfetti(); setInterval(triggerConfetti, 1200); }, 500);
+                    setTimeout(() => { triggerConfetti(); }, 400);
+                    setTimeout(() => { triggerConfetti(); }, 900);
                 }
 
-                // Ghi nhớ lại mốc này để lần truy cập tiếp theo trong ngày không hiện lại phiền phức nữa
                 localStorage.setItem('last_holiday_shown', holidayId);
                 return true;
             }
@@ -607,7 +605,6 @@
         }
 
         function applyIntroWelcomeText() {
-            // Kiểm tra xem hôm nay có trúng ngày lễ thật không, nếu có và chưa chúc thì giữ text ngày lễ
             const isRealHoliday = checkHolidayGreeting();
             if (isRealHoliday) return;
 
@@ -1359,7 +1356,19 @@
         window.addEventListener('DOMContentLoaded', () => { 
             updateTimeAndTheme(); initPasswordScreen(); filterVault('wishlist'); 
             applyIntroWelcomeText(); 
-            if (document.getElementById('star-message')) document.getElementById('star-message').innerText = starMessages[Math.floor(Math.random() * starMessages.length)];
+            if (document.getElementById('star-message')) {
+                // Kiểm tra xem có đang hiển thị nội dung lời chúc ngày lễ không, nếu không phải mới dán text ngẫu nhiên
+                const isHolidayActive = (localStorage.getItem('last_holiday_shown') === `${new Date().getDate() === 2 && new Date().getMonth()+1 === 10 ? 'birthday_'+new Date().getFullYear() : ''}`);
+                if (!isHolidayActive || localStorage.getItem('last_holiday_shown') === null) {
+                    // Logic chống ghi đè lời chúc khi ngày lễ đang diễn ra
+                    const now = new Date();
+                    const d = now.getDate(); const m = now.getMonth() + 1;
+                    const isTodayHoliday = (d===2 && m===10) || (d===25 && m===12) || (d===8 && m===3) || (d===20 && m===10) || (d===20 && m===11) || ((d>=1 && d<=4) && (m===1 || m===2));
+                    if (!isTodayHoliday || localStorage.getItem('last_holiday_shown') === `birthday_${now.getFullYear()}` || localStorage.getItem('last_holiday_shown') === `noel_${now.getFullYear()}`) {
+                        document.getElementById('star-message').innerText = starMessages[Math.floor(Math.random() * starMessages.length)];
+                    }
+                }
+            }
         });
     </script>
 </body>

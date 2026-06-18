@@ -465,17 +465,22 @@
             </div>
 
             <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-4 text-left flex flex-col items-center">
-                <div class="w-full border-b border-white/5 pb-3">
-                    <label class="text-[11px] text-indigo-400 font-bold block mb-1.5">🛠️ TEST THỬ HIỆU ỨNG NGÀY LỄ</label>
-                    <select id="holiday-test-selector" onchange="runHolidayManualTest(this.value)" class="w-full h-11 border rounded-xl px-3 text-xs outline-none focus:border-indigo-500 transition-all">
-                        <option value="">-- Chọn ngày lễ muốn xem thử --</option>
-                        <option value="birthday">🎂 Sinh nhật cô ấy (02/10)</option>
-                        <option value="noel">🎄 Giáng Sinh / Noel (25/12)</option>
-                        <option value="women_day">🌸 Quốc tế Phụ nữ (08/03)</option>
-                        <option value="vn_women">💐 Phụ nữ Việt Nam (20/10)</option>
-                        <option value="teacher">👩‍🏫 Nhà giáo Việt Nam (20/11)</option>
-                        <option value="tet">🧧 Dịp Tết Đầu Năm</option>
-                    </select>
+                <div class="w-full border-b border-white/5 pb-3 space-y-2">
+                    <label class="text-[11px] text-indigo-400 font-bold block mb-1.5">🛠️ TEST THƯ HIỆU ỨNG NGÀY LỄ</label>
+                    <div class="flex gap-2 w-full">
+                        <select id="holiday-test-selector" class="flex-1 h-11 border rounded-xl px-3 text-xs outline-none focus:border-indigo-500 transition-all bg-transparent">
+                            <option value="">-- Chọn ngày lễ muốn xem thử --</option>
+                            <option value="birthday">🎂 Sinh nhật cô ấy (02/10)</option>
+                            <option value="noel">🎄 Giáng Sinh / Noel (25/12)</option>
+                            <option value="women_day">🌸 Quốc tế Phụ nữ (08/03)</option>
+                            <option value="vn_women">💐 Phụ nữ Việt Nam (20/10)</option>
+                            <option value="teacher">👩‍🏫 Nhà giáo Việt Nam (20/11)</option>
+                            <option value="tet">🧧 Dịp Tết Đầu Năm</option>
+                        </select>
+                        <button onclick="runHolidayManualTest(document.getElementById('holiday-test-selector').value)" class="h-11 px-4 bg-indigo-600 text-white rounded-xl text-xs font-bold btn-clickable shrink-0 shadow-md">
+                            Bấm Test 🚀
+                        </button>
+                    </div>
                 </div>
 
                 <button onclick="forceToggleThemeTesting()" class="btn-clickable w-full h-11 bg-gradient-to-r from-amber-500/20 to-indigo-500/20 border border-amber-500/30 rounded-xl font-bold text-xs shadow-md text-center mb-2 text-amber-500">
@@ -603,15 +608,14 @@
             return false;
         }
 
-        // 🛠️ HÀM BẤM CHẠY THỬ (MANUAL TEST) HIỆU ỨNG NGÀY LỄ KHI ÔNG MUỐN CHECK
+        // 🛠️ HÀM BẤM CHẠY THỬ (MANUAL TEST) HIỆU ỨNG NGÀY LỄ KHI ÔNG BIỂU NÚT BẤM TEST CHẠY
         function runHolidayManualTest(holidayType) {
-            if (!holidayType) return;
+            if (!holidayType) return showToast("Vui lòng chọn 1 ngày lễ trước!", "error");
             
             // Tạm tạo ra một block màn hình intro ảo đè lên để ông xem hiệu ứng
             let testIntro = document.getElementById('intro-screen');
             const isFresh = !testIntro;
             if (isFresh) {
-                // Tạo lại intro nếu nó đã bị xoá khi đăng nhập thành công trước đó
                 testIntro = document.createElement('div');
                 testIntro.id = 'intro-screen';
                 testIntro.className = 'fixed inset-0 z-[2000] flex flex-col items-center justify-center text-center px-4 overflow-hidden';
@@ -659,11 +663,9 @@
             }
             
             closeSettings();
-            document.getElementById('holiday-test-selector').value = ""; // reset selector
         }
 
         function applyIntroWelcomeText() {
-            // Kiểm tra xem hôm nay có trúng ngày lễ thật không, nếu có thì giữ text ngày lễ
             const isRealHoliday = checkHolidayGreeting();
             if (isRealHoliday) return;
 
@@ -1165,6 +1167,7 @@
             }
         }
 
+        // 📝 HÀM MỞ MODAL THÊM MỤC
         function openFormModal(type, editId = null) {
             currentFormType = type; currentEditId = editId;
             const fields = document.getElementById('form-fields'); fields.innerHTML = '';
@@ -1394,6 +1397,23 @@
             if (!database.objectStoreNames.contains("mediaFiles")) database.createObjectStore("mediaFiles", { keyPath: "id" });
         };
         dbRequest.onsuccess = function(e) { db = e.target.result; loadVault(); loadProfileImages(); };
+
+        function saveMediaToDB(id, blobData, callback) {
+            let transaction = db.transaction(["mediaFiles"], "readwrite");
+            let store = transaction.objectStore("mediaFiles");
+            store.put({ id: id, data: blobData }).onsuccess = callback;
+        }
+
+        function getMediaFromDB(id, callback) {
+            if (!db) return callback(null);
+            let transaction = db.transaction(["mediaFiles"], "readonly");
+            let store = transaction.objectStore("mediaFiles");
+            store.get(id).onsuccess = function(e) { callback(e.target.result ? e.target.result.data : null); };
+        }
+
+        function deleteMediaFromDB(id) {
+            db.transaction(["mediaFiles"], "readwrite").objectStore("mediaFiles").delete(id);
+        }
 
         window.addEventListener('DOMContentLoaded', () => { 
             updateTimeAndTheme(); initPasswordScreen(); filterVault('wishlist'); 

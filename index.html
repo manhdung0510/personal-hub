@@ -12,7 +12,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2 family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         body { 
@@ -108,7 +108,6 @@
         .intro-hide { opacity: 0; pointer-events: none; transition: opacity 0.8s ease-in-out; }
 
         .toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         .toast-leave { animation: fadeOut 0.3s ease forwards; }
 
         @keyframes slideInUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -137,7 +136,7 @@
 
         /* ✨ HIỆU ỨNG THƠ MỘNG DÀNH RIÊNG CHO TRANG KHÓA VÀ CHÀO MỪNG */
         #lock-screen, #intro-screen {
-            background-color: #ffe4e6; /* Màu hồng pastel nền */
+            background-color: #ffe4e6; 
             background-image: radial-gradient(at 10% 20%, #fbcfe8 0px, transparent 50%), 
                               radial-gradient(at 80% 10%, #e9d5ff 0px, transparent 50%), 
                               radial-gradient(at 90% 80%, #ddd6fe 0px, transparent 50%), 
@@ -148,16 +147,15 @@
             background: rgba(255, 255, 255, 0.3) !important;
             backdrop-blur: 10px;
             border: 1px solid rgba(255, 255, 255, 0.5);
-            border-radius: 40px; /* Bo tròn nhiều hơn */
-            color: #5c4d41 !important; /* Màu chữ nâu đậm ấm */
+            border-radius: 40px; 
+            color: #5c4d41 !important; 
         }
 
         #lock-screen h2, #intro-screen h2 {
-            font-family: 'Playfair Display', serif; /* Font chữ nghệ thuật nếu ông muốn thêm, không thì giữ nguyên font hệ thống */
-            color: #be185d !important; /* Màu hồng đậm lãng mạn */
+            font-family: 'Playfair Display', serif; 
+            color: #be185d !important; 
         }
 
-        /* Hiệu ứng Star Dust bay xung quanh */
         .star-dust {
             position: absolute;
             width: 2px; height: 2px;
@@ -169,6 +167,16 @@
         @keyframes blink-dust {
             0%, 100% { transform: scale(0.5); opacity: 0.3; }
             50% { transform: scale(1.5); opacity: 0.9; box-shadow: 0 0 5px white; }
+        }
+
+        /* ⚡ TỐI ƯU HIỆU ỨNG NHẤN PHẢN HỒI RÕ RÀNG TRONG PHẦN CÀI ĐẶT */
+        .btn-clickable {
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-clickable:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(0,0,0,0) !important;
+            filter: brightness(0.85);
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
@@ -429,21 +437,21 @@
             </div>
 
             <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-4 text-left flex flex-col items-center">
-                <button onclick="forceToggleThemeTesting()" class="w-full h-11 bg-gradient-to-r from-amber-500/20 to-indigo-500/20 border border-amber-500/30 rounded-xl font-bold text-xs active:scale-95 transition text-center mb-2 text-amber-500">
+                <button onclick="forceToggleThemeTesting()" class="btn-clickable w-full h-11 bg-gradient-to-r from-amber-500/20 to-indigo-500/20 border border-amber-500/30 rounded-xl font-bold text-xs shadow-md shadow-amber-500/5 text-center mb-2 text-amber-500">
                     🛠️ Đổi Giao Diện Nhanh (Đang Test)
                 </button>
 
                 <div class="w-full grid grid-cols-2 gap-2 border-b border-white/5 pb-3">
-                    <button onclick="exportAppDataBackup()" class="h-10 bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 rounded-xl font-bold text-xs active:scale-95 transition flex items-center justify-center">
+                    <button onclick="exportAppDataBackup()" class="btn-clickable h-10 bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 rounded-xl font-bold text-xs shadow-md shadow-indigo-600/5 flex items-center justify-center">
                         📤 Xuất Sao Lưu
                     </button>
-                    <div class="relative h-10 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 rounded-xl font-bold text-xs active:scale-95 transition flex items-center justify-center cursor-pointer">
+                    <div class="btn-clickable relative h-10 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 rounded-xl font-bold text-xs shadow-md shadow-emerald-600/5 flex items-center justify-center cursor-pointer">
                         <input type="file" id="import-backup-file-picker" accept=".json" class="absolute inset-0 opacity-0 cursor-pointer" onchange="importAppDataBackup(this)">
                         📥 Khôi Phục
                     </div>
                 </div>
 
-                <div class="relative w-20 h-20 rounded-full bg-gray-900 border border-gray-700 overflow-hidden group cursor-pointer shadow-xl">
+                <div class="relative w-20 h-20 rounded-full bg-gray-900 border border-gray-700 overflow-hidden group cursor-pointer shadow-xl btn-clickable">
                     <img id="settings-avatar-preview" class="w-full h-full object-cover hidden" src="">
                     <div id="settings-avatar-placeholder" class="absolute inset-0 flex items-center justify-center text-2xl opacity-60">👤</div>
                     <input type="file" id="profile-avatar-input" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="uploadProfileAvatar(this)">
@@ -469,10 +477,10 @@
             </div>
             
             <div class="flex gap-2">
-                <button onclick="triggerConfetti()" class="h-14 flex-1 bg-gradient-to-r from-pink-500/20 to-indigo-500/20 border border-indigo-500/30 rounded-2xl font-bold text-indigo-300 text-xs active:scale-95 transition">Niềm vui ✨</button>
-                <button onclick="saveProfile()" class="h-14 flex-1 bg-indigo-600 rounded-2xl font-bold text-white text-xs active:scale-95 transition shadow-lg shadow-indigo-600/20">Lưu lại</button>
+                <button onclick="triggerConfetti()" class="btn-clickable h-14 flex-1 bg-gradient-to-r from-pink-500/20 to-indigo-500/20 border border-indigo-500/30 rounded-2xl font-bold text-indigo-300 text-xs shadow-md">Niềm vui ✨</button>
+                <button onclick="saveProfile()" class="btn-clickable h-14 flex-1 bg-indigo-600 rounded-2xl font-bold text-white text-xs shadow-lg shadow-indigo-600/30">Lưu lại</button>
             </div>
-            <button onclick="closeSettings()" class="h-12 w-full bg-gray-900 border border-gray-800 rounded-xl font-bold text-sm text-gray-400 active:scale-95 transition">Đóng</button>
+            <button onclick="closeSettings()" class="btn-clickable h-12 w-full bg-gray-900 border border-gray-800 rounded-xl font-bold text-sm text-gray-400 shadow-md">Đóng</button>
         </div>
     </div>
 
@@ -580,6 +588,20 @@
             filterVault(currentVaultCategory); 
         }
 
+        // Tối ưu các hộp input riêng biệt
+        function setupSettingsInputsTheme() {
+            const ctrls = [document.getElementById('profile-name-input'), document.getElementById('change-app-password'), document.getElementById('change-app-password-confirm')];
+            ctrls.forEach(ctrl => {
+                if (ctrl) {
+                    if(document.body.classList.contains('light-theme')) {
+                        ctrl.style.backgroundColor = "#fcf8f5"; ctrl.style.borderColor = "#d6ccc2"; ctrl.style.color = "#2b221a";
+                    } else {
+                        ctrl.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; ctrl.style.borderColor = "rgba(255, 255, 255, 0.05)"; ctrl.style.color = "#f3f4f6";
+                    }
+                }
+            });
+        }
+
         function toggleInputVisibility(inputId, btnEl) {
             const el = document.getElementById(inputId);
             if (el && btnEl) {
@@ -619,7 +641,6 @@
 
             const inputs = container.querySelectorAll('input');
             inputs.forEach(inp => {
-                // Tùy chỉnh màu input riêng cho trang khóa
                 inp.style.backgroundColor = "rgba(255, 255, 255, 0.5)"; 
                 inp.style.borderColor = "rgba(255, 255, 255, 0.8)"; 
                 inp.style.color = "#5c4d41";
@@ -919,16 +940,7 @@
 
         function openSettings() {
             pendingAvatarFile = null; loadProfileImages();
-            const ctrls = [document.getElementById('profile-name-input'), document.getElementById('change-app-password'), document.getElementById('change-app-password-confirm')];
-            ctrls.forEach(ctrl => {
-                if (ctrl) {
-                    if(document.body.classList.contains('light-theme')) {
-                        ctrl.style.backgroundColor = "#fcf8f5"; ctrl.style.borderColor = "#d6ccc2"; ctrl.style.color = "#2b221a";
-                    } else {
-                        ctrl.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; ctrl.style.borderColor = "rgba(255, 255, 255, 0.05)"; ctrl.style.color = "#f3f4f6";
-                    }
-                }
-            });
+            setupSettingsInputsTheme();
             document.getElementById('modal-settings').classList.replace('hidden', 'flex'); 
         }
         function closeSettings() { document.getElementById('modal-settings').classList.replace('flex', 'hidden'); }

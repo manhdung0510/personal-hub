@@ -12,7 +12,8 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
     
     <style>
         body { 
@@ -145,7 +146,8 @@
 
         #lock-screen .glass-card, #intro-screen .glass-card {
             background: rgba(255, 255, 255, 0.3) !important;
-            backdrop-blur: 10px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.5);
             border-radius: 40px; 
             color: #5c4d41 !important; 
@@ -178,11 +180,10 @@
             filter: brightness(0.85);
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
 </head>
 <body class="h-full flex flex-col justify-between overflow-hidden select-none pt-safe pb-safe dark-theme">
 
-    <div id="lock-screen" class="fixed inset-0 z-[1005] flex flex-col items-center justify-center text-center px-6 transition-all duration-500">
+    <div id="lock-screen" class="fixed inset-0 z-[1005] flex flex-col items-center justify-center text-center px-4 transition-all duration-500">
         <div class="star-dust" style="top:10%; left:20%;"></div>
         <div class="star-dust" style="top:25%; right:15%; animation-delay: 0.5s;"></div>
         <div class="star-dust" style="top:70%; left:10%; animation-delay: 1.2s;"></div>
@@ -193,7 +194,7 @@
             <div class="w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px] translate-x-10 translate-y-10"></div>
         </div>
         
-        <div class="glass-card w-full max-w-sm p-8 space-y-6 shadow-2xl relative z-10 fade-in flex flex-col items-center">
+        <div class="glass-card w-full max-w-md sm:max-w-sm p-8 space-y-6 shadow-2xl relative z-10 fade-in flex flex-col items-center">
             <div class="text-5xl drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">🔒</div>
             <div class="space-y-1.5">
                 <h2 id="lock-title" class="text-2xl font-black bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Không Gian Bảo Mật</h2>
@@ -208,7 +209,7 @@
         </div>
     </div>
 
-    <div id="intro-screen" class="fixed inset-0 z-[1000] flex flex-col items-center justify-center text-center px-6 overflow-hidden">
+    <div id="intro-screen" class="fixed inset-0 z-[1000] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
         <div class="star-dust" style="top:20%; left:15%;"></div>
         <div class="star-dust" style="top:35%; right:20%; animation-delay: 0.5s;"></div>
         <div class="star-dust" style="top:70%; left:25%; animation-delay: 1.2s;"></div>
@@ -219,7 +220,7 @@
             <div class="w-85 h-85 bg-pink-500/10 rounded-full blur-[90px] absolute translate-y-14"></div>
         </div>
 
-        <div class="glass-card w-full max-w-sm p-8 space-y-6 shadow-2xl relative z-10 fade-in flex flex-col items-center">
+        <div class="glass-card w-full max-w-md sm:max-w-sm p-8 space-y-6 shadow-2xl relative z-10 fade-in flex flex-col items-center">
             <div id="intro-avatar-box" class="w-24 h-24 rounded-full border-2 border-indigo-400 overflow-hidden shadow-[0_0_20px_rgba(99,102,241,0.4)] bg-gray-900 hidden">
                 <img id="intro-avatar-img" class="w-full h-full object-cover" src="">
             </div>
@@ -327,8 +328,8 @@
         </div>
     </div>
 
-    <div id="modal-profile-edit" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center p-6 z-[1010] transition-all duration-300">
-        <div class="glass-card w-full max-w-sm rounded-[32px] p-6 space-y-5 text-center shadow-2xl">
+    <div id="modal-profile-edit" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 z-[1010] transition-all duration-300">
+        <div class="glass-card w-full max-w-md sm:max-w-sm rounded-[32px] p-6 space-y-5 text-center shadow-2xl">
             <div class="text-center space-y-1">
                 <h3 class="text-lg font-bold text-gray-100">🌸 Chỉnh Sửa Hồ Sơ</h3>
                 <p class="text-xs text-indigo-400">Cá nhân hóa trợ lý nhỏ của bạn</p>
@@ -456,8 +457,8 @@
         </div>
     </div>
 
-    <div id="modal-settings" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-center justify-center p-6 z-[60]">
-        <div class="glass-card w-full max-w-sm rounded-[32px] p-6 space-y-5 text-center shadow-2xl overflow-y-auto max-h-[90vh]">
+    <div id="modal-settings" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-center justify-center p-4 z-[60]">
+        <div class="glass-card w-full max-w-md sm:max-w-sm rounded-[32px] p-6 space-y-5 text-center shadow-2xl overflow-y-auto max-h-[90vh]">
             <div class="text-center space-y-1">
                 <h3 class="text-lg font-bold text-gray-100">⚙️ Hệ Thống Bảo Mật</h3>
                 <p class="text-xs text-gray-400">Tùy chỉnh cấu hình riêng tư</p>
@@ -499,8 +500,8 @@
         </div>
     </div>
 
-    <div id="modal-confirm" class="fixed inset-0 bg-black/95 backdrop-blur-sm hidden items-center justify-center p-8 z-[100] opacity-0 transition-opacity duration-300">
-        <div class="glass-card w-full max-w-xs rounded-[32px] p-8 space-y-6 text-center">
+    <div id="modal-confirm" class="fixed inset-0 bg-black/95 backdrop-blur-sm hidden items-center justify-center p-4 z-[100] opacity-0 transition-opacity duration-300">
+        <div class="glass-card w-full max-w-md sm:max-w-xs rounded-[32px] p-8 space-y-6 text-center">
             <div class="text-5xl">⚠️</div>
             <h3 class="text-lg font-bold text-gray-100" id="confirm-msg">Xác nhận xóa mục này?</h3>
             <div class="flex flex-col gap-3">
@@ -527,7 +528,6 @@
         const defaultTracks = [];
         const starMessages = ["Mong ngày hôm nay sẽ dịu dàng với bạn.", "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."];
 
-        // ✨ THAY ĐỔI BIẾN CÂU CHÚC INTRO - TỰ ĐỘNG NHẬN DIỆN TÊN BIỆT DANH THEO YÊU CẦU
         function applyIntroWelcomeText() {
             const welcomeText = document.getElementById('intro-welcome-text');
             if (welcomeText) {
@@ -615,7 +615,6 @@
             filterVault(currentVaultCategory); 
         }
 
-        // Tối ưu hóa màu cho input modal sửa hồ sơ ngoài màn hình chính
         function setupPopupInputsTheme() {
             const ctrl = document.getElementById('popup-name-input');
             if (ctrl) {
@@ -884,15 +883,6 @@
             renderTrackList();
         }
 
-        /* --- INDEXEDDB STORAGE --- */
-        let db;
-        const dbRequest = indexedDB.open("SecureMomentsDB", 1);
-        dbRequest.onupgradeneeded = function(e) {
-            let database = e.target.result;
-            if (!database.objectStoreNames.contains("mediaFiles")) database.createObjectStore("mediaFiles", { keyPath: "id" });
-        };
-        dbRequest.onsuccess = function(e) { db = e.target.result; loadVault(); loadProfileImages(); };
-
         function saveMediaToDB(id, blobData, callback) {
             let transaction = db.transaction(["mediaFiles"], "readwrite");
             let store = transaction.objectStore("mediaFiles");
@@ -937,11 +927,9 @@
             if (document.getElementById('main-profile-name')) {
                 document.getElementById('main-profile-name').innerText = (profileData.name && profileData.name.trim() !== "") ? profileData.name : 'Kho báu nhỏ';
             }
-            // Áp dụng logic câu chào lãng mạn ngay lập tức
             applyIntroWelcomeText();
         }
 
-        // ✨ HIỂN THỊ POPUP ĐỔI THÔNG TIN CHỦ SỞ HỮU NGAY MÀN HÌNH CHÍNH
         function openProfileModal() {
             pendingAvatarFile = null;
             loadProfileImages();
@@ -984,7 +972,6 @@
             }
         }
 
-        // Khung cài đặt gốc chỉ giữ lại đổi pass
         function saveProfile() {
             showToast("Đã cập nhật cấu hình hệ thống!");
             closeSettings();
@@ -1279,9 +1266,17 @@
         function closeConfirmModal() { document.getElementById('modal-confirm').classList.replace('opacity-100', 'opacity-0'); setTimeout(() => document.getElementById('modal-confirm').classList.replace('flex', 'hidden'), 300); }
         document.getElementById('btn-confirm-action').onclick = () => { confirmCallback?.(); closeConfirmModal(); };
 
+        let db;
+        const dbRequest = indexedDB.open("SecureMomentsDB", 1);
+        dbRequest.onupgradeneeded = function(e) {
+            let database = e.target.result;
+            if (!database.objectStoreNames.contains("mediaFiles")) database.createStore = database.createObjectStore("mediaFiles", { keyPath: "id" });
+        };
+        dbRequest.onsuccess = function(e) { db = e.target.result; loadVault(); loadProfileImages(); };
+
         window.addEventListener('DOMContentLoaded', () => { 
             updateTimeAndTheme(); initPasswordScreen(); filterVault('wishlist'); 
-            applyIntroWelcomeText(); // Chạy câu chào Intro lãng mạn ngay khi tải tài nguyên
+            applyIntroWelcomeText(); 
             if (document.getElementById('star-message')) document.getElementById('star-message').innerText = starMessages[Math.floor(Math.random() * starMessages.length)];
         });
     </script>

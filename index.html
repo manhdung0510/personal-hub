@@ -465,6 +465,19 @@
             </div>
 
             <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-4 text-left flex flex-col items-center">
+                <div class="w-full border-b border-white/5 pb-3">
+                    <label class="text-[11px] text-indigo-400 font-bold block mb-1.5">🛠️ TEST THỬ HIỆU ỨNG NGÀY LỄ</label>
+                    <select id="holiday-test-selector" onchange="runHolidayManualTest(this.value)" class="w-full h-11 border rounded-xl px-3 text-xs outline-none focus:border-indigo-500 transition-all">
+                        <option value="">-- Chọn ngày lễ muốn xem thử --</option>
+                        <option value="birthday">🎂 Sinh nhật cô ấy (02/10)</option>
+                        <option value="noel">🎄 Giáng Sinh / Noel (25/12)</option>
+                        <option value="women_day">🌸 Quốc tế Phụ nữ (08/03)</option>
+                        <option value="vn_women">💐 Phụ nữ Việt Nam (20/10)</option>
+                        <option value="teacher">👩‍🏫 Nhà giáo Việt Nam (20/11)</option>
+                        <option value="tet">🧧 Dịp Tết Đầu Năm</option>
+                    </select>
+                </div>
+
                 <button onclick="forceToggleThemeTesting()" class="btn-clickable w-full h-11 bg-gradient-to-r from-amber-500/20 to-indigo-500/20 border border-amber-500/30 rounded-xl font-bold text-xs shadow-md text-center mb-2 text-amber-500">
                     🛠️ Đổi Giao Diện Nhanh (Đang Test)
                 </button>
@@ -528,7 +541,132 @@
         const defaultTracks = [];
         const starMessages = ["Mong ngày hôm nay sẽ dịu dàng với bạn.", "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."];
 
+        // 🎄 LOGIC QUÉT TỰ ĐỘNG CHÚC MỪNG CÁC NGÀY LỄ + THÊM NOEL (25/12)
+        function checkHolidayGreeting() {
+            const now = new Date();
+            const date = now.getDate();
+            const month = now.getMonth() + 1;
+            
+            const welcomeText = document.getElementById('intro-welcome-text');
+            const starMsgText = document.getElementById('star-message');
+            const iconBox = document.getElementById('intro-star-icon');
+
+            // 1. Sinh nhật cô ấy (02/10)
+            if (date === 2 && month === 10) {
+                if (welcomeText) welcomeText.innerText = "Happy Birthday Princess! 🎂";
+                if (starMsgText) starMsgText.innerText = "Chúc mừng sinh nhật cô gái tuyệt vời nhất vũ trụ! Tuổi mới thật hạnh phúc, rạng rỡ và luôn là kho báu quý giá nhất nhé. Yêu em! 💕";
+                if (iconBox) iconBox.innerText = "🎉";
+                setTimeout(() => { triggerConfetti(); setInterval(triggerConfetti, 1200); }, 500);
+                return true;
+            }
+            
+            // 2. Ngày lễ Giáng Sinh / Noel (25/12)
+            if (date === 25 && month === 12) {
+                if (welcomeText) welcomeText.innerText = "Merry Christmas! 🎄";
+                if (starMsgText) starMsgText.innerText = "Giáng Sinh ấm áp nhé kho báu của anh! Chúc em luôn hạnh phúc, bình yên và nhận được thật nhiều điều ngọt ngào trong đêm đông này. Thần tình yêu luôn bên em! ❄️";
+                if (iconBox) iconBox.innerText = "☃️";
+                return true;
+            }
+
+            // 3. Quốc tế Phụ nữ (08/03)
+            if (date === 8 && month === 3) {
+                if (welcomeText) welcomeText.innerText = "Happy Women's Day! 🌸";
+                if (starMsgText) starMsgText.innerText = "Chúc ngày 8/3 của em luôn ngập tràn những điều ngọt ngào. Hãy tỏa sáng theo cách của riêng em, vì em xứng đáng với mọi điều tốt đẹp nhất thế gian này!";
+                if (iconBox) iconBox.innerText = "💝";
+                return true;
+            }
+
+            // 4. Phụ nữ Việt Nam (20/10)
+            if (date === 20 && month === 10) {
+                if (welcomeText) welcomeText.innerText = "Ngày Của Nhành Hoa Đẹp Nhất 💐";
+                if (starMsgText) starMsgText.innerText = "Chào mừng ngày 20/10! Chúc cô báu nhỏ luôn rạng rỡ, xinh tươi và có một ngày tràn đầy niềm vui, sự chiều chuộng dịu dàng nha.";
+                if (iconBox) iconBox.innerText = "❤️";
+                return true;
+            }
+
+            // 5. Ngày Nhà giáo Việt Nam (20/11)
+            if (date === 20 && month === 11) {
+                if (welcomeText) welcomeText.innerText = "Tri Ân Ngày 20/11 ✨";
+                if (starMsgText) starMsgText.innerText = "Chúc em một ngày 20/11 thật ý nghĩa, nhiều đóa hoa thơm và nụ cười rạng rỡ trên môi. Cảm ơn em vì những điều tuyệt vời em luôn mang lại!";
+                if (iconBox) iconBox.innerText = "👩‍🏫";
+                return true;
+            }
+
+            // 6. Quét Dịp Tết Dương Lịch / Âm Lịch (Từ mùng 1 đến mùng 4 tháng 1 hoặc tháng 2)
+            if ((date >= 1 && date <= 4) && (month === 1 || month === 2)) {
+                if (welcomeText) welcomeText.innerText = "Chúc Mừng Năm Mới! 🧧";
+                if (starMsgText) starMsgText.innerText = "Năm mới đến rồi, chúc kho báu nhỏ của anh luôn bình an, vạn điều may mắn, mọi dự định đều thành công rực rỡ và nụ cười mãi nở trên môi nhé!";
+                if (iconBox) iconBox.innerText = "🧨";
+                return true;
+            }
+
+            return false;
+        }
+
+        // 🛠️ HÀM BẤM CHẠY THỬ (MANUAL TEST) HIỆU ỨNG NGÀY LỄ KHI ÔNG MUỐN CHECK
+        function runHolidayManualTest(holidayType) {
+            if (!holidayType) return;
+            
+            // Tạm tạo ra một block màn hình intro ảo đè lên để ông xem hiệu ứng
+            let testIntro = document.getElementById('intro-screen');
+            const isFresh = !testIntro;
+            if (isFresh) {
+                // Tạo lại intro nếu nó đã bị xoá khi đăng nhập thành công trước đó
+                testIntro = document.createElement('div');
+                testIntro.id = 'intro-screen';
+                testIntro.className = 'fixed inset-0 z-[2000] flex flex-col items-center justify-center text-center px-4 overflow-hidden';
+                testIntro.innerHTML = `
+                    <div class="glass-card w-full max-w-md sm:max-w-sm p-8 space-y-6 shadow-2xl relative z-10 flex flex-col items-center">
+                        <div id="intro-star-icon" class="text-6xl animate-bounce">✨</div>
+                        <div class="space-y-3 w-full">
+                            <h2 id="intro-welcome-text" class="text-2xl font-black text-white"></h2>
+                            <p id="star-message" class="text-sm text-gray-700 font-bold italic leading-relaxed pt-3 border-t border-white/10"></p>
+                        </div>
+                        <button onclick="document.getElementById('intro-screen').remove()" class="mt-4 h-10 px-4 bg-gray-900 rounded-xl text-white text-xs font-bold">✕ Đóng Chế Độ Test</button>
+                    </div>`;
+                document.body.appendChild(testIntro);
+            }
+
+            const welcomeText = document.getElementById('intro-welcome-text');
+            const starMsgText = document.getElementById('star-message');
+            const iconBox = document.getElementById('intro-star-icon');
+
+            if (holidayType === 'birthday') {
+                welcomeText.innerText = "Happy Birthday Princess! 🎂";
+                starMsgText.innerText = "Chúc mừng sinh nhật cô gái tuyệt vời nhất vũ trụ! Tuổi mới thật hạnh phúc, rạng rỡ và luôn là kho báu quý giá nhất nhé. Yêu em! 💕";
+                iconBox.innerText = "🎉";
+                triggerConfetti();
+            } else if (holidayType === 'noel') {
+                welcomeText.innerText = "Merry Christmas! 🎄";
+                starMsgText.innerText = "Giáng Sinh ấm áp nhé kho báu của anh! Chúc em luôn hạnh phúc, bình yên và nhận được thật nhiều điều ngọt ngào trong đêm đông này. Thần tình yêu luôn bên em! ❄️";
+                iconBox.innerText = "☃️";
+            } else if (holidayType === 'women_day') {
+                welcomeText.innerText = "Happy Women's Day! 🌸";
+                starMsgText.innerText = "Chúc ngày 8/3 của em luôn ngập tràn những điều ngọt ngào. Hãy tỏa sáng theo cách của riêng em, vì em xứng đáng với mọi điều tốt đẹp nhất thế gian này!";
+                iconBox.innerText = "💝";
+            } else if (holidayType === 'vn_women') {
+                welcomeText.innerText = "Ngày Của Nhành Hoa Đẹp Nhất 💐";
+                starMsgText.innerText = "Chào mừng ngày 20/10! Chúc cô báu nhỏ luôn rạng rỡ, xinh tươi và có một ngày tràn đầy niềm vui, sự chiều chuộng dịu dàng nha.";
+                iconBox.innerText = "❤️";
+            } else if (holidayType === 'teacher') {
+                welcomeText.innerText = "Tri Ân Ngày 20/11 ✨";
+                starMsgText.innerText = "Chúc em một ngày 20/11 thật ý nghĩa, nhiều đóa hoa thơm và nụ cười rạng rỡ trên môi. Cảm ơn em vì những điều tuyệt vời em luôn mang lại!";
+                iconBox.innerText = "👩‍🏫";
+            } else if (holidayType === 'tet') {
+                welcomeText.innerText = "Chúc Mừng Năm Mới! 🧧";
+                starMsgText.innerText = "Năm mới đến rồi, chúc kho báu nhỏ của anh luôn bình an, vạn điều may mắn, mọi dự định đều thành công rực rỡ và nụ cười mãi nở trên môi nhé!";
+                iconBox.innerText = "🧨";
+            }
+            
+            closeSettings();
+            document.getElementById('holiday-test-selector').value = ""; // reset selector
+        }
+
         function applyIntroWelcomeText() {
+            // Kiểm tra xem hôm nay có trúng ngày lễ thật không, nếu có thì giữ text ngày lễ
+            const isRealHoliday = checkHolidayGreeting();
+            if (isRealHoliday) return;
+
             const welcomeText = document.getElementById('intro-welcome-text');
             if (welcomeText) {
                 if (profileData && profileData.name && profileData.name.trim() !== "") {
@@ -881,23 +1019,6 @@
             quickStopBtn.classList.add('hidden'); quickMuteBtn.classList.add('hidden'); quickClearBtn.classList.add('hidden');
             miniPlayer.classList.remove('bg-indigo-500/10', 'border-indigo-500/20');
             renderTrackList();
-        }
-
-        function saveMediaToDB(id, blobData, callback) {
-            let transaction = db.transaction(["mediaFiles"], "readwrite");
-            let store = transaction.objectStore("mediaFiles");
-            store.put({ id: id, data: blobData }).onsuccess = callback;
-        }
-
-        function getMediaFromDB(id, callback) {
-            if (!db) return callback(null);
-            let transaction = db.transaction(["mediaFiles"], "readonly");
-            let store = transaction.objectStore("mediaFiles");
-            store.get(id).onsuccess = function(e) { callback(e.target.result ? e.target.result.data : null); };
-        }
-
-        function deleteMediaFromDB(id) {
-            db.transaction(["mediaFiles"], "readwrite").objectStore("mediaFiles").delete(id);
         }
 
         function loadProfileImages() {
@@ -1270,7 +1391,7 @@
         const dbRequest = indexedDB.open("SecureMomentsDB", 1);
         dbRequest.onupgradeneeded = function(e) {
             let database = e.target.result;
-            if (!database.objectStoreNames.contains("mediaFiles")) database.createStore = database.createObjectStore("mediaFiles", { keyPath: "id" });
+            if (!database.objectStoreNames.contains("mediaFiles")) database.createObjectStore("mediaFiles", { keyPath: "id" });
         };
         dbRequest.onsuccess = function(e) { db = e.target.result; loadVault(); loadProfileImages(); };
 

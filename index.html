@@ -12,7 +12,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2 family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         body { 
@@ -169,7 +169,6 @@
             50% { transform: scale(1.5); opacity: 0.9; box-shadow: 0 0 5px white; }
         }
 
-        /* ⚡ TỐI ƯU HIỆU ỨNG NHẤN PHẢN HỒI RÕ RÀNG TRONG PHẦN CÀI ĐẶT */
         .btn-clickable {
             transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -328,17 +327,45 @@
         </div>
     </div>
 
+    <div id="modal-profile-edit" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center p-6 z-[1010] transition-all duration-300">
+        <div class="glass-card w-full max-w-sm rounded-[32px] p-6 space-y-5 text-center shadow-2xl">
+            <div class="text-center space-y-1">
+                <h3 class="text-lg font-bold text-gray-100">🌸 Chỉnh Sửa Hồ Sơ</h3>
+                <p class="text-xs text-indigo-400">Cá nhân hóa trợ lý nhỏ của bạn</p>
+            </div>
+
+            <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-4 flex flex-col items-center text-left">
+                <div class="relative w-24 h-24 rounded-full bg-gray-900 border-2 border-pink-400/50 overflow-hidden group cursor-pointer shadow-xl btn-clickable">
+                    <img id="popup-avatar-preview" class="w-full h-full object-cover hidden" src="">
+                    <div id="popup-avatar-placeholder" class="absolute inset-0 flex items-center justify-center text-3xl opacity-60">👤</div>
+                    <input type="file" id="popup-avatar-input" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="uploadPopupAvatar(this)">
+                </div>
+                <span class="text-[11px] text-pink-400 font-bold uppercase tracking-wider -mt-2">Chạm để đổi ảnh</span>
+
+                <div class="w-full">
+                    <label class="text-[11px] text-gray-400 font-bold block mb-1">Biệt danh kho báu</label>
+                    <input type="text" id="popup-name-input" placeholder="Nhập biệt danh đáng yêu..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
+                </div>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="closeProfileModal()" class="btn-clickable h-12 flex-1 bg-gray-900 border border-gray-800 rounded-xl font-bold text-xs text-gray-400">Đóng</button>
+                <button onclick="savePopupProfile()" class="btn-clickable h-12 flex-1 bg-indigo-600 rounded-xl font-bold text-white text-xs shadow-lg shadow-indigo-600/20">Lưu thay đổi</button>
+            </div>
+        </div>
+    </div>
+
     <main class="flex-1 overflow-y-auto scroll-container px-5 py-6 space-y-8 pb-32">
         <section id="tab-vault" class="tab-content space-y-6">
             
-            <div class="glass-card p-6 rounded-3xl flex items-center gap-5 shadow-md fade-in">
+            <div onclick="openProfileModal()" class="glass-card p-6 rounded-3xl flex items-center gap-5 shadow-md fade-in btn-clickable cursor-pointer">
                 <div class="w-20 h-20 rounded-full bg-gray-950/40 border-2 border-indigo-500/20 flex items-center justify-center overflow-hidden shrink-0 shadow-lg">
                     <img id="main-avatar-preview" class="w-full h-full object-cover hidden" src="">
                     <div id="main-avatar-placeholder" class="text-4xl opacity-60">👤</div>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <div class="text-[11px] font-bold uppercase tracking-widest text-indigo-400 opacity-80">Chủ sở hữu</div>
-                    <div class="text-2xl font-extrabold truncate text-gray-100 tracking-tight mt-1" id="main-profile-name">Thành viên quý giá</div>
+                    <div class="text-[11px] font-bold uppercase tracking-widest text-indigo-400 opacity-80">Chủ sở hữu (Chạm để sửa) ✨</div>
+                    <div class="text-2xl font-extrabold truncate text-gray-100 tracking-tight mt-1" id="main-profile-name">Kho báu nhỏ</div>
                 </div>
             </div>
             
@@ -432,38 +459,26 @@
     <div id="modal-settings" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-center justify-center p-6 z-[60]">
         <div class="glass-card w-full max-w-sm rounded-[32px] p-6 space-y-5 text-center shadow-2xl overflow-y-auto max-h-[90vh]">
             <div class="text-center space-y-1">
-                <h3 class="text-lg font-bold text-gray-100">⚙️ Hồ Sơ & Hệ Thống</h3>
-                <p class="text-xs text-gray-400">Tùy chỉnh không gian riêng tư</p>
+                <h3 class="text-lg font-bold text-gray-100">⚙️ Hệ Thống Bảo Mật</h3>
+                <p class="text-xs text-gray-400">Tùy chỉnh cấu hình riêng tư</p>
             </div>
 
             <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-4 text-left flex flex-col items-center">
-                <button onclick="forceToggleThemeTesting()" class="btn-clickable w-full h-11 bg-gradient-to-r from-amber-500/20 to-indigo-500/20 border border-amber-500/30 rounded-xl font-bold text-xs shadow-md shadow-amber-500/5 text-center mb-2 text-amber-500">
+                <button onclick="forceToggleThemeTesting()" class="btn-clickable w-full h-11 bg-gradient-to-r from-amber-500/20 to-indigo-500/20 border border-amber-500/30 rounded-xl font-bold text-xs shadow-md text-center mb-2 text-amber-500">
                     🛠️ Đổi Giao Diện Nhanh (Đang Test)
                 </button>
 
                 <div class="w-full grid grid-cols-2 gap-2 border-b border-white/5 pb-3">
-                    <button onclick="exportAppDataBackup()" class="btn-clickable h-10 bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 rounded-xl font-bold text-xs shadow-md shadow-indigo-600/5 flex items-center justify-center">
+                    <button onclick="exportAppDataBackup()" class="btn-clickable h-10 bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 rounded-xl font-bold text-xs shadow-md flex items-center justify-center">
                         📤 Xuất Sao Lưu
                     </button>
-                    <div class="btn-clickable relative h-10 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 rounded-xl font-bold text-xs shadow-md shadow-emerald-600/5 flex items-center justify-center cursor-pointer">
+                    <div class="btn-clickable relative h-10 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 rounded-xl font-bold text-xs shadow-md flex items-center justify-center cursor-pointer">
                         <input type="file" id="import-backup-file-picker" accept=".json" class="absolute inset-0 opacity-0 cursor-pointer" onchange="importAppDataBackup(this)">
                         📥 Khôi Phục
                     </div>
                 </div>
 
-                <div class="relative w-20 h-20 rounded-full bg-gray-900 border border-gray-700 overflow-hidden group cursor-pointer shadow-xl btn-clickable">
-                    <img id="settings-avatar-preview" class="w-full h-full object-cover hidden" src="">
-                    <div id="settings-avatar-placeholder" class="absolute inset-0 flex items-center justify-center text-2xl opacity-60">👤</div>
-                    <input type="file" id="profile-avatar-input" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="uploadProfileAvatar(this)">
-                </div>
-                <span class="text-[11px] text-indigo-400 font-bold uppercase tracking-wider -mt-2">Chạm để đổi ảnh</span>
-                
-                <div class="w-full">
-                    <label class="text-[11px] text-gray-400 font-bold block mb-1">Biệt danh của bạn</label>
-                    <input type="text" id="profile-name-input" placeholder="Nhập tên biệt danh..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
-                </div>
-
-                <div class="w-full pt-2 border-t border-white/5 mt-2 space-y-2">
+                <div class="w-full mt-2 space-y-2">
                     <label class="text-[11px] text-pink-400 font-bold block">Mật mã bảo mật mới</label>
                     <div class="relative w-full">
                         <input type="password" id="change-app-password" placeholder="Nhập mật mã mới..." class="w-full h-12 border rounded-xl pl-4 pr-10 text-sm outline-none focus:border-pink-500 transition-all bg-transparent">
@@ -478,7 +493,7 @@
             
             <div class="flex gap-2">
                 <button onclick="triggerConfetti()" class="btn-clickable h-14 flex-1 bg-gradient-to-r from-pink-500/20 to-indigo-500/20 border border-indigo-500/30 rounded-2xl font-bold text-indigo-300 text-xs shadow-md">Niềm vui ✨</button>
-                <button onclick="saveProfile()" class="btn-clickable h-14 flex-1 bg-indigo-600 rounded-2xl font-bold text-white text-xs shadow-lg shadow-indigo-600/30">Lưu lại</button>
+                <button onclick="saveProfile()" class="btn-clickable h-14 flex-1 bg-indigo-600 rounded-2xl font-bold text-white text-xs shadow-lg">Lưu lại</button>
             </div>
             <button onclick="closeSettings()" class="btn-clickable h-12 w-full bg-gray-900 border border-gray-800 rounded-xl font-bold text-sm text-gray-400 shadow-md">Đóng</button>
         </div>
@@ -511,6 +526,18 @@
 
         const defaultTracks = [];
         const starMessages = ["Mong ngày hôm nay sẽ dịu dàng với bạn.", "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."];
+
+        // ✨ THAY ĐỔI BIẾN CÂU CHÚC INTRO - TỰ ĐỘNG NHẬN DIỆN TÊN BIỆT DANH THEO YÊU CẦU
+        function applyIntroWelcomeText() {
+            const welcomeText = document.getElementById('intro-welcome-text');
+            if (welcomeText) {
+                if (profileData && profileData.name && profileData.name.trim() !== "") {
+                    welcomeText.innerText = `Xin chào ${profileData.name}...`;
+                } else {
+                    welcomeText.innerText = "Xin chào kho báu...";
+                }
+            }
+        }
 
         function openInfoModal() {
             const m = document.getElementById('modal-info');
@@ -574,7 +601,7 @@
                     clockParent.classList.remove('bg-black/10', 'border-white/5');
                     clockParent.classList.add('bg-white/60', 'border-black/5');
                 }
-                showToast("Đã ép sang Light Theme (Nền Kem Mới)!");
+                showToast("Đã ép sang Light Theme!");
             } else {
                 body.classList.remove('light-theme');
                 body.classList.add('dark-theme');
@@ -588,18 +615,16 @@
             filterVault(currentVaultCategory); 
         }
 
-        // Tối ưu các hộp input riêng biệt
-        function setupSettingsInputsTheme() {
-            const ctrls = [document.getElementById('profile-name-input'), document.getElementById('change-app-password'), document.getElementById('change-app-password-confirm')];
-            ctrls.forEach(ctrl => {
-                if (ctrl) {
-                    if(document.body.classList.contains('light-theme')) {
-                        ctrl.style.backgroundColor = "#fcf8f5"; ctrl.style.borderColor = "#d6ccc2"; ctrl.style.color = "#2b221a";
-                    } else {
-                        ctrl.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; ctrl.style.borderColor = "rgba(255, 255, 255, 0.05)"; ctrl.style.color = "#f3f4f6";
-                    }
+        // Tối ưu hóa màu cho input modal sửa hồ sơ ngoài màn hình chính
+        function setupPopupInputsTheme() {
+            const ctrl = document.getElementById('popup-name-input');
+            if (ctrl) {
+                if(document.body.classList.contains('light-theme')) {
+                    ctrl.style.backgroundColor = "#fcf8f5"; ctrl.style.borderColor = "#d6ccc2"; ctrl.style.color = "#2b221a";
+                } else {
+                    ctrl.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; ctrl.style.borderColor = "rgba(255, 255, 255, 0.05)"; ctrl.style.color = "#f3f4f6";
                 }
-            });
+            }
         }
 
         function toggleInputVisibility(inputId, btnEl) {
@@ -892,13 +917,13 @@
                     if (currentAvatarUrl) URL.revokeObjectURL(currentAvatarUrl);
                     currentAvatarUrl = URL.createObjectURL(blobFile);
                     
-                    const settingsPreview = document.getElementById('settings-avatar-preview');
-                    if (settingsPreview) { settingsPreview.src = currentAvatarUrl; settingsPreview.classList.remove('hidden'); }
-                    if (document.getElementById('settings-avatar-placeholder')) document.getElementById('settings-avatar-placeholder').classList.add('hidden');
-                    
                     const mainPreview = document.getElementById('main-avatar-preview');
                     if (mainPreview) { mainPreview.src = currentAvatarUrl; mainPreview.classList.remove('hidden'); }
                     if (document.getElementById('main-avatar-placeholder')) document.getElementById('main-avatar-placeholder').classList.add('hidden');
+                    
+                    const popupPreview = document.getElementById('popup-avatar-preview');
+                    if (popupPreview) { popupPreview.src = currentAvatarUrl; popupPreview.classList.remove('hidden'); }
+                    if (document.getElementById('popup-avatar-placeholder')) document.getElementById('popup-avatar-placeholder').classList.add('hidden');
                     
                     const introImg = document.getElementById('intro-avatar-img');
                     if (introImg) introImg.src = currentAvatarUrl;
@@ -908,39 +933,64 @@
                     if (introIcon) introIcon.classList.add('hidden');
                 }
             });
-            if (document.getElementById('profile-name-input')) document.getElementById('profile-name-input').value = profileData.name || '';
-            if (document.getElementById('main-profile-name') && profileData.name) document.getElementById('main-profile-name').innerText = profileData.name;
-            
-            const introWelcome = document.getElementById('intro-welcome-text');
-            if (profileData.name && introWelcome) {
-                introWelcome.innerText = `Chào mừng ${profileData.name} trở lại...`;
+            if (document.getElementById('popup-name-input')) document.getElementById('popup-name-input').value = profileData.name || '';
+            if (document.getElementById('main-profile-name')) {
+                document.getElementById('main-profile-name').innerText = (profileData.name && profileData.name.trim() !== "") ? profileData.name : 'Kho báu nhỏ';
             }
+            // Áp dụng logic câu chào lãng mạn ngay lập tức
+            applyIntroWelcomeText();
         }
 
-        function uploadProfileAvatar(input) {
+        // ✨ HIỂN THỊ POPUP ĐỔI THÔNG TIN CHỦ SỞ HỮU NGAY MÀN HÌNH CHÍNH
+        function openProfileModal() {
+            pendingAvatarFile = null;
+            loadProfileImages();
+            setupPopupInputsTheme();
+            document.getElementById('modal-profile-edit').classList.replace('hidden', 'flex');
+        }
+        function closeProfileModal() {
+            document.getElementById('modal-profile-edit').classList.replace('flex', 'hidden');
+        }
+
+        function uploadPopupAvatar(input) {
             if (input.files && input.files[0]) {
                 pendingAvatarFile = input.files[0];
-                const preview = document.getElementById('settings-avatar-preview');
+                const preview = document.getElementById('popup-avatar-preview');
                 if (preview) { preview.src = URL.createObjectURL(pendingAvatarFile); preview.classList.remove('hidden'); }
-                if (document.getElementById('settings-avatar-placeholder')) document.getElementById('settings-avatar-placeholder').classList.add('hidden');
+                if (document.getElementById('popup-avatar-placeholder')) document.getElementById('popup-avatar-placeholder').classList.add('hidden');
             }
         }
 
-        function saveProfile() {
-            const nameInput = document.getElementById('profile-name-input').value.trim();
-            if (nameInput !== (profileData.name || '')) {
-                profileData.name = nameInput; localStorage.setItem('user_profile', JSON.stringify(profileData));
-                if (document.getElementById('main-profile-name')) document.getElementById('main-profile-name').innerText = nameInput;
+        function savePopupProfile() {
+            const nameInput = document.getElementById('popup-name-input').value.trim();
+            profileData.name = nameInput; 
+            localStorage.setItem('user_profile', JSON.stringify(profileData));
+            
+            if (document.getElementById('main-profile-name')) {
+                document.getElementById('main-profile-name').innerText = (nameInput !== "") ? nameInput : 'Kho báu nhỏ';
             }
+
             if (pendingAvatarFile) {
-                saveMediaToDB("user_avatar_blob", pendingAvatarFile, function() { pendingAvatarFile = null; loadProfileImages(); });
+                saveMediaToDB("user_avatar_blob", pendingAvatarFile, function() { 
+                    pendingAvatarFile = null; 
+                    loadProfileImages(); 
+                    closeProfileModal(); 
+                    showToast("Đã cập nhật hồ sơ cục bộ!");
+                });
+            } else {
+                applyIntroWelcomeText();
+                closeProfileModal(); 
+                showToast("Đã cập nhật biệt danh!");
             }
-            closeSettings(); showToast("Đã cập nhật!");
+        }
+
+        // Khung cài đặt gốc chỉ giữ lại đổi pass
+        function saveProfile() {
+            showToast("Đã cập nhật cấu hình hệ thống!");
+            closeSettings();
         }
 
         function openSettings() {
-            pendingAvatarFile = null; loadProfileImages();
-            setupSettingsInputsTheme();
             document.getElementById('modal-settings').classList.replace('hidden', 'flex'); 
         }
         function closeSettings() { document.getElementById('modal-settings').classList.replace('flex', 'hidden'); }
@@ -1231,6 +1281,7 @@
 
         window.addEventListener('DOMContentLoaded', () => { 
             updateTimeAndTheme(); initPasswordScreen(); filterVault('wishlist'); 
+            applyIntroWelcomeText(); // Chạy câu chào Intro lãng mạn ngay khi tải tài nguyên
             if (document.getElementById('star-message')) document.getElementById('star-message').innerText = starMessages[Math.floor(Math.random() * starMessages.length)];
         });
     </script>

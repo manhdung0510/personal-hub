@@ -12,7 +12,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,800;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         body { 
@@ -108,6 +108,7 @@
         .intro-hide { opacity: 0; pointer-events: none; transition: opacity 0.8s ease-in-out; }
 
         .toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         .toast-leave { animation: fadeOut 0.3s ease forwards; }
 
         @keyframes slideInUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -134,33 +135,62 @@
         .wave-bar:nth-child(3) { animation-delay: 0.3s; }
         @keyframes bounceWave { from { height: 3px; } to { height: 12px; } }
 
+        /* ✨ HIỆU ỨNG THƠ MỘNG DÀNH RIÊNG CHO TRANG KHÓA VÀ CHÀO MỪNG */
+        #lock-screen, #intro-screen {
+            background-color: #ffe4e6; /* Màu hồng pastel nền */
+            background-image: radial-gradient(at 10% 20%, #fbcfe8 0px, transparent 50%), 
+                              radial-gradient(at 80% 10%, #e9d5ff 0px, transparent 50%), 
+                              radial-gradient(at 90% 80%, #ddd6fe 0px, transparent 50%), 
+                              radial-gradient(at 10% 90%, #fce7f3 0px, transparent 50%);
+        }
+
+        #lock-screen .glass-card, #intro-screen .glass-card {
+            background: rgba(255, 255, 255, 0.3) !important;
+            backdrop-blur: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 40px; /* Bo tròn nhiều hơn */
+            color: #5c4d41 !important; /* Màu chữ nâu đậm ấm */
+        }
+
+        #lock-screen h2, #intro-screen h2 {
+            font-family: 'Playfair Display', serif; /* Font chữ nghệ thuật nếu ông muốn thêm, không thì giữ nguyên font hệ thống */
+            color: #be185d !important; /* Màu hồng đậm lãng mạn */
+        }
+
+        /* Hiệu ứng Star Dust bay xung quanh */
         .star-dust {
             position: absolute;
-            width: 3px; height: 3px;
+            width: 2px; height: 2px;
             background: white;
             border-radius: 50%;
             animation: blink-dust 3s infinite ease-in-out;
-            opacity: 0.3;
+            opacity: 0.5;
         }
         @keyframes blink-dust {
-            0%, 100% { transform: scale(0.5); opacity: 0.2; }
-            50% { transform: scale(1.5); opacity: 0.8; box-shadow: 0 0 8px rgba(255,255,255,0.6); }
+            0%, 100% { transform: scale(0.5); opacity: 0.3; }
+            50% { transform: scale(1.5); opacity: 0.9; box-shadow: 0 0 5px white; }
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
 </head>
 <body class="h-full flex flex-col justify-between overflow-hidden select-none pt-safe pb-safe dark-theme">
 
-    <div id="lock-screen" class="fixed inset-0 bg-[#05070a]/95 backdrop-blur-md z-[1005] flex flex-col items-center justify-center text-center px-4 transition-all duration-500">
+    <div id="lock-screen" class="fixed inset-0 z-[1005] flex flex-col items-center justify-center text-center px-6 transition-all duration-500">
+        <div class="star-dust" style="top:10%; left:20%;"></div>
+        <div class="star-dust" style="top:25%; right:15%; animation-delay: 0.5s;"></div>
+        <div class="star-dust" style="top:70%; left:10%; animation-delay: 1.2s;"></div>
+        <div class="star-dust" style="top:85%; right:25%; animation-delay: 0.8s;"></div>
+        
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div class="w-80 h-80 bg-pink-500/10 rounded-full blur-[100px] -translate-x-10 -translate-y-10"></div>
             <div class="w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px] translate-x-10 translate-y-10"></div>
         </div>
         
-        <div class="glass-card w-full max-w-md rounded-[32px] p-6 sm:p-8 py-8 sm:py-10 space-y-6 shadow-2xl border border-white/10 relative z-10 fade-in flex flex-col items-center">
+        <div class="glass-card w-full max-w-sm p-8 space-y-6 shadow-2xl relative z-10 fade-in flex flex-col items-center">
             <div class="text-5xl drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">🔒</div>
             <div class="space-y-1.5">
                 <h2 id="lock-title" class="text-2xl font-black bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Không Gian Bảo Mật</h2>
-                <p id="lock-desc" class="text-xs text-gray-400 font-medium">Vui lòng nhập mật mã để truy cập mật thất</p>
+                <p id="lock-desc" class="text-xs text-gray-700 font-medium">Vui lòng nhập mật mã để truy cập mật thất</p>
             </div>
             
             <div class="w-full space-y-3 pt-2" id="lock-inputs-container"></div>
@@ -171,28 +201,28 @@
         </div>
     </div>
 
-    <div id="intro-screen" class="fixed inset-0 bg-[#05070a]/95 backdrop-blur-md z-[1000] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
-        <div class="star-dust" style="top:20%; left:15%; animation-delay: 0s;"></div>
+    <div id="intro-screen" class="fixed inset-0 z-[1000] flex flex-col items-center justify-center text-center px-6 overflow-hidden">
+        <div class="star-dust" style="top:20%; left:15%;"></div>
         <div class="star-dust" style="top:35%; right:20%; animation-delay: 0.5s;"></div>
         <div class="star-dust" style="top:70%; left:25%; animation-delay: 1.2s;"></div>
         <div class="star-dust" style="top:80%; right:15%; animation-delay: 0.8s;"></div>
-        
+
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div class="w-85 h-85 bg-indigo-500/15 rounded-full blur-[90px]"></div>
             <div class="w-85 h-85 bg-pink-500/10 rounded-full blur-[90px] absolute translate-y-14"></div>
         </div>
 
-        <div class="glass-card w-full max-w-md rounded-[32px] p-6 sm:p-8 py-10 sm:py-12 space-y-6 shadow-2xl border border-white/10 relative z-10 fade-in flex flex-col items-center">
-            <div id="intro-avatar-box" class="w-24 h-24 rounded-full border-2 border-pink-300 overflow-hidden shadow-[0_0_20px_rgba(244,114,182,0.4)] bg-gray-900 hidden">
+        <div class="glass-card w-full max-w-sm p-8 space-y-6 shadow-2xl relative z-10 fade-in flex flex-col items-center">
+            <div id="intro-avatar-box" class="w-24 h-24 rounded-full border-2 border-indigo-400 overflow-hidden shadow-[0_0_20px_rgba(99,102,241,0.4)] bg-gray-900 hidden">
                 <img id="intro-avatar-img" class="w-full h-full object-cover" src="">
             </div>
-            <div id="intro-star-icon" class="text-6xl animate-bounce drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]">🌸</div>
+            <div id="intro-star-icon" class="text-6xl animate-bounce drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]">✨</div>
             
-            <div class="space-y-4 w-full">
-                <h2 id="intro-welcome-text" style="font-family: 'Playfair Display', serif;" class="text-3xl font-bold italic tracking-wide text-pink-300 drop-shadow-[0_0_10px_rgba(244,114,182,0.3)]">
+            <div class="space-y-3 w-full">
+                <h2 id="intro-welcome-text" class="text-2xl font-black text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
                     Xin chào kho báu...
                 </h2>
-                <p id="star-message" style="font-family: 'Playfair Display', serif;" class="text-base text-purple-200 font-medium italic leading-relaxed pt-4 border-t border-white/10 px-2"></p>
+                <p id="star-message" class="text-sm text-gray-700 font-bold italic leading-relaxed pt-3 border-t border-white/10"></p>
             </div>
         </div>
     </div>
@@ -276,7 +306,6 @@
                 <div class="text-xs font-bold uppercase tracking-wider text-gray-400">Thêm bài hát mới vào danh sách</div>
                 <div class="flex flex-col gap-2">
                     <input type="text" id="track-title-input" placeholder="Tên bài hát..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
-                    <input type="text" id="track-url-input" placeholder="Dán link nhạc trực tiếp (.mp3)..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
                     <input type="text" id="track-url-input" placeholder="Dán link nhạc trực tiếp (.mp3)..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
                     <button onclick="addNewTrack()" class="h-12 w-full bg-indigo-600 rounded-xl font-bold text-white text-xs active:scale-95 transition shadow-md">Thêm vào kho nhạc</button>
                 </div>
@@ -473,71 +502,7 @@
         let pendingAvatarFile = null;
 
         const defaultTracks = [];
-        
-        // Mặc định các câu chúc hằng ngày nếu không trúng ngày lễ
-        const starMessages = [
-            "Kho báu nhỏ của anh, chào mừng em trở lại chốn bình yên này.",
-            "Mong thế giới ngoài kia không làm em mệt mỏi, nơi này luôn dịu dàng với em.",
-            "Nơi cất giữ những điều nhỏ xíu đáng yêu của riêng em, cười lên một cái nào."
-        ];
-
-        // ✨ HÀM KIỂM TRA NGÀY LỄ ĐỂ ĐỔI LỜI CHÚC TỰ ĐỘNG THEO YÊU CẦU
-        function checkHolidayGreeting() {
-            const now = new Date();
-            const date = now.getDate();
-            const month = now.getMonth() + 1; // Hệ thống tháng chạy từ 0-11 nên phải cộng 1
-            
-            const welcomeText = document.getElementById('intro-welcome-text');
-            const starMsgText = document.getElementById('star-message');
-            const iconBox = document.getElementById('intro-star-icon');
-
-            // 1. Sinh nhật cô ấy (02/10) - Tự động bắn pháo hoa
-            if (date === 2 && month === 10) {
-                if (welcomeText) welcomeText.innerText = "Happy Birthday Princess! 🎂";
-                if (starMsgText) starMsgText.innerText = "Chúc mừng sinh nhật cô gái tuyệt vời nhất vũ trụ! Tuổi mới thật hạnh phúc, rạng rỡ và luôn là kho báu quý giá nhất nhé. Yêu em! 💕";
-                if (iconBox) iconBox.innerText = "🎉";
-                // Kích hoạt pháo hoa liên tục lãng mạn
-                setTimeout(() => { triggerConfetti(); setInterval(triggerConfetti, 1200); }, 500);
-                return;
-            }
-            
-            // 2. Quốc tế Phụ nữ (08/03)
-            if (date === 8 && month === 3) {
-                if (welcomeText) welcomeText.innerText = "Happy Women's Day! 🌸";
-                if (starMsgText) starMsgText.innerText = "Chúc ngày 8/3 của em luôn ngập tràn những điều ngọt ngào. Hãy tỏa sáng theo cách của riêng em, vì em xứng đáng với mọi điều tốt đẹp nhất thế gian này!";
-                if (iconBox) iconBox.innerText = "💝";
-                return;
-            }
-
-            // 3. Phụ nữ Việt Nam (20/10)
-            if (date === 20 && month === 10) {
-                if (welcomeText) welcomeText.innerText = "Ngày Của Nhành Hoa Đẹp Nhất 💐";
-                if (starMsgText) starMsgText.innerText = "Chào mừng ngày 20/10! Chúc cô báu nhỏ luôn rạng rỡ, xinh tươi và có một ngày tràn đầy niềm vui, sự chiều chuộng dịu dàng nha.";
-                if (iconBox) iconBox.innerText = "❤️";
-                return;
-            }
-
-            // 4. Ngày Nhà giáo Việt Nam (20/11)
-            if (date === 20 && month === 11) {
-                if (welcomeText) welcomeText.innerText = "Tri Ân Ngày 20/11 ✨";
-                if (starMsgText) starMsgText.innerText = "Chúc em một ngày 20/11 thật ý nghĩa, nhiều đóa hoa thơm và nụ cười rạng rỡ trên môi. Cảm ơn em vì những điều tuyệt vời em luôn mang lại!";
-                if (iconBox) iconBox.innerText = "👩‍🏫";
-                return;
-            }
-
-            // 5. Quét Dịp Tết Dương Lịch / Âm Lịch (Từ mùng 1 đến mùng 4 tháng 1 hoặc tháng 2)
-            if ((date >= 1 && date <= 4) && (month === 1 || month === 2)) {
-                if (welcomeText) welcomeText.innerText = "Chúc Mừng Năm Mới! 🧧";
-                if (starMsgText) starMsgText.innerText = "Năm mới đến rồi, chúc kho báu nhỏ của anh luôn bình an, vạn điều may mắn, mọi dự định đều thành công rực rỡ và nụ cười mãi nở trên môi nhé!";
-                if (iconBox) iconBox.innerText = "🧨";
-                return;
-            }
-
-            // Nếu không trùng ngày lễ nào, hiện lời chúc ngẫu nhiên như cũ
-            if (starMsgText) {
-                starMsgText.innerText = starMessages[Math.floor(Math.random() * starMessages.length)];
-            }
-        }
+        const starMessages = ["Mong ngày hôm nay sẽ dịu dàng với bạn.", "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."];
 
         function openInfoModal() {
             const m = document.getElementById('modal-info');
@@ -654,11 +619,10 @@
 
             const inputs = container.querySelectorAll('input');
             inputs.forEach(inp => {
-                if(document.body.classList.contains('light-theme')) {
-                    inp.style.backgroundColor = "#fcf8f5"; inp.style.borderColor = "#d6ccc2"; inp.style.color = "#2b221a";
-                } else {
-                    inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; inp.style.borderColor = "rgba(255, 255, 255, 0.05)"; inp.style.color = "#f3f4f6";
-                }
+                // Tùy chỉnh màu input riêng cho trang khóa
+                inp.style.backgroundColor = "rgba(255, 255, 255, 0.5)"; 
+                inp.style.borderColor = "rgba(255, 255, 255, 0.8)"; 
+                inp.style.color = "#5c4d41";
             });
         }
 
@@ -928,17 +892,7 @@
             
             const introWelcome = document.getElementById('intro-welcome-text');
             if (profileData.name && introWelcome) {
-                // Nếu trùng ngày lễ đặc biệt thì ưu tiên text ngày lễ, nếu không thì lấy biệt danh
-                const now = new Date();
-                const isHoliday = (now.getDate() === 2 && (now.getMonth()+1) === 10) || 
-                                  (now.getDate() === 8 && (now.getMonth()+1) === 3) ||
-                                  (now.getDate() === 20 && (now.getMonth()+1) === 10) ||
-                                  (now.getDate() === 20 && (now.getMonth()+1) === 11) ||
-                                  (now.getDate() >= 1 && now.getDate() <= 4 && ((now.getMonth()+1) === 1 || (now.getMonth()+1) === 2));
-                
-                if (!isHoliday) {
-                    introWelcome.innerText = `Chào mừng ${profileData.name} trở lại...`;
-                }
+                introWelcome.innerText = `Chào mừng ${profileData.name} trở lại...`;
             }
         }
 
@@ -1030,25 +984,6 @@
         function triggerTabAnimation() {
             const list = document.getElementById('vault-list');
             if (list) { list.classList.remove('tab-slide-fade'); void list.offsetWidth; list.classList.add('tab-slide-fade'); }
-        }
-
-        // HÀM TẠO TRACK NHẠC MỚI KHÔNG LỖI
-        function addNewTrack() {
-            const titleInput = document.getElementById('track-title-input');
-            const urlInput = document.getElementById('track-url-input');
-            const title = titleInput.value.trim();
-            const url = urlInput.value.trim();
-
-            if (!title || !url) return showToast("Vui lòng điền đủ Tên và Link nhạc!", "error");
-            if (!url.endsWith('.mp3') && !url.includes('.mp3?')) {
-                return showToast("Link phải kết thúc bằng đuôi .mp3 trực tiếp!", "error");
-            }
-
-            customTracks.push({ title: title, url: url });
-            localStorage.setItem('custom_tracks', JSON.stringify(customTracks));
-            titleInput.value = ''; urlInput.value = '';
-            renderTrackList();
-            showToast("Đã thêm bài hát thành công!");
         }
 
         function updateStudyFileName(input) {
@@ -1284,8 +1219,7 @@
 
         window.addEventListener('DOMContentLoaded', () => { 
             updateTimeAndTheme(); initPasswordScreen(); filterVault('wishlist'); 
-            // Gọi hàm kiểm tra ngày lễ ngay khi khởi động để cập nhật chữ trên giao diện chào mừng
-            checkHolidayGreeting(); 
+            if (document.getElementById('star-message')) document.getElementById('star-message').innerText = starMessages[Math.floor(Math.random() * starMessages.length)];
         });
     </script>
 </body>

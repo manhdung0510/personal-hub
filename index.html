@@ -106,7 +106,7 @@
         .fade-in { animation: fadeIn 0.8s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .intro-hide { opacity: 0; pointer-events: none; transition: opacity 0.8s ease-in-out; }
+        .intro-hide { opacity: 0; pointer-events: none; transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
 
         .toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         .toast-leave { animation: fadeOut 0.3s ease forwards; }
@@ -209,7 +209,7 @@
         </div>
     </div>
 
-    <div id="intro-screen" class="fixed inset-0 z-[1000] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+    <div id="intro-screen" class="hidden fixed inset-0 z-[1000] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
         <div class="star-dust" style="top:20%; left:15%;"></div>
         <div class="star-dust" style="top:35%; right:20%; animation-delay: 0.5s;"></div>
         <div class="star-dust" style="top:70%; left:25%; animation-delay: 1.2s;"></div>
@@ -524,12 +524,13 @@
         let savedTrackName = "Giai điệu không gian";
         let isForceTestingTheme = false; 
         let pendingAvatarFile = null;
+        let isHolidayGreetingActive = false; 
 
         const defaultTracks = [];
         const starMessages = ["Mong ngày hôm nay sẽ dịu dàng với bạn.", "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."];
 
-        // 🎄 LOGIC TỰ ĐỘNG CHÚC MỪNG CÁC NGÀY LỄ - CHỈ XUẤT HIỆN 1 LẦN DUY NHẤT TRONG NGÀY
-        function checkHolidayGreeting() {
+        // 🎄 ENGINE PHÂN TÍCH VÀ CÀI ĐẶT LỜI CHÚC NGÀY LỄ CHÍNH XÁC
+        function runHolidayCheckRoutine() {
             const now = new Date();
             const date = now.getDate();
             const month = now.getMonth() + 1;
@@ -545,13 +546,19 @@
             let currentIcon = "";
             let hasConfetti = false;
 
-            // Định nghĩa dữ liệu các ngày lễ
-            if (date === 19 && month === 6) {
+            // Kiểm tra mốc ngày lễ
+            if (date === 19 && month === 6) { // Ngày test hôm nay của ông
+                holidayId = `test_holiday_${year}`;
+                currentTitle = "Ngày Lễ Kỷ Niệm Ngọt Ngào! 🌸";
+                currentMsg = "Chúc mừng ngày đặc biệt của hai chúng mình! Cảm ơn em vì đã luôn đồng hành, chịu đựng và mang đến cho anh những điều tuyệt vời nhất thế gian này. Thương em nhiều lắm! 💕";
+                currentIcon = "💝";
+                hasConfetti = true;
+            } else if (date === 2 && month === 10) {
                 holidayId = `birthday_${year}`;
                 currentTitle = "Happy Birthday Princess! 🎂";
                 currentMsg = "Chúc mừng sinh nhật cô gái tuyệt vời nhất vũ trụ! Tuổi mới thật hạnh phúc, rạng rỡ và luôn là kho báu quý giá nhất nhé. Yêu em! 💕";
                 currentIcon = "🎉";
-                hasConfetti = true; // Sẽ chỉ bắn loạt pháo hoa ngắn gọn, không lặp vô tận
+                hasConfetti = true;
             } else if (date === 25 && month === 12) {
                 holidayId = `noel_${year}`;
                 currentTitle = "Merry Christmas! 🎄";
@@ -579,41 +586,42 @@
                 currentIcon = "🧨";
             }
 
-            // Nếu hôm nay đúng ngày lễ
             if (holidayId !== "") {
                 const isAlreadyShown = localStorage.getItem('last_holiday_shown');
                 if (isAlreadyShown === holidayId) {
-                    return false; // Đã xem rồi thì bỏ qua intro đặc biệt, tải giao diện bình thường
+                    isHolidayGreetingActive = false;
+                    return false;
                 }
 
-                // Nếu chưa xem, nạp nội dung lời chúc vào màn hình Intro
+                // Nạp chữ vào DOM chuẩn xác
                 if (welcomeText) welcomeText.innerText = currentTitle;
                 if (starMsgText) starMsgText.innerText = currentMsg;
                 if (iconBox) iconBox.innerText = currentIcon;
                 
-                // Kích hoạt bắn pháo hoa chào mừng ngắn gọn (đã xóa bỏ setInterval lặp vô hạn gây đơ)
                 if (hasConfetti) {
-                    setTimeout(() => { triggerConfetti(); }, 400);
-                    setTimeout(() => { triggerConfetti(); }, 900);
+                    setTimeout(() => { triggerConfetti(); }, 500);
+                    setTimeout(() => { triggerConfetti(); }, 1200);
                 }
 
                 localStorage.setItem('last_holiday_shown', holidayId);
+                isHolidayGreetingActive = true;
                 return true;
             }
 
+            isHolidayGreetingActive = false;
             return false;
         }
 
         function applyIntroWelcomeText() {
-            const isRealHoliday = checkHolidayGreeting();
-            if (isRealHoliday) return;
-
             const welcomeText = document.getElementById('intro-welcome-text');
-            if (welcomeText) {
-                if (profileData && profileData.name && profileData.name.trim() !== "") {
-                    welcomeText.innerText = `Xin chào ${profileData.name}...`;
-                } else {
-                    welcomeText.innerText = "Xin chào kho báu...";
+            const starText = document.getElementById('star-message');
+            
+            if (!isHolidayGreetingActive) {
+                if (welcomeText) {
+                    welcomeText.innerText = (profileData && profileData.name && profileData.name.trim() !== "") ? `Xin chào ${profileData.name}...` : "Xin chào kho báu...";
+                }
+                if (starText) {
+                    starText.innerText = starMessages[Math.floor(Math.random() * starMessages.length)];
                 }
             }
         }
@@ -767,22 +775,39 @@
             }
         }
 
+        // 🔑 HÀM XỬ LÝ MỞ KHÓA APP CHUẨN XÁC VÀ ĐIỀU PHỐI ĐÚNG VÒNG ĐỜI CỦA INTRO LỜI CHÚC
         function unlockApp() {
             const lockScreen = document.getElementById('lock-screen');
             if (lockScreen) {
+                // Quét ngày lễ ngay khi mở khóa thành công để nạp text kịp thời trước khi dựng Intro
+                const isHolidayToday = runHolidayRoutineInternal();
                 loadProfileImages();
+                
                 lockScreen.classList.add('opacity-0', 'pointer-events-none');
+                
                 setTimeout(() => {
                     lockScreen.remove();
                     const intro = document.getElementById('intro-screen');
+                    
                     if (intro) {
-                        setTimeout(() => { 
-                            intro.classList.add('intro-hide'); 
-                            setTimeout(() => intro.remove(), 800); 
-                        }, 2500); 
+                        if (isHolidayToday) {
+                            // Nếu trúng lễ và chưa xem lần nào, bung màn hình Intro chào mừng ra cho cô ấy đọc
+                            intro.classList.replace('hidden', 'flex');
+                            setTimeout(() => {
+                                intro.classList.add('intro-hide');
+                                setTimeout(() => intro.remove(), 1200);
+                            }, 5000); // Hiển thị trọn vẹn 5 giây ngọt ngào
+                        } else {
+                            // Ngày bình thường hoặc đã đọc rồi thì xóa Intro luôn, không chặn màn hình máy
+                            intro.remove();
+                        }
                     }
                 }, 500);
             }
+        }
+
+        function runHolidayRoutineInternal() {
+            return runHolidayCheckRoutine();
         }
 
         function updateTimeAndTheme() {
@@ -1002,6 +1027,7 @@
             document.getElementById('modal-profile-edit').classList.replace('flex', 'hidden');
         }
 
+        // HÀM ĐÔI AVATAR
         function uploadPopupAvatar(input) {
             if (input.files && input.files[0]) {
                 pendingAvatarFile = input.files[0];
@@ -1065,7 +1091,7 @@
         }
 
         function triggerConfetti() {
-            confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 }, colors: ['#f472b6', '#818cf8', '#c084fc'] });
+            confetti({ particleCount: 125, spread: 75, origin: { y: 0.65 }, colors: ['#f472b6', '#818cf8', '#c084fc'] });
         }
 
         function changeStudySubTab(subtype) { currentStudySubTab = subtype; updateSubTabsUI('study', subtype); loadVault(); }
@@ -1355,20 +1381,6 @@
 
         window.addEventListener('DOMContentLoaded', () => { 
             updateTimeAndTheme(); initPasswordScreen(); filterVault('wishlist'); 
-            applyIntroWelcomeText(); 
-            if (document.getElementById('star-message')) {
-                // Kiểm tra xem có đang hiển thị nội dung lời chúc ngày lễ không, nếu không phải mới dán text ngẫu nhiên
-                const isHolidayActive = (localStorage.getItem('last_holiday_shown') === `${new Date().getDate() === 2 && new Date().getMonth()+1 === 10 ? 'birthday_'+new Date().getFullYear() : ''}`);
-                if (!isHolidayActive || localStorage.getItem('last_holiday_shown') === null) {
-                    // Logic chống ghi đè lời chúc khi ngày lễ đang diễn ra
-                    const now = new Date();
-                    const d = now.getDate(); const m = now.getMonth() + 1;
-                    const isTodayHoliday = (d===2 && m===10) || (d===25 && m===12) || (d===8 && m===3) || (d===20 && m===10) || (d===20 && m===11) || ((d>=1 && d<=4) && (m===1 || m===2));
-                    if (!isTodayHoliday || localStorage.getItem('last_holiday_shown') === `birthday_${now.getFullYear()}` || localStorage.getItem('last_holiday_shown') === `noel_${now.getFullYear()}`) {
-                        document.getElementById('star-message').innerText = starMessages[Math.floor(Math.random() * starMessages.length)];
-                    }
-                }
-            }
         });
     </script>
 </body>

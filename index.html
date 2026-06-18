@@ -12,7 +12,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,800;1,400&display=swap" rel="stylesheet">
     
     <style>
         body { 
@@ -133,6 +133,20 @@
         .wave-bar:nth-child(2) { animation-delay: 0.15s; }
         .wave-bar:nth-child(3) { animation-delay: 0.3s; }
         @keyframes bounceWave { from { height: 3px; } to { height: 12px; } }
+
+        /* ✨ HIỆU ỨNG BỤI SAO THƠ MỘNG CHO MÀN INTRO */
+        .star-dust {
+            position: absolute;
+            width: 3px; height: 3px;
+            background: white;
+            border-radius: 50%;
+            animation: blink-dust 3s infinite ease-in-out;
+            opacity: 0.3;
+        }
+        @keyframes blink-dust {
+            0%, 100% { transform: scale(0.5); opacity: 0.2; }
+            50% { transform: scale(1.5); opacity: 0.8; box-shadow: 0 0 8px rgba(255,255,255,0.6); }
+        }
     </style>
 </head>
 <body class="h-full flex flex-col justify-between overflow-hidden select-none pt-safe pb-safe dark-theme">
@@ -152,29 +166,34 @@
             
             <div class="w-full space-y-3 pt-2" id="lock-inputs-container"></div>
             
-            <button onclick="checkOrSetPassword()" class="h-16 w-full bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white rounded-2xl font-black text-base shadow-xl shadow-indigo-600/20 active:scale-[0.96] transition-all tracking-wide">
+            <button onclick="checkOrSetPassword()" class="h-14 w-full bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white rounded-2xl font-extrabold text-sm shadow-xl shadow-indigo-600/20 active:scale-[0.96] transition-all">
                 Xác Nhận Nhập 🔑
             </button>
         </div>
     </div>
 
     <div id="intro-screen" class="fixed inset-0 bg-[#05070a]/95 backdrop-blur-md z-[1000] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+        <div class="star-dust" style="top:20%; left:15%; animation-delay: 0s;"></div>
+        <div class="star-dust" style="top:35%; right:20%; animation-delay: 0.5s;"></div>
+        <div class="star-dust" style="top:70%; left:25%; animation-delay: 1.2s;"></div>
+        <div class="star-dust" style="top:80%; right:15%; animation-delay: 0.8s;"></div>
+        
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div class="w-85 h-85 bg-indigo-500/15 rounded-full blur-[90px]"></div>
             <div class="w-85 h-85 bg-pink-500/10 rounded-full blur-[90px] absolute translate-y-14"></div>
         </div>
 
-        <div class="glass-card w-full max-w-md rounded-[32px] p-6 sm:p-8 py-8 sm:py-10 space-y-6 shadow-2xl border border-white/10 relative z-10 fade-in flex flex-col items-center">
-            <div id="intro-avatar-box" class="w-24 h-24 rounded-full border-2 border-indigo-400 overflow-hidden shadow-[0_0_20px_rgba(99,102,241,0.4)] bg-gray-900 hidden">
+        <div class="glass-card w-full max-w-md rounded-[32px] p-6 sm:p-8 py-10 sm:py-12 space-y-6 shadow-2xl border border-white/10 relative z-10 fade-in flex flex-col items-center">
+            <div id="intro-avatar-box" class="w-24 h-24 rounded-full border-2 border-pink-300 overflow-hidden shadow-[0_0_20px_rgba(244,114,182,0.4)] bg-gray-900 hidden">
                 <img id="intro-avatar-img" class="w-full h-full object-cover" src="">
             </div>
-            <div id="intro-star-icon" class="text-6xl animate-bounce drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]">✨</div>
+            <div id="intro-star-icon" class="text-6xl animate-bounce drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]">🌸</div>
             
-            <div class="space-y-3 w-full">
-                <h2 id="intro-welcome-text" class="text-2xl font-black text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
+            <div class="space-y-4 w-full">
+                <h2 id="intro-welcome-text" style="font-family: 'Playfair Display', serif;" class="text-3xl font-bold italic tracking-wide text-pink-300 drop-shadow-[0_0_10px_rgba(244,114,182,0.3)]">
                     Xin chào kho báu...
                 </h2>
-                <p id="star-message" class="text-sm text-gray-200 font-bold italic leading-relaxed pt-3 border-t border-white/10"></p>
+                <p id="star-message" style="font-family: 'Playfair Display', serif;" class="text-base text-purple-200 font-medium italic leading-relaxed pt-4 border-t border-white/10 px-2"></p>
             </div>
         </div>
     </div>
@@ -454,7 +473,13 @@
         let pendingAvatarFile = null;
 
         const defaultTracks = [];
-        const starMessages = ["Mong ngày hôm nay sẽ dịu dàng với bạn.", "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."];
+        
+        // ✨ THAY ĐỔI CÁC CÂU CHÚC THÀNH THƠ MỘNG, NGỌT NGÀO ĐÚNG GU CON GÁI
+        const starMessages = [
+            "Kho báu nhỏ của anh, chào mừng em trở lại chốn bình yên này.",
+            "Mong thế giới ngoài kia không làm em mệt mỏi, nơi này luôn dịu dàng với em.",
+            "Nơi cất giữ những điều nhỏ xíu đáng yêu của riêng em, cười lên một cái nào."
+        ];
 
         function openInfoModal() {
             const m = document.getElementById('modal-info');

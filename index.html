@@ -70,6 +70,12 @@
         body.light-theme .sub-tab-inactive-etc {
             color: #5c4d41 !important;
         }
+        
+        /* ĐỔI MÀU VIỀN VÀ NỀN NÚT TRÊN HEADER KHI CÓ LIGHT THEME ĐỂ NHÌN RÕ BO VIỀN */
+        body.light-theme .header-action-btn {
+            background-color: rgba(43, 34, 26, 0.06) !important;
+            border-color: rgba(43, 34, 26, 0.15) !important;
+        }
 
         body.dark-theme {
             background-color: #05070a !important;
@@ -266,8 +272,8 @@
         </div>
         
         <div class="flex items-center gap-2 shrink-0">
-            <button onclick="openInfoModal()" class="text-xl p-2 bg-white/5 border border-white/10 rounded-xl active:scale-90 transition-transform">💡</button>
-            <button onclick="openSettings()" class="text-3xl p-2 bg-white/5 border border-white/10 rounded-xl active:scale-90 transition-transform">⚙️</button>
+            <button onclick="openInfoModal()" class="header-action-btn w-11 h-11 flex items-center justify-center text-xl bg-white/5 border border-white/10 rounded-xl active:scale-90 transition-transform">💡</button>
+            <button onclick="openSettings()" class="header-action-btn w-11 h-11 flex items-center justify-center text-2xl bg-white/5 border border-white/10 rounded-xl active:scale-90 transition-transform">⚙️</button>
         </div>
     </header>
 
@@ -293,7 +299,7 @@
                     <ol class="list-decimal pl-4 text-xs opacity-70 space-y-1">
                         <li>Mở phần Cài đặt (⚙️) của ứng dụng này lên.</li>
                         <li>Chạm vào nút **"📤 Xuất Sao Lưu"** để tải file dữ liệu về máy, chọn lưu file vào app Tệp hoặc iCloud/Drive.</li>
-                        <li>On thiết bị mới, mở ứng dụng lên, truy cập vào Cài đặt (⚙️) -> nhấn nút **"📥 Khôi Phục"** và chọn tệp tin `.json` vừa lưu lên là mọi kỷ niệm sẽ quay trở lại 100%!</li>
+                        <li>Trên thiết bị mới, mở ứng dụng lên, truy cập vào Cài đặt (⚙️) -> nhấn nút **"📥 Khôi Phục"** và chọn tệp tin `.json` vừa lưu lên là mọi kỷ niệm sẽ quay trở lại 100%!</li>
                     </ol>
                 </div>
             </div>
@@ -549,7 +555,7 @@
             // Kiểm tra mốc ngày lễ
             if (date === 19 && month === 6) { // Ngày test hôm nay của ông
                 holidayId = `test_holiday_${year}`;
-                currentTitle = "Ngày Lễ Kỷ Niệm Ngọc Ngào! 🌸";
+                currentTitle = "Ngày Lễ Kỷ Niệm Ngọt Ngào! 🌸";
                 currentMsg = "Chúc mừng ngày đặc biệt của hai chúng mình! Cảm ơn em vì đã luôn đồng hành, chịu đựng và mang đến cho anh những điều tuyệt vời nhất thế gian này. Thương em nhiều lắm! 💕";
                 currentIcon = "💝";
                 hasConfetti = true;
@@ -1029,6 +1035,19 @@
             document.getElementById('modal-profile-edit').classList.replace('flex', 'hidden');
         }
 
+        // Bổ sung hàm thêm bài hát thủ công vào danh sách nhạc
+        function addNewTrack() {
+            const titleInput = document.getElementById('track-title-input');
+            const urlInput = document.getElementById('track-url-input');
+            const title = titleInput.value.trim();
+            const url = urlInput.value.trim();
+            if (!title || !url) return showToast("Vui lòng nhập đủ thông tin nhạc!", "error");
+            customTracks.push({ title, url });
+            localStorage.setItem('custom_tracks', JSON.stringify(customTracks));
+            titleInput.value = ''; urlInput.value = '';
+            renderTrackList(); showToast("Đã thêm bài hát!");
+        }
+
         function uploadPopupAvatar(input) {
             if (input.files && input.files[0]) {
                 pendingAvatarFile = input.files[0];
@@ -1089,19 +1108,6 @@
                     document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
                 } else { showToast("Không tìm thấy tệp!", "error"); }
             });
-        }
-
-        // Bổ sung hàm thêm bài hát thủ công vào danh sách nhạc
-        function addNewTrack() {
-            const titleInput = document.getElementById('track-title-input');
-            const urlInput = document.getElementById('track-url-input');
-            const title = titleInput.value.trim();
-            const url = urlInput.value.trim();
-            if (!title || !url) return showToast("Vui lòng nhập đủ thông tin nhạc!", "error");
-            customTracks.push({ title, url });
-            localStorage.setItem('custom_tracks', JSON.stringify(customTracks));
-            titleInput.value = ''; urlInput.value = '';
-            renderTrackList(); showToast("Đã thêm bài hát!");
         }
 
         function triggerConfetti() {

@@ -121,7 +121,6 @@
         .intro-hide { opacity: 0; pointer-events: none; transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
 
         .toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         .toast-leave { animation: fadeOut 0.3s ease forwards; }
 
         @keyframes slideInUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -395,7 +394,7 @@
                 <input type="text" id="vault-search" oninput="loadVault()" placeholder="🔍 Tìm nhanh trong kho..." class="w-full h-14 border rounded-2xl px-5 text-sm outline-none focus:border-pink-500 transition-all shadow-inner">
             </div>
             
-            <div class="grid grid-cols-6 gap-1">
+            <div class="grid grid-cols-5 gap-1">
                 <button onclick="filterVault('wishlist')" id="vbtn-wishlist" class="vault-filter-btn h-14 bg-pink-600 rounded-xl flex flex-col items-center justify-center gap-1 active:scale-[0.93] transition-transform text-white font-medium">
                     <span class="text-sm">🛍️</span>
                     <span class="text-[7px] font-bold uppercase tracking-wider">Shop</span>
@@ -411,10 +410,6 @@
                 <button onclick="filterVault('study')" id="vbtn-study" class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-[0.93] transition-transform">
                     <span class="text-sm">📚</span>
                     <span class="text-[7px] font-bold uppercase tracking-wider">Study</span>
-                </button>
-                <button onclick="filterVault('hotline')" id="vbtn-hotline" class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-[0.93] transition-transform">
-                    <span class="text-sm">📞</span>
-                    <span class="text-[7px] font-bold uppercase tracking-wider">Phone</span>
                 </button>
                 <button onclick="filterVault('braindump')" id="vbtn-braindump" class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-[0.93] transition-transform">
                     <span class="text-sm">🔒</span>
@@ -1098,7 +1093,6 @@
             closeSettings();
         }
 
-        // CHUYỂN ĐỔI TAB CON TRONG SHOPPING
         function changeWishlistSubTab(subtype) { currentWishlistSubTab = subtype; updateSubTabsUI('wishlist', subtype); loadVault(); }
         function changeStudySubTab(subtype) { currentStudySubTab = subtype; updateSubTabsUI('study', subtype); loadVault(); }
         function changeMediaSubTab(subtype) { currentMediaSubTab = subtype; updateSubTabsUI('media', subtype); loadVault(); }
@@ -1177,7 +1171,6 @@
             let defName = '', defUrl = '';
             if (editId) { const v = vaultItems.find(x => x.id === editId); defName = v?.title || ''; defUrl = v?.url || ''; }
 
-            // ĐỊNH NGHĨA PLACEHOLDER TỰ ĐỘNG THEO TAB CON CHO SHOPPING
             let wishlistTitlePlaceholder = "Tên món đồ...";
             let wishlistUrlPlaceholder = "Link sản phẩm...";
             let wishlistFormDesc = "Bạn muốn lưu món đồ gì?";
@@ -1197,7 +1190,6 @@
                 'media': { t: "Lưu liên kết giải trí 🎬", d: `Sẽ tự gom vào nhánh con ${currentMediaSubTab.toUpperCase()}`, p: "Tên video/phim...", l: "Dán link trực tiếp..." },
                 'social': { t: "Lưu bài viết Social 📱", d: `Sẽ tự gom vào nhánh con ${currentSocialSubTab.toUpperCase()}`, p: "Tiêu đề bài viết...", l: "Dán đường dẫn Link MXH..." },
                 'study': { t: "Cất tài liệu học & dạy 📚", d: `Sẽ tự gom vào nhánh con ${currentStudySubTab.toUpperCase()}`, p: "Tên tài liệu...", l: "Link Drive hoặc Website..." },
-                'hotline': { t: "Lưu Hotline & Danh bạ 📞", d: "Lưu trữ số điện thoại hotline khẩn cấp hoặc liên hệ", p: "Tên Hotline / Người liên hệ...", l: "Nhập số điện thoại..." },
                 'braindump': { t: "Khoảnh khắc bí mật 🔒", d: "Ảnh/Video lưu hoàn toàn cục bộ trên máy", p: "Ghi chú ngắn...", l: "" }
             };
 
@@ -1219,8 +1211,7 @@
 
             let secondInputHTML = '';
             if (currentVaultCategory !== 'braindump') {
-                let inputType = (currentVaultCategory === 'hotline') ? 'tel' : 'text';
-                secondInputHTML = `<input type="${inputType}" id="add-vault-url" value="${defUrl}" placeholder="${c.l}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">`;
+                secondInputHTML = `<input type="text" id="add-vault-url" value="${defUrl}" placeholder="${c.l}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">`;
             }
 
             fields.innerHTML = `
@@ -1315,7 +1306,6 @@
                 if (currentVaultCategory === 'study') msg = (currentStudySubTab === 'learn') ? "CHƯA LƯU TÀI LIỆU TỰ HỌC NÀO" : "CHƯA LƯU TÀI LIỆU GIẢNG DẠY NÀO";
                 if (currentVaultCategory === 'media') msg = "CHƯA LƯU LIÊN KẾT NÀO";
                 if (currentVaultCategory === 'social') msg = `CHƯA LƯU NỘI DUNG ${currentSocialSubTab.toUpperCase()} NÀO`;
-                if (currentVaultCategory === 'hotline') msg = "DANH SÁCH HOTLINE TRỐNG";
                 if (currentVaultCategory === 'braindump') msg = "KHO ĐỒ ĐANG TRỐNG";
 
                 container.innerHTML = `
@@ -1377,14 +1367,9 @@
                     if (item.category === 'wishlist') iconType = (item.wishlistType === 'ticket') ? "🎫" : (item.wishlistType === 'hotel' ? "🏨" : "🛍️");
                     if (item.category === 'media') iconType = (item.mediaType === 'youtube') ? "📺" : (item.mediaType === 'tiktok') ? "🎵" : "🎬";
                     if (item.category === 'social') iconType = (item.socialType === 'threads') ? "🧵" : (item.socialType === 'instagram') ? "📸" : "👥";
-                    if (item.category === 'hotline') iconType = "📞";
 
                     if (item.url) {
-                        if (item.category === 'hotline') {
-                            actionLinkHTML = `<a href="tel:${item.url.replace(/\s+/g, '')}" class="text-xs text-emerald-500 font-bold mt-1 inline-block">📞 Gọi điện ngay: ${item.url}</a>`;
-                        } else {
-                            actionLinkHTML = `<a href="${item.url}" target="_blank" class="text-xs text-indigo-400 font-bold mt-1 inline-block">🔗 Mở liên kết</a>`;
-                        }
+                        actionLinkHTML = `<a href="${item.url}" target="_blank" class="text-xs text-indigo-400 font-bold mt-1 inline-block">🔗 Mở liên kết</a>`;
                     }
 
                     card.innerHTML = `

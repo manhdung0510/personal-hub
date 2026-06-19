@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Trợ Lý Cá Nhân</title>
-    <link class="apple-touch-icon" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -51,7 +51,7 @@
             border: 1px solid rgba(43, 34, 26, 0.06);
             box-shadow: 0 8px 20px -6px rgba(43, 34, 26, 0.05);
         }
-        body.light-theme input[type="text"], body.light-theme input[type="password"], body.light-theme input[type="tel"], body.light-theme select {
+        body.light-theme input[type="text"], body.light-theme input[type="password"], body.light-theme input[type="tel"], body.light-theme select, body.light-theme textarea {
             background-color: #fcf8f5 !important;
             border-color: #d6ccc2 !important;
             color: #2b221a !important;
@@ -101,7 +101,7 @@
             background: #1c2541 !important; 
             border: 1px solid rgba(255, 255, 255, 0.08); 
         }
-        body.dark-theme input[type="text"], body.dark-theme input[type="password"], body.dark-theme input[type="tel"], body.dark-theme select {
+        body.dark-theme input[type="text"], body.dark-theme input[type="password"], body.dark-theme input[type="tel"], body.dark-theme select, body.dark-theme textarea {
             background-color: rgba(30, 41, 59, 0.7) !important;
             border-color: rgba(255, 255, 255, 0.1) !important;
             color: #f3f4f6 !important;
@@ -363,6 +363,18 @@
         </div>
     </div>
 
+    <div id="modal-explain" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-center justify-center p-4 z-[1040] transition-all duration-300">
+        <div class="glass-card w-full max-w-md sm:max-w-sm rounded-[32px] p-6 space-y-4 shadow-2xl flex flex-col overflow-hidden max-h-[70vh]">
+            <div class="text-center space-y-1 shrink-0">
+                <div class="text-3xl">💡</div>
+                <h3 id="explain-title-text" class="text-lg font-bold text-gray-100">Lý do mục này tồn tại</h3>
+                <div class="w-16 h-[1px] bg-indigo-500/30 mx-auto mt-2"></div>
+            </div>
+            <div id="explain-content-text" class="flex-1 overflow-y-auto scroll-container text-sm leading-relaxed p-4 bg-indigo-500/5 rounded-2xl border border-indigo-500/10 text-left font-medium opacity-90 whitespace-pre-wrap"></div>
+            <button onclick="closeExplainModal()" class="btn-clickable h-12 w-full bg-indigo-600 rounded-xl font-bold text-white text-xs shadow-lg shrink-0">Đã rõ rồi! 🥰</button>
+        </div>
+    </div>
+
     <main class="flex-1 overflow-y-auto scroll-container px-5 py-6 space-y-8 pb-32">
         <section id="tab-vault" class="tab-content space-y-6">
             
@@ -563,6 +575,18 @@
         }
         function closeLoveLetter() {
             document.getElementById('modal-love-letter').classList.replace('flex', 'hidden');
+        }
+
+        // HÀM ĐIỀU KHIỂN POPUP XEM LỜI GIẢI THÍCH
+        function openExplainModal(id) {
+            const item = vaultItems.find(x => x.id === id);
+            if (!item) return;
+            document.getElementById('explain-title-text').innerText = `Lý do lưu: ${item.title}`;
+            document.getElementById('explain-content-text').innerText = item.description && item.description.trim() !== "" ? item.description : "Mục này hiện tại chưa có lời giải thích cụ thể nào từ bạn... 💕";
+            document.getElementById('modal-explain').classList.replace('hidden', 'flex');
+        }
+        function closeExplainModal() {
+            document.getElementById('modal-explain').classList.replace('flex', 'hidden');
         }
 
         function runHolidayCheckRoutine() {
@@ -843,6 +867,9 @@
         }
         setInterval(updateTimeAndTheme, 1000);
 
+        // Đóng mở modal giải thích
+        document.getElementById('modal-explain').addEventListener('click', function(e) { if (e.target === this) closeExplainModal(); });
+
         function loadProfileImages() {
             if (!db) return;
             getMediaFromDB("user_avatar_blob", function(blobFile) {
@@ -951,11 +978,11 @@
             });
         }
 
+        // HÀM BẮN PHÁO HOA ĂN MỪNG RELEASING
         function triggerConfetti() {
             confetti({ particleCount: 125, spread: 75, origin: { y: 0.65 }, colors: ['#f472b6', '#818cf8', '#c084fc'] });
         }
 
-        // Đã đồng bộ sửa tên sub-tab đúng cấu trúc cây thư mục gốc
         function updateSubTabsUI(cat, activeSub) {
             const isLight = document.body.classList.contains('light-theme');
             const activeClass = 'flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate';
@@ -1000,8 +1027,8 @@
         function openFormModal(type, editId = null) {
             currentFormType = type; currentEditId = editId;
             const fields = document.getElementById('form-fields'); fields.innerHTML = '';
-            let defName = '', defUrl = '';
-            if (editId) { const v = vaultItems.find(x => x.id === editId); defName = v?.title || ''; defUrl = v?.url || ''; }
+            let defName = '', defUrl = '', defDesc = '';
+            if (editId) { const v = vaultItems.find(x => x.id === editId); defName = v?.title || ''; defUrl = v?.url || ''; defDesc = v?.description || ''; }
 
             let wishlistTitlePlaceholder = "Tên món đồ...";
             let wishlistUrlPlaceholder = "Link sản phẩm...";
@@ -1046,12 +1073,16 @@
                 secondInputHTML = `<input type="text" id="add-vault-url" value="${defUrl}" placeholder="${c.l}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">`;
             }
 
+            // TÍCH HỢP THÊM Ô NHẬP LỜI GIẢI THÍCH (TEXTAREA) TRONG FORM MODAL
             fields.innerHTML = `
                 <input type="text" id="add-vault-title" value="${defName}" placeholder="${c.p}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">
                 ${secondInputHTML}
+                <textarea id="add-vault-desc" placeholder="Lời giải thích từ anh về mục này (Lý do tồn tại, kỷ niệm hoặc ứng dụng...)... 💕" class="w-full h-24 border rounded-2xl p-4 text-base outline-none focus:border-indigo-500 shadow-inner transition-all resize-none"></textarea>
                 ${studyFileUpload}${fileUpload}`;
 
-            fields.querySelectorAll('input').forEach(inp => {
+            if(document.getElementById('add-vault-desc')) document.getElementById('add-vault-desc').value = defDesc;
+
+            fields.querySelectorAll('input, textarea').forEach(inp => {
                 if(document.body.classList.contains('light-theme')) {
                     inp.style.backgroundColor = "#fcf8f5"; inp.style.borderColor = "#d6ccc2"; inp.style.color = "#2b221a";
                 } else {
@@ -1072,6 +1103,7 @@
         function submitForm() {
             const title = document.getElementById('add-vault-title').value.trim();
             if (!title) return showToast("Tiêu đề trống!", "error");
+            const explanation = document.getElementById('add-vault-desc') ? document.getElementById('add-vault-desc').value.trim() : '';
             const uuid = () => Math.random().toString(36).substring(2, 15);
 
             if (currentVaultCategory === 'braindump' && !currentEditId) {
@@ -1079,7 +1111,7 @@
                 if (!file) return showToast("Chưa chọn file!", "error");
                 const itemId = uuid();
                 saveMediaToDB(itemId, file, () => {
-                    vaultItems.push({ id: itemId, title, isIndexedDB: true, fileType: file.type, category: 'braindump', secretType: currentBraindumpSubTab });
+                    vaultItems.push({ id: itemId, title, description: explanation, isIndexedDB: true, fileType: file.type, category: 'braindump', secretType: currentBraindumpSubTab });
                     finalizeSubmit();
                 });
             } else if (currentVaultCategory === 'study' && !currentEditId) {
@@ -1087,12 +1119,12 @@
                 if (sFile) {
                     const itemId = uuid();
                     saveMediaToDB(itemId, sFile, () => {
-                        vaultItems.push({ id: itemId, title, isIndexedDB: true, fileType: sFile.type, fileName: sFile.name, category: 'study', studyType: currentStudySubTab });
+                        vaultItems.push({ id: itemId, title, description: explanation, isIndexedDB: true, fileType: sFile.type, fileName: sFile.name, category: 'study', studyType: currentStudySubTab });
                         finalizeSubmit();
                     });
                 } else {
                     const url = document.getElementById('add-vault-url').value.trim();
-                    vaultItems.push({ id: uuid(), title, url, category: 'study', studyType: currentStudySubTab });
+                    vaultItems.push({ id: uuid(), title, url, description: explanation, category: 'study', studyType: currentStudySubTab });
                     finalizeSubmit();
                 }
             } else {
@@ -1100,11 +1132,12 @@
                     const idx = vaultItems.findIndex(v => v.id === currentEditId);
                     if (idx > -1) {
                         vaultItems[idx].title = title;
+                        vaultItems[idx].description = explanation;
                         if (currentVaultCategory !== 'braindump') vaultItems[idx].url = document.getElementById('add-vault-url').value.trim();
                     }
                 } else {
                     const url = document.getElementById('add-vault-url').value.trim();
-                    let itemObj = { id: uuid(), title, url, category: currentVaultCategory };
+                    let itemObj = { id: uuid(), title, url, description: explanation, category: currentVaultCategory };
                     if (currentVaultCategory === 'wishlist') itemObj.wishlistType = currentWishlistSubTab;
                     if (currentVaultCategory === 'media') itemObj.mediaType = currentMediaSubTab;
                     if (currentVaultCategory === 'social') itemObj.socialType = currentSocialSubTab;
@@ -1183,12 +1216,16 @@
                     });
                 } else {
                     card.className = 'glass-card p-5 rounded-3xl flex flex-col gap-4';
+                    
+                    // THÊM NÚT CƠ CHẾ XEM GIẢI THÍCH (💡) RA NGOÀI ACTION BAR MÀN HÌNH CHÍNH
                     let buttonsHTML = `
+                        <button onclick="openExplainModal('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-indigo-500/10 rounded-xl text-indigo-400" title="Xem giải thích">💡</button>
                         <button onclick="openFormModal('vault', '${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl">✏️</button>
                         <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-red-400">✕</button>`;
                     
                     if (item.isIndexedDB) {
                         buttonsHTML = `
+                            <button onclick="openExplainModal('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-indigo-500/10 rounded-xl text-indigo-400" title="Xem giải thích">💡</button>
                             <button onclick="downloadMediaItem('${item.id}', '${item.fileName||item.title}', '${item.fileType}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-indigo-400">📥</button>
                             <button onclick="openFormModal('vault', '${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl font-bold text-white">✏️</button>
                             <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl">✕</button>`;
@@ -1214,7 +1251,7 @@
                                     ${actionLinkHTML}
                                 </div>
                             </div>
-                            <div class="flex items-center gap-3 shrink-0">${buttonsHTML}</div>
+                            <div class="flex items-center gap-2 shrink-0">${buttonsHTML}</div>
                         </div>`;
                     container.appendChild(card);
                 }

@@ -497,39 +497,39 @@
                 <p class="text-xs text-gray-400">Tùy chỉnh cấu hình riêng tư</p>
             </div>
 
-            <div class="p-4 bg-slate-950/40 rounded-2xl border border-white/5 space-y-4 text-left flex flex-col items-center">
-                <button onclick="forceToggleThemeTesting()" class="btn-clickable w-full h-11 bg-white/5 border border-white/10 hover:border-emerald-400/40 rounded-xl font-bold text-xs shadow-md text-center mb-2 text-gray-200">
+            <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-4 text-left flex flex-col items-center">
+                <button onclick="forceToggleThemeTesting()" class="btn-clickable w-full h-11 bg-gradient-to-r from-amber-500/20 to-indigo-500/20 border border-amber-500/30 rounded-xl font-bold text-xs shadow-md text-center mb-2 text-amber-500">
                     🛠️ Đổi Giao Diện Nhanh (Đang Test)
                 </button>
 
                 <div class="w-full grid grid-cols-2 gap-2 border-b border-white/5 pb-3">
-                    <button onclick="exportAppDataBackup()" class="btn-clickable h-10 bg-white/5 text-gray-300 border border-white/10 hover:border-emerald-400/30 rounded-xl font-bold text-xs shadow-md flex items-center justify-center">
+                    <button onclick="exportAppDataBackup()" class="btn-clickable h-10 bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 rounded-xl font-bold text-xs shadow-md flex items-center justify-center">
                         📤 Xuất Sao Lưu
                     </button>
-                    <div class="btn-clickable relative h-10 bg-white/5 text-gray-300 border border-white/10 hover:border-emerald-400/30 rounded-xl font-bold text-xs shadow-md flex items-center justify-center cursor-pointer">
+                    <div class="btn-clickable relative h-10 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 rounded-xl font-bold text-xs shadow-md flex items-center justify-center cursor-pointer">
                         <input type="file" id="import-backup-file-picker" accept=".json" class="absolute inset-0 opacity-0 cursor-pointer" onchange="importAppDataBackup(this)">
                         📥 Khôi Phục
                     </div>
                 </div>
 
                 <div class="w-full mt-2 space-y-2">
-                    <label class="text-[11px] text-gray-400 font-bold block">Mật mã bảo mật mới</label>
+                    <label class="text-[11px] text-pink-400 font-bold block">Mật mã bảo mật mới</label>
                     <div class="relative w-full">
-                        <input type="password" id="change-app-password" placeholder="Nhập mật mã mới..." class="w-full h-12 border border-white/10 rounded-xl pl-4 pr-10 text-sm outline-none focus:border-emerald-400 transition-all bg-black/20 text-white">
+                        <input type="password" id="change-app-password" placeholder="Nhập mật mã mới..." class="w-full h-12 border rounded-xl pl-4 pr-10 text-sm outline-none focus:border-pink-500 transition-all bg-transparent">
                         <button onclick="toggleInputVisibility('change-app-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-sm opacity-80 active:scale-75 transition-transform" type="button">🙈</button>
                     </div>
                     <div class="relative w-full">
-                        <input type="password" id="change-app-password-confirm" placeholder="Xác nhận lại..." class="w-full h-12 border border-white/10 rounded-xl pl-4 pr-10 text-sm outline-none focus:border-emerald-400 transition-all bg-black/20 text-white">
+                        <input type="password" id="change-app-password-confirm" placeholder="Xác nhận lại..." class="w-full h-12 border rounded-xl pl-4 pr-10 text-sm outline-none focus:border-pink-500 transition-all bg-transparent">
                         <button onclick="toggleInputVisibility('change-app-password-confirm', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-sm opacity-80 active:scale-75 transition-transform" type="button">🙈</button>
                     </div>
                 </div>
             </div>
             
             <div class="flex gap-2">
-                <button onclick="triggerConfetti()" class="btn-clickable h-14 flex-1 bg-white/5 border border-white/10 hover:border-emerald-400/30 rounded-2xl font-bold text-gray-300 text-xs shadow-md">Niềm vui ✨</button>
-                <button onclick="saveProfile()" class="btn-clickable h-14 flex-1 bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-900 rounded-2xl font-extrabold text-xs shadow-lg shadow-emerald-400/10">Lưu lại</button>
+                <button onclick="triggerConfetti()" class="btn-clickable h-14 flex-1 bg-gradient-to-r from-pink-500/20 to-indigo-500/20 border border-indigo-500/30 rounded-2xl font-bold text-indigo-300 text-xs shadow-md">Niềm vui ✨</button>
+                <button onclick="saveProfile()" class="btn-clickable h-14 flex-1 bg-indigo-600 rounded-2xl font-bold text-white text-xs shadow-lg">Lưu lại</button>
             </div>
-            <button onclick="closeSettings()" class="btn-clickable h-12 w-full bg-slate-950 text-gray-400 border border-white/5 rounded-xl font-bold text-xs shadow-md mt-1">Đóng</button>
+            <button onclick="closeSettings()" class="btn-clickable h-12 w-full bg-gray-900 border border-gray-800 rounded-xl font-bold text-sm text-gray-400 shadow-md">Đóng</button>
         </div>
     </div>
 
@@ -1323,6 +1323,7 @@
                 if (currentVaultCategory === 'social') msg = `CHƯA LƯU NỘI DUNG ${currentSocialSubTab.toUpperCase()} NÀO`;
                 if (currentVaultCategory === 'braindump') msg = currentBraindumpSubTab === 'image' ? "DANH SÁCH ẢNH TRỐNG" : "DANH SÁCH VIDEO TRỐNG";
 
+                /* ⚡ ĐÃ ĐỔI: Nút "Thêm mục đầu tiên ngay" ở giữa màn hình trống đổi sang màu Mint/Cyan neon gắt, chữ đen đậm nổi bần bật */
                 container.innerHTML = `
                     <div class="py-16 text-center flex flex-col items-center justify-center">
                         <div class="text-6xl mb-4 opacity-60">📦</div>

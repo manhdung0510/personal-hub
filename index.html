@@ -25,7 +25,7 @@
             transition: background-color 1.5s ease-in-out, color 0.4s ease-in-out; 
         }
 
-        /* 🍦 CHẾ ĐỘ SÁNG: MÀU BE ĐƯỢC NÂNG TÔNG SÁNG HƠN, TƯƠI TẮN VÀ TRONG TRẺO */
+        /* 🍦 CHẾ ĐỘ SÁNG */
         body.light-theme {
             background-color: #faf5f0 !important; 
             color: #2b221a !important;
@@ -77,7 +77,7 @@
             border-color: rgba(43, 34, 26, 0.15) !important;
         }
 
-        /* 🌌 CHẾ ĐỘ TỐI: ĐỔI SANG TÔNG XANH NAVY SÂU THẲM HIỆN ĐẠI VÀ SANG TRỌNG */
+        /* 🌌 CHẾ ĐỘ TỐI */
         body.dark-theme {
             background-color: #0b132b !important; 
             color: #f3f4f6 !important;
@@ -148,7 +148,6 @@
         .wave-bar:nth-child(3) { animation-delay: 0.3s; }
         @keyframes bounceWave { from { height: 3px; } to { height: 12px; } }
 
-        /* ✨ HIỆU ỨNG THƠ MỘNG DÀNH RIÊNG CHO TRANG KHÓA VÀ CHÀO MỪNG */
         #lock-screen, #intro-screen {
             background-color: #ffe4e6; 
             background-image: radial-gradient(at 10% 20%, #fbcfe8 0px, transparent 50%), 
@@ -388,7 +387,7 @@
                     <h2 id="vault-title-text" class="text-xl font-bold text-gray-100">Kho Lưu Trữ</h2>
                     <p id="vault-desc-text" class="text-sm text-gray-400 font-medium">Bảo mật tuyệt đối trên máy</p>
                 </div>
-                <button onclick="openFormModal('vault')" class="h-12 px-6 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:opacity-90 rounded-2xl font-bold text-sm shadow-lg shadow-pink-500/20 active:scale-95 transition-all text-white">+ Thêm</button>
+                <button onclick="openFormModal('vault')" class="h-12 px-6 bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-900 rounded-2xl font-extrabold text-sm shadow-lg shadow-emerald-400/20 active:scale-95 transition-all">+ Thêm</button>
             </div>
             
             <div class="relative">
@@ -1115,7 +1114,6 @@
         }
         function closeSettings() { document.getElementById('modal-settings').classList.replace('flex', 'hidden'); }
 
-        // TOAST HIỂN THỊ THÔNG BÁO
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container'); if (!container) return;
             const toast = document.createElement('div');
@@ -1325,14 +1323,12 @@
                 if (currentVaultCategory === 'social') msg = `CHƯA LƯU NỘI DUNG ${currentSocialSubTab.toUpperCase()} NÀO`;
                 if (currentVaultCategory === 'braindump') msg = currentBraindumpSubTab === 'image' ? "DANH SÁCH ẢNH TRỐNG" : "DANH SÁCH VIDEO TRỐNG";
 
-                /* 🎨 ĐÃ SỬA: Thay đổi style nút "✨ Thêm mục đầu tiên ngay" ở giữa màn hình trống.
-                   Sử dụng mã màu gradient hồng-tím-indigo tươi tắn, sáng sủa và rực rỡ để không bị chìm vào nền tối.
-                */
+                /* ⚡ ĐÃ ĐỔI: Nút "Thêm mục đầu tiên ngay" ở giữa màn hình trống đổi sang màu Mint/Cyan neon gắt, chữ đen đậm nổi bần bật */
                 container.innerHTML = `
                     <div class="py-16 text-center flex flex-col items-center justify-center">
                         <div class="text-6xl mb-4 opacity-60">📦</div>
                         <p class="text-sm font-bold uppercase tracking-widest mb-5 text-gray-400">${msg}</p>
-                        <button onclick="openFormModal('vault')" class="px-6 py-3 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:opacity-90 text-white rounded-xl text-xs font-bold active:scale-95 transition shadow-lg shadow-pink-500/20">
+                        <button onclick="openFormModal('vault')" class="px-6 py-3 bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-900 rounded-xl text-xs font-extrabold active:scale-95 transition shadow-lg shadow-emerald-400/20">
                             ✨ Thêm mục đầu tiên ngay
                         </button>
                     </div>`;

@@ -33,7 +33,7 @@ function runHolidayCheckRoutine() {
     let hasConfetti = false;
 
     // Kiểm tra mốc ngày lễ
-    if (date === 2 && month === 10) { 
+    if (date === 19 && month === 6) { 
         holidayId = `test_holiday_${year}`;
         currentTitle = "Ngày Lễ Kỷ Niệm Ngọc Ngào! 🌸";
         currentMsg = "Chúc mừng ngày đặc biệt của hai chúng mình! Cảm ơn em vì đã luôn đồng hành, chịu đựng và mang đến cho anh những điều tuyệt vời nhất thế gian này. Thương em nhiều lắm! 💕";
@@ -45,7 +45,7 @@ function runHolidayCheckRoutine() {
         currentMsg = "Chúc mừng sinh nhật cô gái tuyệt vời nhất vũ trụ! Tuổi mới thật hạnh phúc, rạng rỡ và luôn là kho báu quý giá nhất nhé. Yêu em! 💕";
         currentIcon = "🎉";
         hasConfetti = true;
-    } else if (date === 24 && month === 12) {
+    } else if (date === 25 && month === 12) {
         holidayId = `noel_${year}`;
         currentTitle = "Merry Christmas! 🎄";
         currentMsg = "Giáng Sinh ấm áp nhé kho báu của anh! Chúc em luôn hạnh phúc, bình yên và nhận được thật nhiều điều ngọt ngào trong đêm đông này. Thần tình yêu luôn bên em! ❄️";
@@ -160,41 +160,15 @@ function importAppDataBackup(input) {
 }
 
 function forceToggleThemeTesting() {
-    isForceTestingTheme = true;
-    const body = document.body;
-    const clockIcon = document.getElementById('clock-status-icon');
-    const clockParent = document.getElementById('clock-parent-box');
-
-    if (body.classList.contains('dark-theme')) {
-        body.classList.remove('dark-theme');
-        body.classList.add('light-theme');
-        if (clockIcon) clockIcon.innerText = "☀️";
-        if (clockParent) {
-            clockParent.classList.remove('bg-black/10', 'border-white/5');
-            clockParent.classList.add('bg-white/60', 'border-black/5');
-        }
-        showToast("Đã ép sang Light Theme!");
-    } else {
-        body.classList.remove('light-theme');
-        body.classList.add('dark-theme');
-        if (clockIcon) clockIcon.innerText = "🌙";
-        if (clockParent) {
-            clockParent.classList.remove('bg-white/60', 'border-black/5');
-            clockParent.classList.add('bg-black/10', 'border-white/5');
-        }
-        showToast("Đã ép ngược lại Dark Theme!");
-    }
-    filterVault(currentVaultCategory); 
+    // Luôn khóa ở chế độ sáng lãng mạn theo yêu cầu mới của ông
+    showToast("Đang kích hoạt giao diện sáng lãng mạn!");
 }
 
 function setupPopupInputsTheme() {
+    // Chuẩn hóa màu input modal sáng
     const ctrl = document.getElementById('popup-name-input');
     if (ctrl) {
-        if(document.body.classList.contains('light-theme')) {
-            ctrl.style.backgroundColor = "#fcf8f5"; ctrl.style.borderColor = "#d6ccc2"; ctrl.style.color = "#2b221a";
-        } else {
-            ctrl.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; ctrl.style.borderColor = "rgba(255, 255, 255, 0.05)"; ctrl.style.color = "#f3f4f6";
-        }
+        ctrl.style.backgroundColor = "rgba(255, 255, 255, 0.9)"; ctrl.style.borderColor = "#e5e7eb"; ctrl.style.color = "#1f2937";
     }
 }
 
@@ -218,28 +192,28 @@ function initPasswordScreen() {
         desc.innerText = "Tạo mật mã riêng tư để bảo vệ không gian mật thất";
         container.innerHTML = `
             <div class="relative w-full">
-                <input type="password" id="lock-pwd-1" placeholder="Nhập mật mã mới..." class="w-full h-16 border rounded-2xl pl-5 pr-12 text-base text-center outline-none focus:border-indigo-500 shadow-inner tracking-widest transition-all">
-                <button onclick="toggleInputVisibility('lock-pwd-1', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-lg opacity-60 active:scale-75 transition" type="button">🙈</button>
+                <input type="password" id="lock-pwd-1" placeholder="Nhập mật mã mới..." class="w-full h-16 border rounded-2xl pl-5 pr-12 text-base text-center outline-none tracking-widest transition-all">
+                <button onclick="toggleInputVisibility('lock-pwd-1', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-lg opacity-40 active:scale-75 transition" type="button">🙈</button>
             </div>
             <div class="relative w-full">
-                <input type="password" id="lock-pwd-2" placeholder="Xác nhận lại..." class="w-full h-16 border rounded-2xl pl-5 pr-12 text-base text-center outline-none focus:border-indigo-500 shadow-inner tracking-widest transition-all">
-                <button onclick="toggleInputVisibility('lock-pwd-2', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-lg opacity-60 active:scale-75 transition" type="button">🙈</button>
+                <input type="password" id="lock-pwd-2" placeholder="Xác nhận lại..." class="w-full h-16 border rounded-2xl pl-5 pr-12 text-base text-center outline-none tracking-widest transition-all">
+                <button onclick="toggleInputVisibility('lock-pwd-2', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-lg opacity-40 active:scale-75 transition" type="button">🙈</button>
             </div>`;
     } else {
         title.innerText = "Không Gian Bảo Mật";
         desc.innerText = "Vui lòng nhập mật mã để truy cập mật thất";
         container.innerHTML = `
             <div class="relative w-full">
-                <input type="password" id="lock-pwd-input" placeholder="Nhập mật mã bí mật..." class="w-full h-16 border rounded-2xl pl-5 pr-12 text-base text-center outline-none focus:border-pink-500 shadow-inner tracking-widest transition-all">
-                <button onclick="toggleInputVisibility('lock-pwd-input', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-lg opacity-60 active:scale-75 transition" type="button">🙈</button>
+                <input type="password" id="lock-pwd-input" placeholder="Nhập mật mã bí mật..." class="w-full h-16 border rounded-2xl pl-5 pr-12 text-base text-center outline-none tracking-widest transition-all">
+                <button onclick="toggleInputVisibility('lock-pwd-input', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-lg opacity-40 active:scale-75 transition" type="button">🙈</button>
             </div>`;
     }
 
     const inputs = container.querySelectorAll('input');
     inputs.forEach(inp => {
-        inp.style.backgroundColor = "rgba(255, 255, 255, 0.5)"; 
-        inp.style.borderColor = "rgba(255, 255, 255, 0.8)"; 
-        inp.style.color = "#5c4d41";
+        inp.style.backgroundColor = "rgba(255, 255, 255, 0.8)"; 
+        inp.style.borderColor = "rgba(219, 234, 254, 0.8)"; 
+        inp.style.color = "#1f2937";
     });
 }
 
@@ -304,45 +278,13 @@ function updateTimeAndTheme() {
     
     const clockEl = document.getElementById('realtime-clock');
     if (clockEl) clockEl.innerText = `${hours}:${minutes}:${seconds} - ${day}/${month}/${year}`;
-    if (isForceTestingTheme) return;
-
-    const currentHour = now.getHours();
-    const body = document.body;
-    const clockIcon = document.getElementById('clock-status-icon');
-    const clockParent = document.getElementById('clock-parent-box');
-    
-    if (currentHour >= 6 && currentHour < 18) {
-        if (!body.classList.contains('light-theme')) {
-            body.classList.add('light-theme');
-            body.classList.remove('dark-theme');
-            if (clockIcon) clockIcon.innerText = "☀️";
-            if (clockParent) {
-                clockParent.classList.remove('bg-black/10', 'border-white/5');
-                clockParent.classList.add('bg-white/60', 'border-black/5');
-            }
-        }
-    } else {
-        if (!body.classList.contains('dark-theme')) {
-            body.classList.add('dark-theme');
-            body.classList.remove('light-theme');
-            if (clockIcon) clockIcon.innerText = "🌙";
-            if (clockParent) {
-                clockParent.classList.remove('bg-white/60', 'border-black/5');
-                clockParent.classList.add('bg-black/10', 'border-white/5');
-            }
-        }
-    }
 }
 setInterval(updateTimeAndTheme, 1000);
 
 function openMusicModal() {
     const inputs = document.querySelectorAll('#modal-music input[type="text"]');
     inputs.forEach(inp => {
-        if(document.body.classList.contains('light-theme')) {
-            inp.style.backgroundColor = "#fcf8f5"; inp.style.borderColor = "#d6ccc2"; inp.style.color = "#2b221a";
-        } else {
-            inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; inp.style.borderColor = "rgba(255, 255, 255, 0.05)"; inp.style.color = "#f3f4f6";
-        }
+        inp.style.backgroundColor = "rgba(255, 255, 255, 0.9)"; inp.style.borderColor = "#e5e7eb"; inp.style.color = "#1f2937";
     });
     renderTrackList();
     const m = document.getElementById('modal-music'); m.classList.remove('hidden'); m.classList.add('flex');
@@ -363,20 +305,20 @@ function renderTrackList() {
     
     if (searchKeyword) allTracks = allTracks.filter(t => t.title.toLowerCase().includes(searchKeyword));
     if (allTracks.length === 0) {
-        container.innerHTML = `<div class="py-8 text-center text-xs opacity-40 italic">Kho nhạc hiện đang trống...</div>`;
+        container.innerHTML = `<div class="py-8 text-center text-xs text-gray-400 italic font-medium">Kho nhạc hiện đang trống...</div>`;
         return;
     }
 
     allTracks.forEach(track => {
         const isCurrent = (audio.src === track.url && !audio.paused);
         const item = document.createElement('div');
-        item.className = 'w-full h-14 bg-gray-500/5 border border-white/5 rounded-2xl flex items-center justify-between px-4 gap-2 shrink-0';
+        item.className = 'w-full h-14 bg-white/80 border border-purple-100 rounded-2xl flex items-center justify-between px-4 gap-2 shrink-0 shadow-sm';
         item.innerHTML = `
             <div onclick="playTrack('${track.url}', '${track.title}')" class="flex-1 min-w-0 h-full flex items-center cursor-pointer text-left">
-                <span class="text-sm font-semibold truncate ${isCurrent ? 'text-indigo-400' : ''}">${track.title}</span>
+                <span class="text-sm font-bold truncate ${isCurrent ? 'text-purple-600' : 'text-gray-700'}">${track.title}</span>
             </div>
             <div class="flex items-center gap-1.5 shrink-0">
-                <button onclick="playTrack('${track.url}', '${track.title}')" class="w-10 h-10 rounded-xl bg-indigo-600/10 flex items-center justify-center text-base">
+                <button onclick="playTrack('${track.url}', '${track.title}')" class="btn-clickable w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-base border border-purple-100">
                     ${isCurrent ? '⏸️' : '▶️'}
                 </button>
             </div>`;
@@ -396,24 +338,24 @@ function playTrack(url, name) {
     const wave = document.getElementById('mini-audio-wave');
     
     if (audio.src === url && !audio.paused) {
-        audio.pause(); btn.innerText = "🎵"; btn.classList.remove('spin-slow', 'bg-indigo-500/30');
+        audio.pause(); btn.innerText = "🎵"; btn.classList.remove('spin-slow', 'bg-purple-100');
         if (wave) wave.classList.replace('flex', 'hidden'); 
         statusLabel.innerText = "Trạng thái: Đang dừng phát"; quickStopBtn.innerText = "▶️";
     } else if (audio.src === url && audio.paused) {
         audio.play().then(() => {
-            btn.innerText = "💿"; btn.classList.add('spin-slow', 'bg-indigo-500/30');
+            btn.innerText = "💿"; btn.classList.add('spin-slow', 'bg-purple-100');
             if (wave) wave.classList.replace('hidden', 'flex'); 
             statusLabel.innerText = `Đang phát: ${name}`; quickStopBtn.innerText = "⏸️";
         });
     } else {
         audio.src = url; savedTrackName = name;
         audio.play().then(() => {
-            btn.innerText = "💿"; btn.classList.add('spin-slow', 'bg-indigo-500/30');
+            btn.innerText = "💿"; btn.classList.add('spin-slow', 'bg-purple-100');
             if (wave) wave.classList.replace('hidden', 'flex'); 
             statusLabel.innerText = `Đang phát: ${name}`; headerTitle.innerText = name;
             quickStopBtn.innerText = "⏸️"; quickStopBtn.classList.remove('hidden');
             quickMuteBtn.classList.remove('hidden'); quickClearBtn.classList.remove('hidden');
-            miniPlayer.classList.add('bg-indigo-500/10', 'border-indigo-500/20');
+            miniPlayer.classList.add('bg-purple-50', 'border-purple-200');
         }).catch(() => { showToast("Hãy chạm màn hình rồi chọn lại nhạc nhé!", "error"); });
     }
     renderTrackList();
@@ -428,12 +370,12 @@ function handleQuickPlayPause(event) {
     const wave = document.getElementById('mini-audio-wave');
 
     if (!audio.paused) {
-        audio.pause(); btn.innerText = "🎵"; btn.classList.remove('spin-slow', 'bg-indigo-500/30');
+        audio.pause(); btn.innerText = "🎵"; btn.classList.remove('spin-slow', 'bg-purple-100');
         if (wave) wave.classList.replace('flex', 'hidden');
         statusLabel.innerText = "Trạng thái: Đang dừng phát"; quickStopBtn.innerText = "▶️";
     } else {
         audio.play().then(() => {
-            btn.innerText = "💿"; btn.classList.add('spin-slow', 'bg-indigo-500/30');
+            btn.innerText = "💿"; btn.classList.add('spin-slow', 'bg-purple-100');
             if (wave) wave.classList.replace('hidden', 'flex');
             statusLabel.innerText = `Đang phát: ${savedTrackName}`; quickStopBtn.innerText = "⏸️";
         });
@@ -441,13 +383,12 @@ function handleQuickPlayPause(event) {
     renderTrackList();
 }
 
-// BẬT TẮT TIẾNG NHANH
 function handleQuickMute(event) {
     if (event) event.stopPropagation(); 
     const audio = document.getElementById('bg-audio');
     const muteBtn = document.getElementById('quick-mute-btn');
-    if (audio.muted) { audio.muted = false; muteBtn.innerText = "🔊"; muteBtn.classList.remove('bg-red-500/20', 'text-red-400', 'border-red-500/30'); } 
-    else { audio.muted = true; muteBtn.innerText = "🔇"; muteBtn.classList.add('bg-red-500/20', 'text-red-400', 'border-red-500/30'); }
+    if (audio.muted) { audio.muted = false; muteBtn.innerText = "🔊"; muteBtn.classList.remove('bg-red-50', 'text-red-500', 'border-red-200'); } 
+    else { audio.muted = true; muteBtn.innerText = "🔇"; muteBtn.classList.add('bg-red-50', 'text-red-500', 'border-red-200'); }
 }
 
 function handleQuickClear(event) {
@@ -463,11 +404,11 @@ function handleQuickClear(event) {
     const wave = document.getElementById('mini-audio-wave');
 
     audio.pause(); audio.removeAttribute('src'); audio.load();
-    btn.innerText = "🎵"; btn.classList.remove('spin-slow', 'bg-indigo-500/30');
+    btn.innerText = "🎵"; btn.classList.remove('spin-slow', 'bg-purple-100');
     if (wave) wave.classList.replace('flex', 'hidden');
     statusLabel.innerText = "Trạng thái: Đang dừng phát"; headerTitle.innerText = "Giai điệu không gian";
     quickStopBtn.classList.add('hidden'); quickMuteBtn.classList.add('hidden'); quickClearBtn.classList.add('hidden');
-    miniPlayer.classList.remove('bg-indigo-500/10', 'border-indigo-500/20');
+    miniPlayer.classList.remove('bg-purple-50', 'border-purple-200');
     renderTrackList();
 }
 
@@ -556,9 +497,9 @@ function closeSettings() { document.getElementById('modal-settings').classList.r
 function showToast(message, type = 'success') {
     const container = document.getElementById('toast-container'); if (!container) return;
     const toast = document.createElement('div');
-    let colorClass = 'bg-emerald-500 border-emerald-400'; let icon = '✅';
-    if (type === 'error') { colorClass = 'bg-red-500 border-red-400'; icon = '❌'; }
-    toast.className = `${colorClass} border-2 px-6 py-4 rounded-2xl text-sm font-bold flex items-center gap-3 shadow-2xl backdrop-blur-md toast-enter text-white pointer-events-auto`;
+    let colorClass = 'bg-white/95 border-emerald-400 text-emerald-700'; let icon = '✅';
+    if (type === 'error') { colorClass = 'bg-white/95 border-red-400 text-red-600'; icon = '❌'; }
+    toast.className = `${colorClass} border-2 px-6 py-4 rounded-2xl text-sm font-bold flex items-center gap-3 shadow-xl backdrop-blur-md toast-enter pointer-events-auto`;
     toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
     container.appendChild(toast);
     setTimeout(() => { toast.classList.replace('toast-enter', 'toast-leave'); setTimeout(() => toast.remove(), 400); }, 3000);
@@ -574,7 +515,7 @@ function downloadMediaItem(id, fileName, fileType) {
 }
 
 function triggerConfetti() {
-    confetti({ particleCount: 125, spread: 75, origin: { y: 0.65 }, colors: ['#f472b6', '#818cf8', '#c084fc'] });
+    confetti({ particleCount: 125, spread: 75, origin: { y: 0.65 }, colors: ['#f472b6', '#a78bfa', '#60a5fa'] });
 }
 
 function changeStudySubTab(subtype) { currentStudySubTab = subtype; updateSubTabsUI('study', subtype); loadVault(); }
@@ -582,9 +523,8 @@ function changeMediaSubTab(subtype) { currentMediaSubTab = subtype; updateSubTab
 function changeSocialSubTab(subtype) { currentSocialSubTab = subtype; updateSubTabsUI('social', subtype); loadVault(); }
 
 function updateSubTabsUI(cat, activeSub) {
-    const isLight = document.body.classList.contains('light-theme');
-    const activeClass = 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20';
-    const inactiveClass = `flex-1 py-2.5 rounded-lg text-xs font-bold transition-all ${isLight ? 'text-amber-900 sub-tab-inactive-etc' : 'text-gray-400'}`;
+    const activeClass = 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all bg-purple-600/10 text-purple-700 border border-purple-200 shadow-sm';
+    const inactiveClass = 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all text-gray-500 sub-tab-inactive-etc';
 
     if (cat === 'study') {
         document.getElementById('sub-study-learn').className = activeSub === 'learn' ? activeClass : inactiveClass;
@@ -594,7 +534,7 @@ function updateSubTabsUI(cat, activeSub) {
             document.getElementById(`sub-media-${t}`).className = t === activeSub ? activeClass + ' truncate text-[11px]' : inactiveClass + ' truncate text-[11px]';
         });
     } else if (cat === 'social') {
-        ['threads', 'indigo', 'facebook'].forEach(t => {
+        ['threads', 'instagram', 'facebook'].forEach(t => {
             document.getElementById(`sub-social-${t}`).className = t === activeSub ? activeClass + ' truncate text-[11px]' : inactiveClass + ' truncate text-[11px]';
         });
     }
@@ -622,7 +562,7 @@ function openFormModal(type, editId = null) {
     if (editId) { const v = vaultItems.find(x => x.id === editId); defName = v?.title || ''; defUrl = v?.url || ''; }
 
     const configs = {
-        'wishlist': { t: "Mục mua sắm mới", d: "Bạn muốn lưu món đồ gì?", p: "Tên món đồ...", l: "Link sản phẩm..." },
+        'wishlist': { t: "Mục mua sắm mới 🛍️", d: "Bạn muốn lưu món đồ gì?", p: "Tên món đồ...", l: "Link sản phẩm..." },
         'media': { t: "Lưu liên kết giải trí 🎬", d: `Sẽ tự gom vào nhánh con ${currentMediaSubTab.toUpperCase()}`, p: "Tên video/phim...", l: "Dán link trực tiếp..." },
         'social': { t: "Lưu bài viết Social 📱", d: `Sẽ tự gom vào nhánh con ${currentSocialSubTab.toUpperCase()}`, p: "Tiêu đề bài viết...", l: "Dán đường dẫn Link MXH..." },
         'study': { t: "Cất tài liệu học & dạy 📚", d: `Sẽ tự gom vào nhánh con ${currentStudySubTab.toUpperCase()}`, p: "Tên tài liệu...", l: "Link Drive hoặc Website..." },
@@ -634,28 +574,24 @@ function openFormModal(type, editId = null) {
     document.getElementById('form-desc').innerText = c.d;
 
     let fileUpload = (currentVaultCategory === 'braindump' && !editId) ? `
-        <div class="relative w-full h-32 bg-gray-900/30 border-2 border-gray-400/30 border-dashed rounded-2xl flex flex-col items-center justify-center gap-2">
+        <div class="relative w-full h-32 bg-purple-50/50 border-2 border-purple-200 border-dashed rounded-2xl flex flex-col items-center justify-center gap-2 shadow-inner">
             <input type="file" id="add-vault-file" accept="image/*,video/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="document.getElementById('file-status').innerText=this.files[0].name">
-            <span class="text-3xl">📸</span><span id="file-status" class="text-xs opacity-60">Chọn Ảnh / Video</span>
+            <span class="text-3xl">📸</span><span id="file-status" class="text-xs text-gray-500 font-bold">Chọn Ảnh / Video</span>
         </div>` : '';
 
     let studyFileUpload = (currentVaultCategory === 'study' && !editId) ? `
-        <div class="relative w-full h-16 bg-gray-900/20 border border-dashed border-gray-700 rounded-2xl flex items-center justify-center gap-3">
+        <div class="relative w-full h-16 bg-purple-50/30 border border-dashed border-purple-200 rounded-2xl flex items-center justify-center gap-3 shadow-inner">
             <input type="file" id="add-study-file" class="absolute inset-0 opacity-0 cursor-pointer" onchange="updateStudyFileName(this)">
-            <span id="study-file-status" class="text-xs opacity-70">Hoặc chọn File đính kèm tải lên máy</span>
+            <span id="study-file-status" class="text-xs text-gray-500 font-bold">Hoặc chọn File đính kèm tải lên máy</span>
         </div>` : '';
 
     fields.innerHTML = `
-        <input type="text" id="add-vault-title" value="${defName}" placeholder="${c.p}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">
-        ${currentVaultCategory !== 'braindump' ? `<input type="text" id="add-vault-url" value="${defUrl}" placeholder="${c.l}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">` : ''}
+        <input type="text" id="add-vault-title" value="${defName}" placeholder="${c.p}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none transition-all">
+        ${currentVaultCategory !== 'braindump' ? `<input type="text" id="add-vault-url" value="${defUrl}" placeholder="${c.l}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none transition-all">` : ''}
         ${studyFileUpload}${fileUpload}`;
 
     fields.querySelectorAll('input[type="text"]').forEach(inp => {
-        if(document.body.classList.contains('light-theme')) {
-            inp.style.backgroundColor = "#fcf8f5"; inp.style.borderColor = "#d6ccc2"; inp.style.color = "#2b221a";
-        } else {
-            inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; inp.style.borderColor = "rgba(255, 255, 255, 0.05)"; inp.style.color = "#f3f4f6";
-        }
+        inp.style.backgroundColor = "rgba(255, 255, 255, 0.9)"; inp.style.borderColor = "#e5e7eb"; inp.style.color = "#1f2937";
     });
 
     const m = document.getElementById('modal-form'); m.classList.remove('hidden'); m.classList.add('flex');
@@ -737,9 +673,9 @@ function loadVault() {
 
         container.innerHTML = `
             <div class="py-16 text-center flex flex-col items-center justify-center">
-                <div class="text-6xl mb-4 opacity-60">📦</div>
+                <div class="text-6xl mb-4 opacity-40">📦</div>
                 <p class="text-sm font-bold uppercase tracking-widest mb-5 text-gray-400">${msg}</p>
-                <button onclick="openFormModal('vault')" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold active:scale-95 transition shadow-lg shadow-indigo-600/20">
+                <button onclick="openFormModal('vault')" class="btn-clickable px-6 py-3 bg-purple-600 text-white rounded-xl text-xs font-bold shadow-md shadow-purple-600/10">
                     ✨ Thêm mục đầu tiên ngay
                 </button>
             </div>`;
@@ -752,19 +688,19 @@ function loadVault() {
     items.forEach(item => {
         let card = document.createElement('div');
         if (currentVaultCategory === 'braindump') {
-            card.className = 'glass-card p-3 rounded-2xl flex flex-col justify-between gap-3 relative overflow-hidden group shadow-md';
+            card.className = 'glass-card p-3 flex flex-col justify-between gap-3 relative overflow-hidden group shadow-sm border border-white';
             let mediaId = `media-${item.id}`;
             card.innerHTML = `
-                <div class="w-full aspect-square bg-gray-900/40 border border-white/5 rounded-xl flex items-center justify-center overflow-hidden relative shadow-inner">
-                    <div id="${mediaId}" class="absolute inset-0 flex items-center justify-center text-[11px] italic opacity-50">⌛ Đang tải...</div>
+                <div class="w-full aspect-square bg-purple-50/50 border border-purple-100 rounded-xl flex items-center justify-center overflow-hidden relative shadow-inner">
+                    <div id="${mediaId}" class="absolute inset-0 flex items-center justify-center text-[11px] text-purple-400 font-bold italic opacity-60">⌛ Đang tải...</div>
                 </div>
                 <div class="flex flex-col gap-2 min-w-0 px-0.5 mt-1">
-                    <h4 class="font-bold text-xs truncate h4-title-text">${item.title}</h4>
+                    <h4 class="font-bold text-xs truncate text-gray-800">${item.title}</h4>
                     
-                    <div class="flex items-center w-full pt-2 border-t border-white/5 gap-2">
-                        <button onclick="downloadMediaItem('${item.id}', '${item.title}', '${item.fileType}')" class="flex-1 h-10 flex items-center justify-center bg-indigo-600/10 text-indigo-400 rounded-xl font-bold active:scale-95 transition">📥</button>
-                        <button onclick="openFormModal('vault', '${item.id}')" class="flex-1 h-10 flex items-center justify-center bg-gray-500/10 rounded-xl font-bold text-white active:scale-95 transition">✏️</button>
-                        <button onclick="deleteVaultItem('${item.id}')" class="flex-1 h-10 flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl font-bold active:scale-95 transition">✕</button>
+                    <div class="flex items-center w-full pt-2 border-t border-purple-50 gap-2">
+                        <button onclick="downloadMediaItem('${item.id}', '${item.title}', '${item.fileType}')" class="btn-clickable flex-1 h-10 flex items-center justify-center bg-purple-100 text-purple-600 rounded-xl font-bold">📥</button>
+                        <button onclick="openFormModal('vault', '${item.id}')" class="btn-clickable flex-1 h-10 flex items-center justify-center bg-gray-100 text-gray-500 rounded-xl font-bold">✏️</button>
+                        <button onclick="deleteVaultItem('${item.id}')" class="btn-clickable flex-1 h-10 flex items-center justify-center bg-red-50 text-red-500 rounded-xl font-bold">✕</button>
                     </div>
                 </div>`;
             container.appendChild(card);
@@ -776,16 +712,16 @@ function loadVault() {
                 }
             });
         } else {
-            card.className = 'glass-card p-5 rounded-3xl flex flex-col gap-4';
+            card.className = 'glass-card p-5 rounded-3xl flex flex-col gap-4 border border-white shadow-sm';
             let buttonsHTML = `
-                <button onclick="openFormModal('vault', '${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl">✏️</button>
-                <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-red-400">✕</button>`;
+                <button onclick="openFormModal('vault', '${item.id}')" class="btn-clickable w-11 h-11 flex items-center justify-center bg-gray-100 text-gray-500 rounded-xl border border-gray-200/50">✏️</button>
+                <button onclick="deleteVaultItem('${item.id}')" class="btn-clickable w-11 h-11 flex items-center justify-center bg-red-50 text-red-500 rounded-xl border border-red-100">✕</button>`;
             
             if (item.isIndexedDB) {
                 buttonsHTML = `
-                    <button onclick="downloadMediaItem('${item.id}', '${item.fileName||item.title}', '${item.fileType}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-indigo-400">📥</button>
-                    <button onclick="openFormModal('vault', '${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl font-bold text-white">✏️</button>
-                    <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl">✕</button>`;
+                    <button onclick="downloadMediaItem('${item.id}', '${item.fileName||item.title}', '${item.fileType}')" class="btn-clickable w-11 h-11 flex items-center justify-center bg-purple-50 text-purple-600 border border-purple-100 rounded-xl">📥</button>
+                    <button onclick="openFormModal('vault', '${item.id}')" class="btn-clickable w-11 h-11 flex items-center justify-center bg-gray-100 text-gray-500 border border-gray-200/50 rounded-xl font-bold">✏️</button>
+                    <button onclick="deleteVaultItem('${item.id}')" class="btn-clickable w-11 h-11 flex items-center justify-center bg-red-50 text-red-500 border border-red-100 rounded-xl">✕</button>`;
             }
 
             let iconType = "📄";
@@ -797,8 +733,8 @@ function loadVault() {
                     <div class="flex-1 overflow-hidden pr-2 flex items-start gap-2.5">
                         <div class="w-6 h-6 flex items-center justify-center shrink-0 mt-0.5">${iconType}</div>
                         <div class="flex-1 min-w-0">
-                            <h4 class="font-bold text-base truncate h4-title-text">${item.title}</h4>
-                            ${item.url ? `<a href="${item.url}" target="_blank" class="text-xs text-indigo-400 font-bold mt-1 inline-block">🔗 Mở liên kết</a>` : ''}
+                            <h4 class="font-bold text-base truncate text-gray-800">${item.title}</h4>
+                            ${item.url ? `<a href="${item.url}" target="_blank" class="text-xs text-purple-600 font-bold mt-1 inline-block bg-purple-50 px-2 py-0.5 rounded-md border border-purple-100/50">🔗 Mở liên kết</a>` : ''}
                         </div>
                     </div>
                     <div class="flex items-center gap-3 shrink-0">${buttonsHTML}</div>
@@ -810,8 +746,8 @@ function loadVault() {
 
 function filterVault(cat) { 
     currentVaultCategory = cat; 
-    document.querySelectorAll('.vault-filter-btn').forEach(b => { b.classList.replace('bg-pink-600', 'bg-gray-900/60'); b.classList.add('text-gray-400'); });
-    if(document.getElementById(`vbtn-${cat}`)) { document.getElementById(`vbtn-${cat}`).classList.replace('bg-gray-900/60', 'bg-pink-600'); document.getElementById(`vbtn-${cat}`).classList.remove('text-gray-400'); }
+    document.querySelectorAll('.vault-filter-btn').forEach(b => { b.classList.remove('bg-pink-600', 'text-white'); b.classList.add('bg-white/70', 'text-gray-600'); });
+    if(document.getElementById(`vbtn-${cat}`)) { document.getElementById(`vbtn-${cat}`).classList.replace('bg-white/70', 'bg-pink-600'); document.getElementById(`vbtn-${cat}`).classList.add('text-white'); }
     
     document.getElementById('study-sub-tabs').classList.add('hidden');
     document.getElementById('media-sub-tabs').classList.add('hidden');

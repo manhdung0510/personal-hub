@@ -77,25 +77,16 @@
             border-color: rgba(43, 34, 26, 0.15) !important;
         }
 
-        /* 👑 THIẾT KẾ ĐỒNG BỘ CHO HỆ THỐNG NÚT BÁNH RĂNG TRONG LIGHT MODE */
-        body.light-theme .cfg-btn-sec {
-            background-color: #e8ded4 !important;
-            border: 1px solid rgba(43, 34, 26, 0.15) !important;
-            color: #2b221a !important;
+        /* 👑 THIẾT KẾ ĐỒNG BỘ MỚI CHO TOÀN BỘ NÚT BÁNH RĂNG TRONG LIGHT MODE */
+        body.light-theme .setting-btn-custom {
+            background-color: #dcd1c4 !important;
+            border: 1px solid #bdae9d !important;
+            color: #1e1b18 !important;
+            font-weight: 700 !important;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important;
         }
-        body.light-theme .cfg-btn-joy {
-            background-color: #fce7f3 !important;
-            border: 1px solid #fbcfe8 !important;
-            color: #be185d !important;
-        }
-        body.light-theme .cfg-btn-save {
-            background-color: #4f46e5 !important;
-            color: #ffffff !important;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3) !important;
-        }
-        body.light-theme .cfg-btn-close {
-            background-color: #2b221a !important;
-            color: #faf5f0 !important;
+        body.light-theme .setting-btn-custom:hover {
+            background-color: #cfc1b2 !important;
         }
 
         /* 🌌 CHẾ ĐỘ TỐI */
@@ -121,26 +112,17 @@
             color: #94a3b8 !important;
         }
 
-        /* 🌌 THIẾT KẾ ĐỒNG BỘ CHO HỆ THỐNG NÚT BÁNH RĂNG TRONG DARK MODE */
-        body.dark-theme .cfg-btn-sec {
-            background-color: rgba(255, 255, 255, 0.05) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            color: #f3f4f6 !important;
-        }
-        body.dark-theme .cfg-btn-joy {
-            background-color: rgba(244, 114, 182, 0.1) !important;
-            border: 1px solid rgba(244, 114, 182, 0.2) !important;
-            color: #f472b6 !important;
-        }
-        body.dark-theme .cfg-btn-save {
-            background-color: #6366f1 !important;
+        /* 🌌 THIẾT KẾ ĐỒNG BỘ MỚI CHO TOÀN BỘ NÚT BÁNH RĂNG TRONG DARK MODE */
+        body.dark-theme .setting-btn-custom {
+            background-color: #1e293b !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
             color: #ffffff !important;
-            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4) !important;
+            font-weight: 700 !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
         }
-        body.dark-theme .cfg-btn-close {
-            background-color: #0f172a !important;
-            border: 1px solid rgba(255, 255, 255, 0.05) !important;
-            color: #94a3b8 !important;
+        body.dark-theme .setting-btn-custom:hover {
+            background-color: #334155 !important;
+            border-color: rgba(255, 255, 255, 0.25) !important;
         }
         body.dark-theme #modal-settings input {
             background-color: rgba(15, 23, 42, 0.6) !important;
@@ -549,15 +531,15 @@
             </div>
 
             <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-4 text-left flex flex-col items-center">
-                <button onclick="forceToggleThemeTesting()" class="btn-clickable cfg-btn-sec w-full h-11 rounded-xl font-bold text-xs shadow-sm text-center mb-2">
+                <button onclick="forceToggleThemeTesting()" class="btn-clickable setting-btn-custom w-full h-11 rounded-xl text-xs text-center mb-2">
                     🛠️ Đổi Giao Diện Nhanh (Đang Test)
                 </button>
 
                 <div class="w-full grid grid-cols-2 gap-2 border-b border-white/5 pb-3">
-                    <button onclick="exportAppDataBackup()" class="btn-clickable cfg-btn-sec h-10 rounded-xl font-bold text-xs shadow-sm flex items-center justify-center">
+                    <button onclick="exportAppDataBackup()" class="btn-clickable setting-btn-custom h-10 rounded-xl text-xs flex items-center justify-center">
                         📤 Xuất Sao Lưu
                     </button>
-                    <div class="btn-clickable relative cfg-btn-sec h-10 rounded-xl font-bold text-xs shadow-sm flex items-center justify-center cursor-pointer">
+                    <div class="btn-clickable relative setting-btn-custom h-10 rounded-xl text-xs flex items-center justify-center cursor-pointer">
                         <input type="file" id="import-backup-file-picker" accept=".json" class="absolute inset-0 opacity-0 cursor-pointer" onchange="importAppDataBackup(this)">
                         📥 Khôi Phục
                     </div>
@@ -577,10 +559,10 @@
             </div>
             
             <div class="flex gap-2">
-                <button onclick="triggerConfetti()" class="btn-clickable cfg-btn-joy h-14 flex-1 rounded-2xl font-bold text-xs shadow-sm">Niềm vui ✨</button>
-                <button onclick="saveProfile()" class="btn-clickable cfg-btn-save h-14 flex-1 rounded-2xl font-extrabold text-xs">Lưu lại</button>
+                <button onclick="triggerConfetti()" class="btn-clickable setting-btn-custom h-14 flex-1 rounded-2xl text-xs">Niềm vui ✨</button>
+                <button onclick="saveProfile()" class="btn-clickable setting-btn-custom h-14 flex-1 rounded-2xl text-xs">Lưu lại</button>
             </div>
-            <button onclick="closeSettings()" class="btn-clickable cfg-btn-close h-12 w-full rounded-xl font-bold text-sm mt-1">Đóng</button>
+            <button onclick="closeSettings()" class="btn-clickable setting-btn-custom h-12 w-full rounded-xl text-sm mt-1">Đóng</button>
         </div>
     </div>
 

@@ -77,6 +77,27 @@
             border-color: rgba(43, 34, 26, 0.15) !important;
         }
 
+        /* 👑 THIẾT KẾ ĐỒNG BỘ CHO HỆ THỐNG NÚT BÁNH RĂNG TRONG LIGHT MODE */
+        body.light-theme .cfg-btn-sec {
+            background-color: #e8ded4 !important;
+            border: 1px solid rgba(43, 34, 26, 0.15) !important;
+            color: #2b221a !important;
+        }
+        body.light-theme .cfg-btn-joy {
+            background-color: #fce7f3 !important;
+            border: 1px solid #fbcfe8 !important;
+            color: #be185d !important;
+        }
+        body.light-theme .cfg-btn-save {
+            background-color: #4f46e5 !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3) !important;
+        }
+        body.light-theme .cfg-btn-close {
+            background-color: #2b221a !important;
+            color: #faf5f0 !important;
+        }
+
         /* 🌌 CHẾ ĐỘ TỐI */
         body.dark-theme {
             background-color: #0b132b !important; 
@@ -98,6 +119,36 @@
         body.dark-theme .vault-filter-btn:not(.bg-pink-600) {
             background-color: #232d4b !important;
             color: #94a3b8 !important;
+        }
+
+        /* 🌌 THIẾT KẾ ĐỒNG BỘ CHO HỆ THỐNG NÚT BÁNH RĂNG TRONG DARK MODE */
+        body.dark-theme .cfg-btn-sec {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: #f3f4f6 !important;
+        }
+        body.dark-theme .cfg-btn-joy {
+            background-color: rgba(244, 114, 182, 0.1) !important;
+            border: 1px solid rgba(244, 114, 182, 0.2) !important;
+            color: #f472b6 !important;
+        }
+        body.dark-theme .cfg-btn-save {
+            background-color: #6366f1 !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4) !important;
+        }
+        body.dark-theme .cfg-btn-close {
+            background-color: #0f172a !important;
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+            color: #94a3b8 !important;
+        }
+        body.dark-theme #modal-settings input {
+            background-color: rgba(15, 23, 42, 0.6) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: #ffffff !important;
+        }
+        body.dark-theme #modal-settings input::placeholder {
+            color: rgba(255, 255, 255, 0.4) !important;
         }
 
         /* ----------------------------------------- */
@@ -190,16 +241,6 @@
             transform: scale(0.95);
             box-shadow: 0 0 0 0 rgba(0,0,0,0) !important;
             filter: brightness(0.85);
-        }
-
-        /* NỀN DÀNH RIÊNG CHO INPUT MODAL TRONG CHẾ ĐỘ TỐI ĐỂ DỄ NHÌN */
-        body.dark-theme #modal-settings input {
-            background-color: rgba(15, 23, 42, 0.6) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            color: #ffffff !important;
-        }
-        body.dark-theme #modal-settings input::placeholder {
-            color: rgba(255, 255, 255, 0.4) !important;
         }
     </style>
 </head>
@@ -508,15 +549,15 @@
             </div>
 
             <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-4 text-left flex flex-col items-center">
-                <button onclick="forceToggleThemeTesting()" class="btn-clickable w-full h-11 bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 dark:text-amber-400 border border-amber-500/20 rounded-xl font-bold text-xs shadow-sm text-center mb-2">
-                    🛠 Im Ép Đổi Giao Diện Nhanh
+                <button onclick="forceToggleThemeTesting()" class="btn-clickable cfg-btn-sec w-full h-11 rounded-xl font-bold text-xs shadow-sm text-center mb-2">
+                    🛠️ Đổi Giao Diện Nhanh (Đang Test)
                 </button>
 
                 <div class="w-full grid grid-cols-2 gap-2 border-b border-white/5 pb-3">
-                    <button onclick="exportAppDataBackup()" class="btn-clickable h-10 bg-indigo-600/15 hover:bg-indigo-600/20 text-indigo-400 border border-indigo-500/20 rounded-xl font-bold text-xs shadow-sm flex items-center justify-center">
+                    <button onclick="exportAppDataBackup()" class="btn-clickable cfg-btn-sec h-10 rounded-xl font-bold text-xs shadow-sm flex items-center justify-center">
                         📤 Xuất Sao Lưu
                     </button>
-                    <div class="btn-clickable relative h-10 bg-emerald-600/15 hover:bg-emerald-600/20 text-emerald-400 border border-emerald-500/20 rounded-xl font-bold text-xs shadow-sm flex items-center justify-center cursor-pointer">
+                    <div class="btn-clickable relative cfg-btn-sec h-10 rounded-xl font-bold text-xs shadow-sm flex items-center justify-center cursor-pointer">
                         <input type="file" id="import-backup-file-picker" accept=".json" class="absolute inset-0 opacity-0 cursor-pointer" onchange="importAppDataBackup(this)">
                         📥 Khôi Phục
                     </div>
@@ -536,10 +577,10 @@
             </div>
             
             <div class="flex gap-2">
-                <button onclick="triggerConfetti()" class="btn-clickable h-14 flex-1 bg-pink-500/10 hover:bg-pink-500/15 border border-pink-500/20 rounded-2xl font-bold text-pink-400 text-xs shadow-sm">Niềm vui ✨</button>
-                <button onclick="saveProfile()" class="btn-clickable h-14 flex-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold text-xs shadow-md">Lưu lại</button>
+                <button onclick="triggerConfetti()" class="btn-clickable cfg-btn-joy h-14 flex-1 rounded-2xl font-bold text-xs shadow-sm">Niềm vui ✨</button>
+                <button onclick="saveProfile()" class="btn-clickable cfg-btn-save h-14 flex-1 rounded-2xl font-extrabold text-xs">Lưu lại</button>
             </div>
-            <button onclick="closeSettings()" class="btn-clickable h-12 w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl font-bold text-sm shadow-sm">Đóng</button>
+            <button onclick="closeSettings()" class="btn-clickable cfg-btn-close h-12 w-full rounded-xl font-bold text-sm mt-1">Đóng</button>
         </div>
     </div>
 

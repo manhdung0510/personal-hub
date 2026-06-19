@@ -27,7 +27,7 @@
 
         /* 🍦 CHẾ ĐỘ SÁNG: MÀU BE ĐƯỢC NÂNG TÔNG SÁNG HƠN, TƯƠI TẮN VÀ TRONG TRẺO */
         body.light-theme {
-            background-color: #faf5f0 !important; /* Tông Be-Cream sáng, mịn và không bị trắng xóa */
+            background-color: #faf5f0 !important; 
             color: #2b221a !important;
         }
         body.light-theme .text-gray-100,
@@ -47,11 +47,11 @@
             border-bottom: 1px solid rgba(43, 34, 26, 0.08);
         }
         body.light-theme .glass-card {
-            background: #f1e7dd !important; /* Thẻ card màu be ấm, tương phản nhẹ nhàng mượt mà với nền */
+            background: #f1e7dd !important; 
             border: 1px solid rgba(43, 34, 26, 0.06);
             box-shadow: 0 8px 20px -6px rgba(43, 34, 26, 0.05);
         }
-        body.light-theme input[type="text"], body.light-theme input[type="password"], body.light-theme select {
+        body.light-theme input[type="text"], body.light-theme input[type="password"], body.light-theme input[type="tel"], body.light-theme select {
             background-color: #fcf8f5 !important;
             border-color: #d6ccc2 !important;
             color: #2b221a !important;
@@ -77,7 +77,7 @@
 
         /* 🌌 CHẾ ĐỘ TỐI: ĐỔI SANG TÔNG XANH NAVY SÂU THẲM HIỆN ĐẠI VÀ SANG TRỌNG */
         body.dark-theme {
-            background-color: #0b132b !important; /* Màu xanh đêm đậm cực mướt */
+            background-color: #0b132b !important; 
             color: #f3f4f6 !important;
         }
         body.dark-theme .glass { 
@@ -85,10 +85,10 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
         }
         body.dark-theme .glass-card { 
-            background: #1c2541 !important; /* Thẻ card xanh Navy sáng hơn để nổi bật thông tin */
+            background: #1c2541 !important; 
             border: 1px solid rgba(255, 255, 255, 0.08); 
         }
-        body.dark-theme input[type="text"], body.dark-theme input[type="password"], body.dark-theme select {
+        body.dark-theme input[type="text"], body.dark-theme input[type="password"], body.dark-theme input[type="tel"], body.dark-theme select {
             background-color: rgba(30, 41, 59, 0.7) !important;
             border-color: rgba(255, 255, 255, 0.1) !important;
             color: #f3f4f6 !important;
@@ -393,26 +393,30 @@
                 <input type="text" id="vault-search" oninput="loadVault()" placeholder="🔍 Tìm nhanh trong kho..." class="w-full h-14 border rounded-2xl px-5 text-sm outline-none focus:border-pink-500 transition-all shadow-inner">
             </div>
             
-            <div class="grid grid-cols-5 gap-1.5">
+            <div class="grid grid-cols-6 gap-1">
                 <button onclick="filterVault('wishlist')" id="vbtn-wishlist" class="vault-filter-btn h-14 bg-pink-600 rounded-xl flex flex-col items-center justify-center gap-1 active:scale-[0.93] transition-transform text-white font-medium">
-                    <span class="text-base">🛍️</span>
-                    <span class="text-[8px] font-bold uppercase tracking-wider">Shopping</span>
+                    <span class="text-sm">🛍️</span>
+                    <span class="text-[7px] font-bold uppercase tracking-wider">Shop</span>
                 </button>
                 <button onclick="filterVault('media')" id="vbtn-media" class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-[0.93] transition-transform">
-                    <span class="text-base">🎬</span>
-                    <span class="text-[8px] font-bold uppercase tracking-wider">Media</span>
+                    <span class="text-sm">🎬</span>
+                    <span class="text-[7px] font-bold uppercase tracking-wider">Media</span>
                 </button>
                 <button onclick="filterVault('social')" id="vbtn-social" class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-[0.93] transition-transform">
-                    <span class="text-base">📱</span>
-                    <span class="text-[8px] font-bold uppercase tracking-wider">Social</span>
+                    <span class="text-sm">📱</span>
+                    <span class="text-[7px] font-bold uppercase tracking-wider">Social</span>
                 </button>
                 <button onclick="filterVault('study')" id="vbtn-study" class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-[0.93] transition-transform">
-                    <span class="text-base">📚</span>
-                    <span class="text-[8px] font-bold uppercase tracking-wider">Study</span>
+                    <span class="text-sm">📚</span>
+                    <span class="text-[7px] font-bold uppercase tracking-wider">Study</span>
+                </button>
+                <button onclick="filterVault('hotline')" id="vbtn-hotline" class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-[0.93] transition-transform">
+                    <span class="text-sm">📞</span>
+                    <span class="text-[7px] font-bold uppercase tracking-wider">Phone</span>
                 </button>
                 <button onclick="filterVault('braindump')" id="vbtn-braindump" class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-[0.93] transition-transform">
-                    <span class="text-base">🔒</span>
-                    <span class="text-[8px] font-bold uppercase tracking-wider">Secret</span>
+                    <span class="text-sm">🔒</span>
+                    <span class="text-[7px] font-bold uppercase tracking-wider">Secret</span>
                 </button>
             </div>
 
@@ -786,32 +790,25 @@
             }
         }
 
-        // 🔑 HÀM XỬ LÝ MỞ KHÓA APP CHUẨN XÁC, THÊM TIMEOUT HOÃN HIỂN THỊ ĐỂ KHÔNG BỊ NHANH QUÁ
         function unlockApp() {
             const lockScreen = document.getElementById('lock-screen');
             if (lockScreen) {
-                // Quét ngày lễ ngay khi mở khóa thành công để nạp text kịp thời trước khi dựng Intro
                 const isHolidayToday = runHolidayRoutineInternal();
                 loadProfileImages();
-                
                 lockScreen.classList.add('opacity-0', 'pointer-events-none');
-                
                 setTimeout(() => {
                     lockScreen.remove();
                     const intro = document.getElementById('intro-screen');
-                    
                     if (intro) {
                         if (isHolidayToday) {
-                            // 🟢 THÊM SETTIMEOUT TRÌ HOÃN 400ms: Để lock-screen biến mất xong xuôi, mắt người nhìn quen nhịp mới từ từ hiện Intro lên thơ mộng
                             setTimeout(() => {
                                 intro.classList.replace('hidden', 'flex');
                                 setTimeout(() => {
                                     intro.classList.add('intro-hide');
                                     setTimeout(() => intro.remove(), 1200);
-                                }, 5000); // Giữ màn hình lời chúc 5 giây trọn vẹn
+                                }, 5000); 
                             }, 400);
                         } else {
-                            // Ngày bình thường hoặc đã đọc rồi thì xóa Intro luôn
                             intro.remove();
                         }
                     }
@@ -879,7 +876,6 @@
             setTimeout(() => document.getElementById('music-card').classList.remove('translate-y-full'), 10);
         }
 
-        // Bổ sung hàm thêm bài hát thủ công vào danh sách nhạc
         function addNewTrack() {
             const titleInput = document.getElementById('track-title-input');
             const urlInput = document.getElementById('track-url-input');
@@ -1163,11 +1159,13 @@
             let defName = '', defUrl = '';
             if (editId) { const v = vaultItems.find(x => x.id === editId); defName = v?.title || ''; defUrl = v?.url || ''; }
 
+            // 📞 CẤU HÌNH FORM CHO DANH MỤC HOTLINE MỚI
             const configs = {
                 'wishlist': { t: "Mục mua sắm mới", d: "Bạn muốn lưu món đồ gì?", p: "Tên món đồ...", l: "Link sản phẩm..." },
                 'media': { t: "Lưu liên kết giải trí 🎬", d: `Sẽ tự gom vào nhánh con ${currentMediaSubTab.toUpperCase()}`, p: "Tên video/phim...", l: "Dán link trực tiếp..." },
                 'social': { t: "Lưu bài viết Social 📱", d: `Sẽ tự gom vào nhánh con ${currentSocialSubTab.toUpperCase()}`, p: "Tiêu đề bài viết...", l: "Dán đường dẫn Link MXH..." },
                 'study': { t: "Cất tài liệu học & dạy 📚", d: `Sẽ tự gom vào nhánh con ${currentStudySubTab.toUpperCase()}`, p: "Tên tài liệu...", l: "Link Drive hoặc Website..." },
+                'hotline': { t: "Lưu Hotline & Danh bạ 📞", d: "Lưu trữ số điện thoại hotline khẩn cấp hoặc liên hệ", p: "Tên Hotline / Người liên hệ...", l: "Nhập số điện thoại..." },
                 'braindump': { t: "Khoảnh khắc bí mật 🔒", d: "Ảnh/Video lưu hoàn toàn cục bộ trên máy", p: "Ghi chú ngắn...", l: "" }
             };
 
@@ -1187,12 +1185,19 @@
                     <span id="study-file-status" class="text-xs opacity-70">Hoặc chọn File đính kèm tải lên máy</span>
                 </div>` : '';
 
+            // KIỂM TRA LOẠI INPUT ĐỂ ĐỔI SANG type="tel" NẾU LÀ HOTLINE
+            let secondInputHTML = '';
+            if (currentVaultCategory !== 'braindump') {
+                let inputType = (currentVaultCategory === 'hotline') ? 'tel' : 'text';
+                secondInputHTML = `<input type="${inputType}" id="add-vault-url" value="${defUrl}" placeholder="${c.l}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">`;
+            }
+
             fields.innerHTML = `
                 <input type="text" id="add-vault-title" value="${defName}" placeholder="${c.p}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">
-                ${currentVaultCategory !== 'braindump' ? `<input type="text" id="add-vault-url" value="${defUrl}" placeholder="${c.l}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">` : ''}
+                ${secondInputHTML}
                 ${studyFileUpload}${fileUpload}`;
 
-            fields.querySelectorAll('input[type="text"]').forEach(inp => {
+            fields.querySelectorAll('input').forEach(inp => {
                 if(document.body.classList.contains('light-theme')) {
                     inp.style.backgroundColor = "#fcf8f5"; inp.style.borderColor = "#d6ccc2"; inp.style.color = "#2b221a";
                 } else {
@@ -1275,6 +1280,7 @@
                 if (currentVaultCategory === 'media') msg = "CHƯA LƯU LIÊN KẾT GIẢI TRÍ NÀO";
                 if (currentVaultCategory === 'social') msg = `CHƯA LƯU NỘI DUNG ${currentSocialSubTab.toUpperCase()} NÀO`;
                 if (currentVaultCategory === 'wishlist') msg = "KHO ĐỒ ĐANG TRỐNG";
+                if (currentVaultCategory === 'hotline') msg = "DANH SÁCH HOTLINE TRỐNG";
                 if (currentVaultCategory === 'braindump') msg = "KHO ĐỒ ĐANG TRỐNG";
 
                 container.innerHTML = `
@@ -1331,8 +1337,20 @@
                     }
 
                     let iconType = "📄";
+                    let actionLinkHTML = '';
+                    
+                    // PHÂN TÍCH LINK: NẾU DANH MỤC LÀ HOTLINE THÌ DÙNG href="tel:..." ĐỂ KÍCH HOẠT CUỘC GỌI NHANH
                     if (item.category === 'media') iconType = (item.mediaType === 'youtube') ? "📺" : (item.mediaType === 'tiktok') ? "🎵" : "🎬";
                     if (item.category === 'social') iconType = (item.socialType === 'threads') ? "🧵" : (item.socialType === 'instagram') ? "📸" : "👥";
+                    if (item.category === 'hotline') iconType = "📞";
+
+                    if (item.url) {
+                        if (item.category === 'hotline') {
+                            actionLinkHTML = `<a href="tel:${item.url.replace(/\s+/g, '')}" class="text-xs text-emerald-500 font-bold mt-1 inline-block">📞 Gọi điện ngay: ${item.url}</a>`;
+                        } else {
+                            actionLinkHTML = `<a href="${item.url}" target="_blank" class="text-xs text-indigo-400 font-bold mt-1 inline-block">🔗 Mở liên kết</a>`;
+                        }
+                    }
 
                     card.innerHTML = `
                         <div class="flex justify-between items-start">
@@ -1340,7 +1358,7 @@
                                 <div class="w-6 h-6 flex items-center justify-center shrink-0 mt-0.5">${iconType}</div>
                                 <div class="flex-1 min-w-0">
                                     <h4 class="font-bold text-base truncate h4-title-text">${item.title}</h4>
-                                    ${item.url ? `<a href="${item.url}" target="_blank" class="text-xs text-indigo-400 font-bold mt-1 inline-block">🔗 Mở liên kết</a>` : ''}
+                                    ${actionLinkHTML}
                                 </div>
                             </div>
                             <div class="flex items-center gap-3 shrink-0">${buttonsHTML}</div>

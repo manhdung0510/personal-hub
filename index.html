@@ -61,6 +61,7 @@
             color: #5c4d41 !important;
             border: 1px solid rgba(0, 0, 0, 0.02);
         }
+        body.light-theme #wishlist-sub-tabs,
         body.light-theme #study-sub-tabs, 
         body.light-theme #media-sub-tabs, 
         body.light-theme #social-sub-tabs {
@@ -119,6 +120,7 @@
 
         .intro-hide { opacity: 0; pointer-events: none; transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
 
+        .toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         .toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         .toast-leave { animation: fadeOut 0.3s ease forwards; }
 
@@ -420,6 +422,18 @@
                 </button>
             </div>
 
+            <div id="wishlist-sub-tabs" class="hidden gap-1 bg-black/20 p-1 rounded-xl border border-white/5 w-full">
+                <button onclick="changeWishlistSubTab('online')" id="sub-wishlist-online" class="flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate active:scale-[0.96]">
+                    🛍️ Mua sắm Online
+                </button>
+                <button onclick="changeWishlistSubTab('ticket')" id="sub-wishlist-ticket" class="sub-tab-inactive-etc flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate active:scale-[0.96]">
+                    🎫 Đặt vé sự kiện
+                </button>
+                <button onclick="changeWishlistSubTab('hotel')" id="sub-wishlist-hotel" class="sub-tab-inactive-etc flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate active:scale-[0.96]">
+                    🏨 Phòng khách sạn
+                </button>
+            </div>
+
             <div id="study-sub-tabs" class="hidden gap-2 bg-black/20 p-1 rounded-xl border border-white/5 w-full">
                 <button onclick="changeStudySubTab('learn')" id="sub-study-learn" class="flex-1 py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 active:scale-[0.96]">
                     📖 Nghiên cứu / Tự học
@@ -531,6 +545,7 @@
         let profileData = JSON.parse(localStorage.getItem('user_profile')) || { name: '' };
         let customTracks = JSON.parse(localStorage.getItem('custom_tracks')) || [];
         let currentVaultCategory = 'wishlist';
+        let currentWishlistSubTab = 'online';
         let currentStudySubTab = 'learn'; 
         let currentMediaSubTab = 'movie'; 
         let currentSocialSubTab = 'threads'; 
@@ -544,7 +559,6 @@
         const defaultTracks = [];
         const starMessages = ["Mong ngày hôm nay sẽ dịu dàng với bạn.", "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."];
 
-        // 🎄 ENGINE PHÂN TÍCH VÀ CÀI ĐẶT LỜI CHÚC NGÀY LỄ CHÍNH XÁC
         function runHolidayCheckRoutine() {
             const now = new Date();
             const date = now.getDate();
@@ -561,8 +575,7 @@
             let currentIcon = "";
             let hasConfetti = false;
 
-            // Kiểm tra mốc ngày lễ
-            if (date === 19 && month === 6) { // Ngày test hôm nay của ông
+            if (date === 19 && month === 6) { 
                 holidayId = `test_holiday_${year}`;
                 currentTitle = "Ngày Lễ Kỷ Niệm Ngọc Ngào! 🌸";
                 currentMsg = "Chúc mừng ngày đặc biệt của hai chúng mình! Cảm ơn em vì đã luôn đồng hành, chịu đựng và mang đến cho anh những điều tuyệt vời nhất thế gian này. Thương em nhiều lắm! 💕";
@@ -608,7 +621,6 @@
                     return false;
                 }
 
-                // Nạp chữ vào DOM chuẩn xác
                 if (welcomeText) welcomeText.innerText = currentTitle;
                 if (starMsgText) starMsgText.innerText = currentMsg;
                 if (iconBox) iconBox.innerText = currentIcon;
@@ -1086,6 +1098,12 @@
             closeSettings();
         }
 
+        // CHUYỂN ĐỔI TAB CON TRONG SHOPPING
+        function changeWishlistSubTab(subtype) { currentWishlistSubTab = subtype; updateSubTabsUI('wishlist', subtype); loadVault(); }
+        function changeStudySubTab(subtype) { currentStudySubTab = subtype; updateSubTabsUI('study', subtype); loadVault(); }
+        function changeMediaSubTab(subtype) { currentMediaSubTab = subtype; updateSubTabsUI('media', subtype); loadVault(); }
+        function changeSocialSubTab(subtype) { currentSocialSubTab = subtype; updateSubTabsUI('social', subtype); loadVault(); }
+
         function openSettings() {
             document.getElementById('modal-settings').classList.replace('hidden', 'flex'); 
         }
@@ -1115,25 +1133,25 @@
             confetti({ particleCount: 125, spread: 75, origin: { y: 0.65 }, colors: ['#f472b6', '#818cf8', '#c084fc'] });
         }
 
-        function changeStudySubTab(subtype) { currentStudySubTab = subtype; updateSubTabsUI('study', subtype); loadVault(); }
-        function changeMediaSubTab(subtype) { currentMediaSubTab = subtype; updateSubTabsUI('media', subtype); loadVault(); }
-        function changeSocialSubTab(subtype) { currentSocialSubTab = subtype; updateSubTabsUI('social', subtype); loadVault(); }
-
         function updateSubTabsUI(cat, activeSub) {
             const isLight = document.body.classList.contains('light-theme');
-            const activeClass = 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20';
-            const inactiveClass = `flex-1 py-2.5 rounded-lg text-xs font-bold transition-all ${isLight ? 'text-amber-900 sub-tab-inactive-etc' : 'text-gray-400'}`;
+            const activeClass = 'flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate';
+            const inactiveClass = `flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all ${isLight ? 'text-amber-900 sub-tab-inactive-etc' : 'text-gray-400'} truncate`;
 
-            if (cat === 'study') {
-                document.getElementById('sub-study-learn').className = activeSub === 'learn' ? activeClass : inactiveClass;
-                document.getElementById('sub-study-teach').className = activeSub === 'teach' ? activeClass : inactiveClass;
+            if (cat === 'wishlist') {
+                ['online', 'ticket', 'hotel'].forEach(t => {
+                    document.getElementById(`sub-wishlist-${t}`).className = t === activeSub ? activeClass : inactiveClass;
+                });
+            } else if (cat === 'study') {
+                document.getElementById('sub-study-learn').className = activeSub === 'learn' ? activeClass + ' text-xs' : inactiveClass + ' text-xs';
+                document.getElementById('sub-study-teach').className = activeSub === 'teach' ? activeClass + ' text-xs' : inactiveClass + ' text-xs';
             } else if (cat === 'media') {
                 ['movie', 'youtube', 'tiktok'].forEach(t => {
-                    document.getElementById(`sub-media-${t}`).className = t === activeSub ? activeClass + ' truncate text-[11px]' : inactiveClass + ' truncate text-[11px]';
+                    document.getElementById(`sub-media-${t}`).className = t === activeSub ? activeClass : inactiveClass;
                 });
             } else if (cat === 'social') {
                 ['threads', 'instagram', 'facebook'].forEach(t => {
-                    document.getElementById(`sub-social-${t}`).className = t === activeSub ? activeClass + ' truncate text-[11px]' : inactiveClass + ' truncate text-[11px]';
+                    document.getElementById(`sub-social-${t}`).className = t === activeSub ? activeClass : inactiveClass;
                 });
             }
             triggerTabAnimation();
@@ -1159,9 +1177,23 @@
             let defName = '', defUrl = '';
             if (editId) { const v = vaultItems.find(x => x.id === editId); defName = v?.title || ''; defUrl = v?.url || ''; }
 
-            // 📞 CẤU HÌNH FORM CHO DANH MỤC HOTLINE MỚI
+            // ĐỊNH NGHĨA PLACEHOLDER TỰ ĐỘNG THEO TAB CON CHO SHOPPING
+            let wishlistTitlePlaceholder = "Tên món đồ...";
+            let wishlistUrlPlaceholder = "Link sản phẩm...";
+            let wishlistFormDesc = "Bạn muốn lưu món đồ gì?";
+
+            if (currentWishlistSubTab === 'ticket') {
+                wishlistTitlePlaceholder = "Tên phim / Chuyến bay / Show diễn...";
+                wishlistUrlPlaceholder = "Link mã vé / Website đặt vé...";
+                wishlistFormDesc = "Lưu thông tin đặt vé cho lịch trình sắp tới";
+            } else if (currentWishlistSubTab === 'hotel') {
+                wishlistTitlePlaceholder = "Tên Khách sạn / Homestay / Resort...";
+                wishlistUrlPlaceholder = "Link đặt phòng / Bản đồ định vị...";
+                wishlistFormDesc = "Quản lý điểm lưu trú cho chuyến đi";
+            }
+
             const configs = {
-                'wishlist': { t: "Mục mua sắm mới", d: "Bạn muốn lưu món đồ gì?", p: "Tên món đồ...", l: "Link sản phẩm..." },
+                'wishlist': { t: "Thông tin mua sắm & đặt chỗ 🛍️", d: wishlistFormDesc, p: wishlistTitlePlaceholder, l: wishlistUrlPlaceholder },
                 'media': { t: "Lưu liên kết giải trí 🎬", d: `Sẽ tự gom vào nhánh con ${currentMediaSubTab.toUpperCase()}`, p: "Tên video/phim...", l: "Dán link trực tiếp..." },
                 'social': { t: "Lưu bài viết Social 📱", d: `Sẽ tự gom vào nhánh con ${currentSocialSubTab.toUpperCase()}`, p: "Tiêu đề bài viết...", l: "Dán đường dẫn Link MXH..." },
                 'study': { t: "Cất tài liệu học & dạy 📚", d: `Sẽ tự gom vào nhánh con ${currentStudySubTab.toUpperCase()}`, p: "Tên tài liệu...", l: "Link Drive hoặc Website..." },
@@ -1185,7 +1217,6 @@
                     <span id="study-file-status" class="text-xs opacity-70">Hoặc chọn File đính kèm tải lên máy</span>
                 </div>` : '';
 
-            // KIỂM TRA LOẠI INPUT ĐỂ ĐỔI SANG type="tel" NẾU LÀ HOTLINE
             let secondInputHTML = '';
             if (currentVaultCategory !== 'braindump') {
                 let inputType = (currentVaultCategory === 'hotline') ? 'tel' : 'text';
@@ -1251,6 +1282,7 @@
                 } else {
                     const url = document.getElementById('add-vault-url').value.trim();
                     let itemObj = { id: uuid(), title, url, category: currentVaultCategory };
+                    if (currentVaultCategory === 'wishlist') itemObj.wishlistType = currentWishlistSubTab;
                     if (currentVaultCategory === 'media') itemObj.mediaType = currentMediaSubTab;
                     if (currentVaultCategory === 'social') itemObj.socialType = currentSocialSubTab;
                     vaultItems.push(itemObj);
@@ -1267,6 +1299,7 @@
             const search = document.getElementById('vault-search').value.toLowerCase();
             
             let items = vaultItems.filter(i => i.category === currentVaultCategory);
+            if (currentVaultCategory === 'wishlist') items = items.filter(i => (i.wishlistType || 'online') === currentWishlistSubTab);
             if (currentVaultCategory === 'study') items = items.filter(i => (i.studyType || 'learn') === currentStudySubTab);
             if (currentVaultCategory === 'media') items = items.filter(i => (i.mediaType || 'movie') === currentMediaSubTab);
             if (currentVaultCategory === 'social') items = items.filter(i => (i.socialType || 'threads') === currentSocialSubTab);
@@ -1276,10 +1309,12 @@
             if(items.length === 0) {
                 container.removeAttribute('class'); container.className = 'space-y-4 tab-slide-fade';
                 let msg = "CHƯA LƯU LIÊN KẾT NÀO";
+                if (currentVaultCategory === 'wishlist') {
+                    msg = (currentWishlistSubTab === 'online') ? "DANH SÁCH MUA SẮM TRỐNG" : (currentWishlistSubTab === 'ticket' ? "DANH SÁCH ĐẶT VÉ TRỐNG" : "DANH SÁCH ĐẶT PHÒNG TRỐNG");
+                }
                 if (currentVaultCategory === 'study') msg = (currentStudySubTab === 'learn') ? "CHƯA LƯU TÀI LIỆU TỰ HỌC NÀO" : "CHƯA LƯU TÀI LIỆU GIẢNG DẠY NÀO";
                 if (currentVaultCategory === 'media') msg = "CHƯA LƯU LIÊN KẾT GIẢI TRÍ NÀO";
                 if (currentVaultCategory === 'social') msg = `CHƯA LƯU NỘI DUNG ${currentSocialSubTab.toUpperCase()} NÀO`;
-                if (currentVaultCategory === 'wishlist') msg = "KHO ĐỒ ĐANG TRỐNG";
                 if (currentVaultCategory === 'hotline') msg = "DANH SÁCH HOTLINE TRỐNG";
                 if (currentVaultCategory === 'braindump') msg = "KHO ĐỒ ĐANG TRỐNG";
 
@@ -1339,7 +1374,7 @@
                     let iconType = "📄";
                     let actionLinkHTML = '';
                     
-                    // PHÂN TÍCH LINK: NẾU DANH MỤC LÀ HOTLINE THÌ DÙNG href="tel:..." ĐỂ KÍCH HOẠT CUỘC GỌI NHANH
+                    if (item.category === 'wishlist') iconType = (item.wishlistType === 'ticket') ? "🎫" : (item.wishlistType === 'hotel' ? "🏨" : "🛍️");
                     if (item.category === 'media') iconType = (item.mediaType === 'youtube') ? "📺" : (item.mediaType === 'tiktok') ? "🎵" : "🎬";
                     if (item.category === 'social') iconType = (item.socialType === 'threads') ? "🧵" : (item.socialType === 'instagram') ? "📸" : "👥";
                     if (item.category === 'hotline') iconType = "📞";
@@ -1373,11 +1408,13 @@
             document.querySelectorAll('.vault-filter-btn').forEach(b => { b.classList.replace('bg-pink-600', 'bg-gray-900/60'); b.classList.add('text-gray-400'); });
             if(document.getElementById(`vbtn-${cat}`)) { document.getElementById(`vbtn-${cat}`).classList.replace('bg-gray-900/60', 'bg-pink-600'); document.getElementById(`vbtn-${cat}`).classList.remove('text-gray-400'); }
             
+            document.getElementById('wishlist-sub-tabs').classList.add('hidden');
             document.getElementById('study-sub-tabs').classList.add('hidden');
             document.getElementById('media-sub-tabs').classList.add('hidden');
             document.getElementById('social-sub-tabs').classList.add('hidden');
 
-            if (cat === 'study') { document.getElementById('study-sub-tabs').classList.replace('hidden', 'flex'); updateSubTabsUI('study', currentStudySubTab); }
+            if (cat === 'wishlist') { document.getElementById('wishlist-sub-tabs').classList.replace('hidden', 'flex'); updateSubTabsUI('wishlist', currentWishlistSubTab); }
+            else if (cat === 'study') { document.getElementById('study-sub-tabs').classList.replace('hidden', 'flex'); updateSubTabsUI('study', currentStudySubTab); }
             else if (cat === 'media') { document.getElementById('media-sub-tabs').classList.replace('hidden', 'flex'); updateSubTabsUI('media', currentMediaSubTab); }
             else if (cat === 'social') { document.getElementById('social-sub-tabs').classList.replace('hidden', 'flex'); updateSubTabsUI('social', currentSocialSubTab); }
             

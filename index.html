@@ -445,7 +445,7 @@
 
             <div id="media-sub-tabs" class="hidden gap-1 bg-black/20 p-1 rounded-xl border border-white/5 w-full">
                 <button onclick="changeMediaSubTab('movie')" id="sub-media-movie" class="flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate active:scale-[0.96]">
-                    🎬 Phim ảnh
+                    🎬 Phim Conan
                 </button>
                 <button onclick="changeMediaSubTab('youtube')" id="sub-media-youtube" class="sub-tab-inactive-etc flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate active:scale-[0.96]">
                     📺 YouTube
@@ -1313,7 +1313,7 @@
                     msg = (currentWishlistSubTab === 'online') ? "DANH SÁCH MUA SẮM TRỐNG" : (currentWishlistSubTab === 'ticket' ? "DANH SÁCH ĐẶT VÉ TRỐNG" : "DANH SÁCH ĐẶT PHÒNG TRỐNG");
                 }
                 if (currentVaultCategory === 'study') msg = (currentStudySubTab === 'learn') ? "CHƯA LƯU TÀI LIỆU TỰ HỌC NÀO" : "CHƯA LƯU TÀI LIỆU GIẢNG DẠY NÀO";
-                if (currentVaultCategory === 'media') msg = "CHƯA LƯU LIÊN KẾT GIẢI TRÍ NÀO";
+                if (currentVaultCategory === 'media') msg = "CHƯA LƯU LIÊN KẾT NÀO";
                 if (currentVaultCategory === 'social') msg = `CHƯA LƯU NỘI DUNG ${currentSocialSubTab.toUpperCase()} NÀO`;
                 if (currentVaultCategory === 'hotline') msg = "DANH SÁCH HOTLINE TRỐNG";
                 if (currentVaultCategory === 'braindump') msg = "KHO ĐỒ ĐANG TRỐNG";

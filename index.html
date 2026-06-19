@@ -64,7 +64,8 @@
         body.light-theme #wishlist-sub-tabs,
         body.light-theme #study-sub-tabs, 
         body.light-theme #media-sub-tabs, 
-        body.light-theme #social-sub-tabs {
+        body.light-theme #social-sub-tabs,
+        body.light-theme #braindump-sub-tabs {
             background-color: #e8ded4 !important;
             border-color: rgba(43, 34, 26, 0.08);
         }
@@ -461,6 +462,15 @@
                     👥 Facebook
                 </button>
             </div>
+
+            <div id="braindump-sub-tabs" class="hidden gap-2 bg-black/20 p-1 rounded-xl border border-white/5 w-full">
+                <button onclick="changeBraindumpSubTab('image')" id="sub-braindump-image" class="flex-1 py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 active:scale-[0.96]">
+                    📸 Ảnh Bí Mật
+                </button>
+                <button onclick="changeBraindumpSubTab('video')" id="sub-braindump-video" class="sub-tab-inactive-etc flex-1 py-2.5 rounded-lg text-xs font-bold transition-all text-gray-400 active:scale-[0.96]">
+                    🎬 Video Bí Mật
+                </button>
+            </div>
             
             <div id="vault-list" class="space-y-4 tab-slide-fade"></div>
         </section>
@@ -544,6 +554,7 @@
         let currentStudySubTab = 'learn'; 
         let currentMediaSubTab = 'movie'; 
         let currentSocialSubTab = 'threads'; 
+        let currentBraindumpSubTab = 'image'; // ĐỔI MẶC ĐỊNH SANG NHÁNH ẢNH BÍ MẬT
         let currentFormType = '', currentEditId = null;
         let currentAvatarUrl = null;
         let savedTrackName = "Giai điệu không gian";
@@ -1097,6 +1108,9 @@
         function changeStudySubTab(subtype) { currentStudySubTab = subtype; updateSubTabsUI('study', subtype); loadVault(); }
         function changeMediaSubTab(subtype) { currentMediaSubTab = subtype; updateSubTabsUI('media', subtype); loadVault(); }
         function changeSocialSubTab(subtype) { currentSocialSubTab = subtype; updateSubTabsUI('social', subtype); loadVault(); }
+        
+        // CHUYỂN ĐỔI TAB CON CHO SECRET (BRAINDUMP)
+        function changeBraindumpSubTab(subtype) { currentBraindumpSubTab = subtype; updateSubTabsUI('braindump', subtype); loadVault(); }
 
         function openSettings() {
             document.getElementById('modal-settings').classList.replace('hidden', 'flex'); 
@@ -1147,6 +1161,10 @@
                 ['threads', 'instagram', 'facebook'].forEach(t => {
                     document.getElementById(`sub-social-${t}`).className = t === activeSub ? activeClass : inactiveClass;
                 });
+            } else if (cat === 'braindump') {
+                // UI TAB CON CHO SECRET
+                document.getElementById('sub-braindump-image').className = activeSub === 'image' ? activeClass + ' text-xs' : inactiveClass + ' text-xs';
+                document.getElementById('sub-braindump-video').className = activeSub === 'video' ? activeClass + ' text-xs' : inactiveClass + ' text-xs';
             }
             triggerTabAnimation();
         }
@@ -1190,7 +1208,7 @@
                 'media': { t: "Lưu liên kết giải trí 🎬", d: `Sẽ tự gom vào nhánh con ${currentMediaSubTab.toUpperCase()}`, p: "Tên video/phim...", l: "Dán link trực tiếp..." },
                 'social': { t: "Lưu bài viết Social 📱", d: `Sẽ tự gom vào nhánh con ${currentSocialSubTab.toUpperCase()}`, p: "Tiêu đề bài viết...", l: "Dán đường dẫn Link MXH..." },
                 'study': { t: "Cất tài liệu học & dạy 📚", d: `Sẽ tự gom vào nhánh con ${currentStudySubTab.toUpperCase()}`, p: "Tên tài liệu...", l: "Link Drive hoặc Website..." },
-                'braindump': { t: "Khoảnh khắc bí mật 🔒", d: "Ảnh/Video lưu hoàn toàn cục bộ trên máy", p: "Ghi chú ngắn...", l: "" }
+                'braindump': { t: "Khoảnh khắc bí mật 🔒", d: `Sẽ tự động đưa vào mục ${currentBraindumpSubTab === 'image' ? 'ẢNH' : 'VIDEO'} theo tệp tải lên`, p: "Ghi chú ngắn cho khoảnh khắc...", l: "" }
             };
 
             const c = configs[currentVaultCategory];
@@ -1199,8 +1217,8 @@
 
             let fileUpload = (currentVaultCategory === 'braindump' && !editId) ? `
                 <div class="relative w-full h-32 bg-gray-900/30 border-2 border-gray-400/30 border-dashed rounded-2xl flex flex-col items-center justify-center gap-2">
-                    <input type="file" id="add-vault-file" accept="image/*,video/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="document.getElementById('file-status').innerText=this.files[0].name">
-                    <span class="text-3xl">📸</span><span id="file-status" class="text-xs opacity-60">Chọn Ảnh / Video</span>
+                    <input type="file" id="add-vault-file" accept="${currentBraindumpSubTab === 'image' ? 'image/*' : 'video/*'}" class="absolute inset-0 opacity-0 cursor-pointer" onchange="document.getElementById('file-status').innerText=this.files[0].name">
+                    <span class="text-3xl">${currentBraindumpSubTab === 'image' ? '📸' : '🎬'}</span><span id="file-status" class="text-xs opacity-60">Chọn tệp tin bí mật</span>
                 </div>` : '';
 
             let studyFileUpload = (currentVaultCategory === 'study' && !editId) ? `
@@ -1247,7 +1265,8 @@
                 if (!file) return showToast("Chưa chọn file!", "error");
                 const itemId = uuid();
                 saveMediaToDB(itemId, file, () => {
-                    vaultItems.push({ id: itemId, title, isIndexedDB: true, fileType: file.type, category: 'braindump' });
+                    // LƯU KÈM THEO THÔNG TIN SUBTYPE (IMAGE HOẶC VIDEO) KHỚP VỚI TAB CON
+                    vaultItems.push({ id: itemId, title, isIndexedDB: true, fileType: file.type, category: 'braindump', secretType: currentBraindumpSubTab });
                     finalizeSubmit();
                 });
             } else if (currentVaultCategory === 'study' && !currentEditId) {
@@ -1294,6 +1313,9 @@
             if (currentVaultCategory === 'study') items = items.filter(i => (i.studyType || 'learn') === currentStudySubTab);
             if (currentVaultCategory === 'media') items = items.filter(i => (i.mediaType || 'movie') === currentMediaSubTab);
             if (currentVaultCategory === 'social') items = items.filter(i => (i.socialType || 'threads') === currentSocialSubTab);
+            
+            // LỌC THEO TAB CON CHO SECRET
+            if (currentVaultCategory === 'braindump') items = items.filter(i => (i.secretType || 'image') === currentBraindumpSubTab);
 
             if(search) items = items.filter(i => i.title.toLowerCase().includes(search));
             
@@ -1306,7 +1328,7 @@
                 if (currentVaultCategory === 'study') msg = (currentStudySubTab === 'learn') ? "CHƯA LƯU TÀI LIỆU TỰ HỌC NÀO" : "CHƯA LƯU TÀI LIỆU GIẢNG DẠY NÀO";
                 if (currentVaultCategory === 'media') msg = "CHƯA LƯU LIÊN KẾT NÀO";
                 if (currentVaultCategory === 'social') msg = `CHƯA LƯU NỘI DUNG ${currentSocialSubTab.toUpperCase()} NÀO`;
-                if (currentVaultCategory === 'braindump') msg = "KHO ĐỒ ĐANG TRỐNG";
+                if (currentVaultCategory === 'braindump') msg = currentBraindumpSubTab === 'image' ? "DANH SÁCH ẢNH TRỐNG" : "DANH SÁCH VIDEO TRỐNG";
 
                 container.innerHTML = `
                     <div class="py-16 text-center flex flex-col items-center justify-center">
@@ -1397,11 +1419,13 @@
             document.getElementById('study-sub-tabs').classList.add('hidden');
             document.getElementById('media-sub-tabs').classList.add('hidden');
             document.getElementById('social-sub-tabs').classList.add('hidden');
+            document.getElementById('braindump-sub-tabs').classList.add('hidden'); // ẨN ĐI THEO MẶC ĐỊNH
 
             if (cat === 'wishlist') { document.getElementById('wishlist-sub-tabs').classList.replace('hidden', 'flex'); updateSubTabsUI('wishlist', currentWishlistSubTab); }
             else if (cat === 'study') { document.getElementById('study-sub-tabs').classList.replace('hidden', 'flex'); updateSubTabsUI('study', currentStudySubTab); }
             else if (cat === 'media') { document.getElementById('media-sub-tabs').classList.replace('hidden', 'flex'); updateSubTabsUI('media', currentMediaSubTab); }
             else if (cat === 'social') { document.getElementById('social-sub-tabs').classList.replace('hidden', 'flex'); updateSubTabsUI('social', currentSocialSubTab); }
+            else if (cat === 'braindump') { document.getElementById('braindump-sub-tabs').classList.replace('hidden', 'flex'); updateSubTabsUI('braindump', currentBraindumpSubTab); } // HIỆN THỊ TAB CON CHO SECRET
             
             loadVault(); 
         }

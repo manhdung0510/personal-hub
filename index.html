@@ -13,7 +13,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
     
     <style>
         body { 
@@ -25,50 +25,50 @@
             transition: background-color 1.5s ease-in-out, color 0.4s ease-in-out; 
         }
 
-        /* 🍦 TONE NỀN SÁNG MÀU KEM TRONG VẺO RỰC RỠ HƠN CHÚT */
+        /* 🍦 TONE NỀN SÁNG MÀU KEM CÁT DỊU MẮT */
         body.light-theme {
-            background-color: #fffdfa !important; 
-            color: #1a1410 !important;
+            background-color: #f4eae1 !important; 
+            color: #2b221a !important;
         }
         body.light-theme .text-gray-100,
         body.light-theme .text-gray-200,
         body.light-theme .h4-title-text,
         body.light-theme h1, body.light-theme h2, body.light-theme h3, body.light-theme h4 { 
-            color: #1a1410 !important; 
+            color: #2b221a !important; 
         }
         body.light-theme .text-gray-400,
         body.light-theme .text-gray-500,
         body.light-theme p { 
-            color: #4a3e35 !important; 
+            color: #5c4d41 !important; 
         }
         body.light-theme .glass {
-            background: rgba(255, 253, 250, 0.9) !important;
-            backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(26, 20, 16, 0.06);
+            background: rgba(244, 234, 225, 0.85) !important;
+            backdrop-blur: 16px;
+            border-bottom: 1px solid rgba(43, 34, 26, 0.08);
         }
         body.light-theme .glass-card {
-            background: #f5ede4 !important; 
-            border: 1px solid rgba(26, 20, 16, 0.05);
-            box-shadow: 0 8px 24px -6px rgba(26, 20, 16, 0.04);
+            background: #eae0d5 !important; 
+            border: 1px solid rgba(43, 34, 26, 0.06);
+            box-shadow: 0 8px 20px -6px rgba(43, 34, 26, 0.05);
         }
         body.light-theme input[type="text"], body.light-theme input[type="password"], body.light-theme select {
-            background-color: #ffffff !important;
-            border-color: #e3dac9 !important;
-            color: #1a1410 !important;
+            background-color: #fcf8f5 !important;
+            border-color: #d6ccc2 !important;
+            color: #2b221a !important;
         }
         body.light-theme .vault-filter-btn:not(.bg-pink-600) {
-            background-color: #ede2d5 !important;
-            color: #4a3e35 !important;
-            border: 1px solid rgba(0, 0, 0, 0.01);
+            background-color: #e3d5ca !important;
+            color: #5c4d41 !important;
+            border: 1px solid rgba(0, 0, 0, 0.02);
         }
         body.light-theme #study-sub-tabs, 
         body.light-theme #media-sub-tabs, 
         body.light-theme #social-sub-tabs {
-            background-color: #ede2d5 !important;
-            border-color: rgba(26, 20, 16, 0.06);
+            background-color: #e3d5ca !important;
+            border-color: rgba(43, 34, 26, 0.08);
         }
         body.light-theme .sub-tab-inactive-etc {
-            color: #4a3e35 !important;
+            color: #5c4d41 !important;
         }
 
         body.dark-theme {
@@ -135,29 +135,27 @@
         .wave-bar:nth-child(3) { animation-delay: 0.3s; }
         @keyframes bounceWave { from { height: 3px; } to { height: 12px; } }
 
-        /* ✨ NỀN GIAO DIỆN KHÓA VÀ INTRO (ĐÃ SỬA PHÔNG CHỮ SANG PLUS JAKARTA SANS MẠNH MẼ) */
+        /* ✨ HIỆU ỨNG THƠ MỘNG DÀNH RIÊNG CHO TRANG KHÓA VÀ CHÀO MỪNG */
         #lock-screen, #intro-screen {
             background-color: #ffe4e6; 
             background-image: radial-gradient(at 10% 20%, #fbcfe8 0px, transparent 50%), 
                               radial-gradient(at 80% 10%, #e9d5ff 0px, transparent 50%), 
-                      radial-gradient(at 90% 80%, #ddd6fe 0px, transparent 50%), 
-                      radial-gradient(at 10% 90%, #fce7f3 0px, transparent 50%);
+                              radial-gradient(at 90% 80%, #ddd6fe 0px, transparent 50%), 
+                              radial-gradient(at 10% 90%, #fce7f3 0px, transparent 50%);
         }
 
         #lock-screen .glass-card, #intro-screen .glass-card {
-            background: rgba(255, 255, 255, 0.4) !important;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.3) !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
             border-radius: 40px; 
-            color: #4a3e35 !important; 
+            color: #5c4d41 !important; 
         }
 
         #lock-screen h2, #intro-screen h2 {
-            font-family: 'Plus Jakarta Sans', sans-serif !important; 
-            font-weight: 800 !important;
+            font-family: 'Playfair Display', serif; 
             color: #be185d !important; 
-            letter-spacing: -0.025em;
         }
 
         .star-dust {
@@ -169,8 +167,8 @@
             opacity: 0.5;
         }
         @keyframes blink-dust {
-            0%, 100+ { transform: scale(0.5); opacity: 0.3; }
-            50+ { transform: scale(1.5); opacity: 0.9; box-shadow: 0 0 5px white; }
+            0%, 100% { transform: scale(0.5); opacity: 0.3; }
+            50% { transform: scale(1.5); opacity: 0.9; box-shadow: 0 0 5px white; }
         }
 
         .btn-clickable {
@@ -272,6 +270,91 @@
             <button onclick="openSettings()" class="text-3xl p-2 active:scale-90 transition-transform">⚙️</button>
         </div>
     </header>
+
+    <div id="modal-info" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-end justify-center z-[1020] transition-all duration-300">
+        <div class="glass-card w-full rounded-t-[40px] p-6 pb-12 space-y-5 shadow-2xl transform translate-y-full transition-transform max-h-[85vh] flex flex-col overflow-hidden" id="info-card">
+            <div class="w-12 h-1.5 bg-gray-700 rounded-full mx-auto mb-1 shrink-0"></div>
+            <div class="text-center space-y-1 shrink-0">
+                <h3 class="text-xl font-bold text-gray-100">Cẩm Nang Sử Dụng 💡</h3>
+                <p class="text-xs text-indigo-400 italic font-medium">Hướng dẫn bảo vệ dữ liệu trên thiết bị</p>
+            </div>
+            <div class="flex-1 overflow-y-auto pr-1 space-y-4 text-sm leading-relaxed text-left scroll-container p-2 bg-black/20 rounded-2xl border border-white/5">
+                <div class="space-y-1.5">
+                    <h4 class="font-bold text-indigo-400 flex items-center gap-1.5">🔒 1. Cơ chế lưu trữ cục bộ</h4>
+                    <p class="opacity-80 text-xs">Mọi thông tin gồm hình ảnh, video, danh sách shopping, tài liệu học tập và mật mã đều được lưu trữ trực tiếp và duy nhất trên bộ nhớ máy bạn, hoàn toàn không đẩy lên mạng nên bảo mật an toàn tuyệt đối.</p>
+                </div>
+                <div class="space-y-1.5 border-t border-white/5 pt-3">
+                    <h4 class="font-bold text-pink-400 flex items-center gap-1.5">⚠️ 2. Làm thế nào để không mất dữ liệu?</h4>
+                    <p class="opacity-80 text-xs">Vì ứng dụng lưu hoàn toàn trên máy, bạn **không được** chọn tính năng *"Xóa lịch sử và dữ liệu trang web"* trong cài đặt trình duyệt (Safari/Chrome), nếu không toàn bộ bộ nhớ mật thất sẽ bị dọn sạch vĩnh viễn.</p>
+                </div>
+                <div class="space-y-1.5 border-t border-white/5 pt-3">
+                    <h4 class="font-bold text-emerald-400 flex items-center gap-1.5">📱 3. Cách sao lưu dữ liệu khi thay máy</h4>
+                    <p class="opacity-80 text-xs">Khi bạn chuẩn bị đổi điện thoại mới hoặc muốn phòng hờ mất dữ liệu, hãy làm theo các bước sau:</p>
+                    <ol class="list-decimal pl-4 text-xs opacity-70 space-y-1">
+                        <li>Mở phần Cài đặt (⚙️) của ứng dụng này lên.</li>
+                        <li>Chạm vào nút **"📤 Xuất Sao Lưu"** để tải file dữ liệu về máy, chọn lưu file vào app Tệp hoặc iCloud/Drive.</li>
+                        <li>Trên thiết bị mới, mở ứng dụng lên, truy cập vào Cài đặt (⚙️) -> nhấn nút **"📥 Khôi Phục"** và chọn tệp tin `.json` vừa lưu lên là mọi kỷ niệm sẽ quay trở lại 100%!</li>
+                    </ol>
+                </div>
+            </div>
+            <button onclick="closeInfoModal()" class="h-12 w-full bg-indigo-600 rounded-2xl font-bold text-white text-sm active:scale-95 transition shrink-0 shadow-lg">Đã hiểu rõ! 👌</button>
+        </div>
+    </div>
+
+    <div id="modal-music" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-end justify-center z-50 transition-all duration-300">
+        <div class="glass-card w-full rounded-t-[40px] p-6 pb-12 space-y-5 shadow-2xl transform translate-y-full transition-transform max-h-[85vh] flex flex-col overflow-hidden" id="music-card">
+            <div class="w-12 h-1.5 bg-gray-700 rounded-full mx-auto mb-1 shrink-0"></div>
+            
+            <div class="text-center space-y-1 shrink-0">
+                <h3 class="text-xl font-bold text-gray-100">Giai Điệu Không Gian 🎧</h3>
+                <p id="current-track-name" class="text-xs text-indigo-400 italic font-medium">Trạng thái: Đang dừng phát</p>
+            </div>
+
+            <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-3 shrink-0">
+                <div class="text-xs font-bold uppercase tracking-wider text-gray-400">Thêm bài hát mới vào danh sách</div>
+                <div class="flex flex-col gap-2">
+                    <input type="text" id="track-title-input" placeholder="Tên bài hát..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
+                    <input type="text" id="track-url-input" placeholder="Dán link nhạc trực tiếp (.mp3)..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
+                    <button onclick="addNewTrack()" class="h-12 w-full bg-indigo-600 rounded-xl font-bold text-white text-xs active:scale-95 transition shadow-md">Thêm vào kho nhạc</button>
+                </div>
+            </div>
+
+            <div class="relative shrink-0 px-1">
+                <input type="text" id="music-search" oninput="renderTrackList()" placeholder="🔍 Tìm kiếm tên bài hát..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all shadow-inner bg-transparent">
+            </div>
+
+            <div class="flex-1 overflow-y-auto space-y-2 pr-1 scroll-container" id="music-track-list"></div>
+            <audio id="bg-audio" loop></audio>
+        </div>
+    </div>
+
+    <div id="modal-profile-edit" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 z-[1010] transition-all duration-300">
+        <div class="glass-card w-full max-w-md sm:max-w-sm rounded-[32px] p-6 space-y-5 text-center shadow-2xl">
+            <div class="text-center space-y-1">
+                <h3 class="text-lg font-bold text-gray-100">🌸 Chỉnh Sửa Hồ Sơ</h3>
+                <p class="text-xs text-indigo-400">Cá nhân hóa trợ lý nhỏ của bạn</p>
+            </div>
+
+            <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-4 flex flex-col items-center text-left">
+                <div class="relative w-24 h-24 rounded-full bg-gray-900 border-2 border-pink-400/50 overflow-hidden group cursor-pointer shadow-xl btn-clickable">
+                    <img id="popup-avatar-preview" class="w-full h-full object-cover hidden" src="">
+                    <div id="popup-avatar-placeholder" class="absolute inset-0 flex items-center justify-center text-3xl opacity-60">👤</div>
+                    <input type="file" id="popup-avatar-input" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="uploadPopupAvatar(this)">
+                </div>
+                <span class="text-[11px] text-pink-400 font-bold uppercase tracking-wider -mt-2">Chạm để đổi ảnh</span>
+
+                <div class="w-full">
+                    <label class="text-[11px] text-gray-400 font-bold block mb-1">Biệt danh kho báu</label>
+                    <input type="text" id="popup-name-input" placeholder="Nhập biệt danh đáng yêu..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
+                </div>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="closeProfileModal()" class="btn-clickable h-12 flex-1 bg-gray-900 border border-gray-800 rounded-xl font-bold text-xs text-gray-400">Đóng</button>
+                <button onclick="savePopupProfile()" class="btn-clickable h-12 flex-1 bg-indigo-600 rounded-xl font-bold text-white text-xs shadow-lg shadow-indigo-600/20">Lưu thay đổi</button>
+            </div>
+        </div>
+    </div>
 
     <main class="flex-1 overflow-y-auto scroll-container px-5 py-6 space-y-8 pb-32">
         <section id="tab-vault" class="tab-content space-y-6">
@@ -464,7 +547,7 @@
             let hasConfetti = false;
 
             // Kiểm tra mốc ngày lễ
-            if (date === 19 && month === 6) { 
+            if (date === 19 && month === 6) { // Ngày test hôm nay của ông
                 holidayId = `test_holiday_${year}`;
                 currentTitle = "Ngày Lễ Kỷ Niệm Ngọt Ngào! 🌸";
                 currentMsg = "Chúc mừng ngày đặc biệt của hai chúng mình! Cảm ơn em vì đã luôn đồng hành, chịu đựng và mang đến cho anh những điều tuyệt vời nhất thế gian này. Thương em nhiều lắm! 💕";
@@ -510,6 +593,7 @@
                     return false;
                 }
 
+                // Nạp chữ vào DOM chuẩn xác
                 if (welcomeText) welcomeText.innerText = currentTitle;
                 if (starMsgText) starMsgText.innerText = currentMsg;
                 if (iconBox) iconBox.innerText = currentIcon;
@@ -691,11 +775,11 @@
             }
         }
 
-        // 🔑 HÀM MỞ KHÓA APP: ĐÃ SỬA ĐỂ BẤT KỂ NGÀY THƯỜNG HAY NGÀY LỄ ĐỀU HIỂN THỊ INTRO THƠ MỘNG
+        // 🔑 HÀM XỬ LÝ MỞ KHÓA APP CHUẨN XÁC, THÊM TIMEOUT HOÃN HIỂN THỊ ĐỂ KHÔNG BỊ NHANH QUÁ
         function unlockApp() {
             const lockScreen = document.getElementById('lock-screen');
             if (lockScreen) {
-                // Quét kiểm tra ngày lễ trước để chuẩn bị text
+                // Quét ngày lễ ngay khi mở khóa thành công để nạp text kịp thời trước khi dựng Intro
                 const isHolidayToday = runHolidayRoutineInternal();
                 loadProfileImages();
                 
@@ -706,14 +790,19 @@
                     const intro = document.getElementById('intro-screen');
                     
                     if (intro) {
-                        // 🟢 FIX LỖI: Ngày thường hay ngày lễ đều kích hoạt hiện màn hình Intro
-                        intro.classList.replace('hidden', 'flex');
-                        
-                        // Hẹn giờ biến mất mượt mà sau 4.5 giây
-                        setTimeout(() => {
-                            intro.classList.add('intro-hide');
-                            setTimeout(() => intro.remove(), 1200);
-                        }, 4500);
+                        if (isHolidayToday) {
+                            // 🟢 THÊM SETTIMEOUT TRÌ HOÃN 400ms: Để lock-screen biến mất xong xuôi, mắt người nhìn quen nhịp mới từ từ hiện Intro lên thơ mộng
+                            setTimeout(() => {
+                                intro.classList.replace('hidden', 'flex');
+                                setTimeout(() => {
+                                    intro.classList.add('intro-hide');
+                                    setTimeout(() => intro.remove(), 1200);
+                                }, 5000); // Giữ màn hình lời chúc 5 giây trọn vẹn
+                            }, 400);
+                        } else {
+                            // Ngày bình thường hoặc đã đọc rồi thì xóa Intro luôn
+                            intro.remove();
+                        }
                     }
                 }, 500);
             }

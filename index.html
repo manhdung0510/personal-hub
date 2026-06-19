@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="h-full flex flex-col justify-between overflow-hidden select-none pt-safe pb-safe">
+<body class="h-full flex flex-col justify-between overflow-hidden select-none pt-safe pb-safe light-theme">
 
     <div id="lock-screen" class="fixed inset-0 z-[1005] flex flex-col items-center justify-center text-center px-4 transition-all duration-500">
         <div class="star-dust" style="top:10%; left:20%;"></div>
@@ -36,7 +36,7 @@
             
             <div class="w-full space-y-3 pt-2" id="lock-inputs-container"></div>
             
-            <button onclick="checkOrSetPassword()" class="btn-clickable h-14 w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-2xl font-extrabold text-sm shadow-lg shadow-purple-600/10 transition-all">
+            <button onclick="checkOrSetPassword()" class="h-14 w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-2xl font-extrabold text-sm shadow-xl shadow-purple-600/10 active:scale-[0.96] transition-all">
                 Xác Nhận Nhập 🔑
             </button>
         </div>
@@ -63,7 +63,7 @@
                 <h2 id="intro-welcome-text" class="text-2xl font-black bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
                     Xin chào kho báu...
                 </h2>
-                <p id="star-message" class="text-sm text-gray-700 font-semibold italic leading-relaxed pt-3 border-t border-purple-100"></p>
+                <p id="star-message" class="text-sm text-gray-700 font-bold italic leading-relaxed pt-3 border-t border-purple-100"></p>
             </div>
         </div>
     </div>
@@ -93,14 +93,14 @@
                 <div class="flex items-center gap-3 ml-3 shrink-0">
                     <button onclick="handleQuickPlayPause(event)" id="quick-stop-btn" class="hidden text-xs w-9 h-9 flex items-center justify-center bg-purple-100 text-purple-600 border border-purple-200 rounded-xl font-bold active:scale-75 transition shadow-sm"></button>
                     <button onclick="handleQuickMute(event)" id="quick-mute-btn" class="hidden text-xs w-9 h-9 flex items-center justify-center bg-gray-100 text-gray-600 border border-gray-200 rounded-xl font-bold active:scale-75 transition shadow-sm">🔊</button>
-                    <button onclick="handleQuickClear(event)" id="quick-clear-btn" class="hidden text-xs w-9 h-9 flex items-center justify-center bg-red-50 text-red-500 border border-red-200 rounded-xl font-bold active:scale-75 transition shadow-sm">✕</button>
+                    <button onclick="handleQuickClear(event)" id="quick-clear-btn" class="hidden text-xs w-9 h-9 flex items-center justify-center bg-red-100 text-red-500 border border-red-200 rounded-xl font-bold active:scale-75 transition shadow-sm">✕</button>
                 </div>
             </div>
         </div>
         
         <div class="flex items-center gap-2 shrink-0">
-            <button onclick="openInfoModal()" class="btn-clickable text-xl p-2 bg-white/80 border border-purple-100 shadow-sm rounded-xl">💡</button>
-            <button onclick="openSettings()" class="btn-clickable text-3xl p-2">⚙️</button>
+            <button onclick="openInfoModal()" class="text-xl p-2 bg-white/80 border border-purple-100 shadow-sm rounded-xl">💡</button>
+            <button onclick="openSettings()" class="text-3xl p-2">⚙️</button>
         </div>
     </header>
 
@@ -121,7 +121,7 @@
                     <p class="text-gray-600 text-xs font-medium">Vì ứng dụng lưu hoàn toàn trên máy, bạn **không được** chọn tính năng *"Xóa lịch sử và dữ liệu trang web"* trong cài đặt trình duyệt (Safari/Chrome), nếu không toàn bộ bộ nhớ mật thất sẽ bị dọn sạch vĩnh viễn.</p>
                 </div>
                 <div class="space-y-1.5 border-t border-purple-100 pt-3">
-                    <h4 class="font-bold text-emerald-600 flex items-center gap-1.5">📱 3. Cách sao lưu dữ liệu khi thay máy</h4>
+                    <h4 class="font-bold text-emerald-400 flex items-center gap-1.5">📱 3. Cách sao lưu dữ liệu khi thay máy</h4>
                     <p class="text-gray-600 text-xs font-medium">Khi bạn chuẩn bị đổi điện thoại mới hoặc muốn phòng hờ mất dữ liệu, hãy làm theo các bước sau:</p>
                     <ol class="list-decimal pl-4 text-xs text-gray-500 font-medium space-y-1">
                         <li>Mở phần Cài đặt (⚙️) của ứng dụng này lên.</li>
@@ -130,7 +130,7 @@
                     </ol>
                 </div>
             </div>
-            <button onclick="closeInfoModal()" class="btn-clickable h-12 w-full bg-purple-600 rounded-2xl font-bold text-white text-sm shadow-md">Đã hiểu rõ! 👌</button>
+            <button onclick="closeInfoModal()" class="h-12 w-full bg-purple-600 rounded-2xl font-bold text-white text-sm shadow-md">Đã hiểu rõ! 👌</button>
         </div>
     </div>
 
@@ -148,7 +148,7 @@
                 <div class="flex flex-col gap-2">
                     <input type="text" id="track-title-input" placeholder="Tên bài hát..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none transition-all">
                     <input type="text" id="track-url-input" placeholder="Dán link nhạc trực tiếp (.mp3)..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none transition-all">
-                    <button onclick="addNewTrack()" class="btn-clickable h-12 w-full bg-purple-600 rounded-xl font-bold text-white text-xs shadow-sm">Thêm vào kho nhạc</button>
+                    <button onclick="addNewTrack()" class="h-12 w-full bg-purple-600 rounded-xl font-bold text-white text-xs active:scale-95 transition shadow-md">Thêm vào kho nhạc</button>
                 </div>
             </div>
 
@@ -164,7 +164,7 @@
     <div id="modal-profile-edit" class="fixed inset-0 bg-black/30 backdrop-blur-sm hidden items-center justify-center p-4 z-[1010] transition-all duration-300">
         <div class="glass-card w-full max-w-md sm:max-w-sm rounded-[32px] p-6 space-y-5 text-center shadow-2xl">
             <div class="text-center space-y-1">
-                <h3 class="text-lg font-bold text-gray-900">🌸 Chỉnh Sửa Hồ Sơ</h3>
+                <h3 class="text-lg font-bold text-gray-100">🌸 Chỉnh Sửa Hồ Sơ</h3>
                 <p class="text-xs text-purple-600 font-semibold">Cá nhân hóa trợ lý nhỏ của bạn</p>
             </div>
 
@@ -208,7 +208,7 @@
                     <h2 id="vault-title-text" class="text-xl font-bold text-gray-900 tracking-tight">Kho Lưu Trữ</h2>
                     <p id="vault-desc-text" class="text-sm text-gray-500 font-medium">Bảo mật tuyệt đối trên máy</p>
                 </div>
-                <button onclick="openFormModal('vault')" class="btn-clickable h-12 px-6 bg-purple-600 rounded-2xl font-bold text-sm text-white shadow-md shadow-purple-600/10">+ Thêm</button>
+                <button onclick="openFormModal('vault')" class="btn-clickable h-12 px-6 bg-purple-600 rounded-2xl font-bold text-sm shadow-md text-white">+ Thêm</button>
             </div>
             
             <div class="relative">
@@ -285,7 +285,7 @@
             <div id="form-fields" class="space-y-4"></div>
             <div class="flex gap-3 pt-4">
                 <button onclick="closeFormModal()" class="btn-clickable h-16 flex-1 bg-gray-100 border border-gray-200 rounded-3xl font-bold text-gray-600">Hủy</button>
-                <button onclick="submitForm()" class="btn-clickable h-16 flex-1 bg-purple-600 rounded-3xl font-bold text-white shadow-md">Xác nhận</button>
+                <button onclick="submitForm()" class="btn-clickable h-16 flex-1 bg-purple-600 rounded-3xl font-bold text-white shadow-xl shadow-purple-600/10">Xác nhận</button>
             </div>
         </div>
     </div>
@@ -298,6 +298,10 @@
             </div>
 
             <div class="p-4 bg-white/70 rounded-2xl border border-purple-100 space-y-4 text-left flex flex-col items-center shadow-sm">
+                <button onclick="forceToggleThemeTesting()" class="btn-clickable w-full h-11 bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border border-purple-200 text-purple-700 rounded-xl font-bold text-xs shadow-sm text-center mb-2">
+                    🛠️ Đổi Giao Diện Nhanh (Đang Test)
+                </button>
+
                 <div class="w-full grid grid-cols-2 gap-2 border-b border-purple-100 pb-3">
                     <button onclick="exportAppDataBackup()" class="btn-clickable h-10 bg-purple-50 text-purple-700 border border-purple-200 rounded-xl font-bold text-xs flex items-center justify-center shadow-sm">
                         📤 Xuất Sao Lưu
@@ -325,7 +329,7 @@
                 <button onclick="triggerConfetti()" class="btn-clickable h-14 flex-1 bg-gradient-to-r from-pink-100 to-purple-100 border border-purple-200 rounded-2xl font-bold text-purple-700 text-xs shadow-sm">Niềm vui ✨</button>
                 <button onclick="saveProfile()" class="btn-clickable h-14 flex-1 bg-purple-600 rounded-2xl font-bold text-white text-xs shadow-md">Lưu lại</button>
             </div>
-            <button onclick="closeSettings()" class="btn-clickable h-12 w-full bg-gray-100 border border-gray-200 rounded-xl font-bold text-sm text-gray-500 shadow-sm">Đóng</button>
+            <button onclick="closeSettings()" class="btn-clickable h-12 w-full bg-gray-100 border border-gray-200 rounded-xl font-bold text-sm text-gray-400 shadow-sm">Đóng</button>
         </div>
     </div>
 

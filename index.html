@@ -359,7 +359,7 @@
                 <p class="text-right italic text-pink-400 mt-4">— Người bí ẩn —</p>
             </div>
             
-            <button onclick="closeLoveLetter()" class="btn-clickable h-12 w-full bg-gradient-to-r from-pink-500 to-indigo-600 rounded-xl font-bold text-white text-xs shadow-lg shrink-0">Khép lại yêu thương 💖</button>
+            <button onclick="closeLoveLetter()" class="btn-clickable h-12 w-full bg-gradient-to-r from-pink-500 to-indigo-600 rounded-xl font-bold text-white text-xs shadow-lg shrink-0">Đóng thư 💖</button>
         </div>
     </div>
 
@@ -374,7 +374,7 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="text-[11px] font-bold uppercase tracking-widest text-indigo-400 opacity-80">Chủ sở hữu (Chạm để sửa) ✨</div>
-                        <div class="text-2xl font-extrabold truncate text-gray-100 tracking-tight mt-1" id="main-profile-name">Kho báu nhỏ</div>
+                        <div class="text-2xl font-extrabold truncate text-gray-100 tracking-tight mt-1" id="main-profile-name">Cô gái nhỏ bé</div>
                     </div>
                 </div>
                 
@@ -587,13 +587,7 @@
             let currentIcon = "";
             let hasConfetti = false;
 
-            if (date === 19 && month === 6) { 
-                holidayId = `test_holiday_${year}`;
-                currentTitle = "Ngày Lễ Kỷ Niệm Ngọc Ngào! 🌸";
-                currentMsg = "Chúc mừng ngày đặc biệt của hai chúng mình! Cảm ơn em vì đã luôn đồng hành, chịu đựng và mang đến cho anh những điều tuyệt vời nhất thế gian này. Thương em nhiều lắm! 💕";
-                currentIcon = "💝";
-                hasConfetti = true;
-            } else if (date === 2 && month === 10) {
+             if (date === 2 && month === 10) {
                 holidayId = `birthday_${year}`;
                 currentTitle = "Happy Birthday Princess! 🎂";
                 currentMsg = "Chúc mừng sinh nhật em! Tuổi mới thật hạnh phúc, xinh đẹp và luôn là phiên bản hoàn hảo nhất nhé! 💕";
@@ -602,7 +596,7 @@
             } else if (date === 25 && month === 12) {
                 holidayId = `noel_${year}`;
                 currentTitle = "Merry Christmas! 🎄";
-                currentMsg = "Giáng Sinh ấm áp nhé kho báu của anh! Chúc em luôn hạnh phúc, bình yên và nhận được thật nhiều điều ngọt ngào trong đêm đông này. Thần tình yêu luôn bên em! ❄️";
+                currentMsg = "Giáng Sinh ấm áp nhé! Chúc em luôn hạnh phúc, bình yên và nhận được thật nhiều điều ngọt ngào trong đêm đông này! ❄️";
                 currentIcon = "☃️";
             } else if (date === 8 && month === 3) {
                 holidayId = `women_day_${year}`;
@@ -612,17 +606,17 @@
             } else if (date === 20 && month === 10) {
                 holidayId = `vn_women_${year}`;
                 currentTitle = "Ngày Của Nhành Hoa Đẹp Nhất 💐";
-                currentMsg = "Chào mừng ngày 20/10! Chúc cô báu nhỏ luôn rạng rỡ, xinh tươi và có một ngày tràn đầy niềm vui, sự chiều chuộng dịu dàng nha.";
+                currentMsg = "Chào mừng ngày 20/10! Chúc em luôn rạng rỡ, xinh tươi và có một ngày tràn đầy niềm vui, sự chiều chuộng, dịu dàng.";
                 currentIcon = "❤️";
             } else if (date === 20 && month === 11) {
                 holidayId = `teacher_${year}`;
                 currentTitle = "Tri Ân Ngày 20/11 ✨";
-                currentMsg = "Chúc em một ngày 20/11 thật ý nghĩa, nhiều đóa hoa thơm và nụ cười rạng rỡ trên môi. Cảm ơn em vì những điều tuyệt vời em luôn mang lại!";
+                currentMsg = "Chúc "cô giáo" một ngày 20/11 thật ý nghĩa, nhiều đóa hoa thơm và nụ cười rạng rỡ trên môi!";
                 currentIcon = "👩‍🏫";
             } else if ((date >= 1 && date <= 4) && (month === 1 || month === 2)) {
                 holidayId = `tet_${month}_${date}_${year}`;
                 currentTitle = "Chúc Mừng Năm Mới! 🧧";
-                currentMsg = "Năm mới đến rồi, chúc kho báu nhỏ của anh luôn bình an, vạn điều may mắn, mọi dự định đều thành công rực rỡ và nụ cười mãi nở trên môi nhé!";
+                currentMsg = "Năm mới đến rồi, chúc em và gia đình luôn bình an, vạn điều may mắn, mọi dự định đều thành công rực rỡ và nụ cười mãi nở trên môi nhé!";
                 currentIcon = "🧨";
             }
 

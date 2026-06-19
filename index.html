@@ -562,7 +562,6 @@
 
         const starMessages = ["Mong ngày hôm nay sẽ dịu dàng với bạn.", "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."];
 
-        // Hàm điều khiển tâm thư bí mật
         function openLoveLetter() {
             triggerConfetti();
             document.getElementById('modal-love-letter').classList.replace('hidden', 'flex');
@@ -611,7 +610,7 @@
             } else if (date === 20 && month === 11) {
                 holidayId = `teacher_${year}`;
                 currentTitle = "Tri Ân Ngày 20/11 ✨";
-                currentMsg = "Chúc "cô giáo" một ngày 20/11 thật ý nghĩa, nhiều đóa hoa thơm và nụ cười rạng rỡ trên môi!";
+                currentMsg = "Chúc \"cô giáo\" một ngày 20/11 thật ý nghĩa, nhiều đóa hoa thơm và nụ cười rạng rỡ trên môi!";
                 currentIcon = "👩‍🏫";
             } else if ((date >= 1 && date <= 4) && (month === 1 || month === 2)) {
                 holidayId = `tet_${month}_${date}_${year}`;

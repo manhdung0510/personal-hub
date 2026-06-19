@@ -25,57 +25,60 @@
             transition: background-color 1.5s ease-in-out, color 0.4s ease-in-out; 
         }
 
-        /* 🍦 TONE NỀN SÁNG MÀU KEM CÁT DỊU MẮT */
+        /* 🌸 CẬP NHẬT: GIAO DIỆN TƯƠI SÁNG, TRONG TRẺO VÀ RẠNG RỠ HƠN (GAM MÀU SÁNG PASTEL) */
         body.light-theme {
-            background-color: #f4eae1 !important; 
-            color: #2b221a !important;
+            background-color: #f8fafc !important; /* Nền trắng xanh Slate siêu sáng và sạch sẽ */
+            background-image: radial-gradient(at 0% 0%, #fff1f2 0px, transparent 50%), 
+                              radial-gradient(at 100% 100%, #f0fdf4 0px, transparent 50%); /* Phớt hồng và xanh lá pastel cực nhẹ tạo độ tươi tắn */
+            color: #1e293b !important; /* Chữ màu xám than sang trọng, không bị gắt */
         }
         body.light-theme .text-gray-100,
         body.light-theme .text-gray-200,
         body.light-theme .h4-title-text,
         body.light-theme h1, body.light-theme h2, body.light-theme h3, body.light-theme h4 { 
-            color: #2b221a !important; 
+            color: #0f172a !important; 
         }
         body.light-theme .text-gray-400,
         body.light-theme .text-gray-500,
         body.light-theme p { 
-            color: #5c4d41 !important; 
+            color: #475569 !important; 
         }
         body.light-theme .glass {
-            background: rgba(244, 234, 225, 0.85) !important;
+            background: rgba(255, 255, 255, 0.85) !important; /* Thanh header trắng trong suốt tinh khôi */
             backdrop-blur: 16px;
-            border-bottom: 1px solid rgba(43, 34, 26, 0.08);
+            border-bottom: 1px solid rgba(15, 23, 42, 0.06);
         }
         body.light-theme .glass-card {
-            background: #eae0d5 !important; 
-            border: 1px solid rgba(43, 34, 26, 0.06);
-            box-shadow: 0 8px 20px -6px rgba(43, 34, 26, 0.05);
+            background: #ffffff !important; /* Thẻ màu trắng tuyết sang trọng */
+            border: 1px solid rgba(15, 23, 42, 0.05);
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 16px -6px rgba(15, 23, 42, 0.02); /* Đổ bóng mờ nhẹ êm ái */
         }
         body.light-theme input[type="text"], body.light-theme input[type="password"], body.light-theme select {
-            background-color: #fcf8f5 !important;
-            border-color: #d6ccc2 !important;
-            color: #2b221a !important;
+            background-color: #f8fafc !important;
+            border-color: #e2e8f0 !important;
+            color: #0f172a !important;
         }
         body.light-theme .vault-filter-btn:not(.bg-pink-600) {
-            background-color: #e3d5ca !important;
-            color: #5c4d41 !important;
-            border: 1px solid rgba(0, 0, 0, 0.02);
+            background-color: #f1f5f9 !important; /* Nền nút filter xám sáng dịu mắt */
+            color: #475569 !important;
+            border: 1px solid rgba(15, 23, 42, 0.03);
         }
         body.light-theme #study-sub-tabs, 
         body.light-theme #media-sub-tabs, 
         body.light-theme #social-sub-tabs {
-            background-color: #e3d5ca !important;
-            border-color: rgba(43, 34, 26, 0.08);
+            background-color: #f1f5f9 !important;
+            border-color: rgba(15, 23, 42, 0.06);
         }
         body.light-theme .sub-tab-inactive-etc {
-            color: #5c4d41 !important;
+            color: #64748b !important;
         }
         
-        /* ĐỔI MÀU VIỀN VÀ NỀN NÚT TRÊN HEADER KHI CÓ LIGHT THEME ĐỂ NHÌN RÕ BO VIỀN */
         body.light-theme .header-action-btn {
-            background-color: rgba(43, 34, 26, 0.06) !important;
-            border-color: rgba(43, 34, 26, 0.15) !important;
+            background-color: rgba(15, 23, 42, 0.04) !important;
+            border-color: rgba(15, 23, 42, 0.1) !important;
         }
+
+        /* ----------------------------------------- */
 
         body.dark-theme {
             background-color: #05070a !important;
@@ -708,6 +711,19 @@
             filterVault(currentVaultCategory); 
         }
 
+        // Bổ sung hàm thêm bài hát thủ công vào danh sách nhạc
+        function addNewTrack() {
+            const titleInput = document.getElementById('track-title-input');
+            const urlInput = document.getElementById('track-url-input');
+            const title = titleInput.value.trim();
+            const url = urlInput.value.trim();
+            if (!title || !url) return showToast("Vui lòng nhập đủ thông tin nhạc!", "error");
+            customTracks.push({ title, url });
+            localStorage.setItem('custom_tracks', JSON.stringify(customTracks));
+            titleInput.value = ''; urlInput.value = '';
+            renderTrackList(); showToast("Đã thêm bài hát!");
+        }
+
         function setupPopupInputsTheme() {
             const ctrl = document.getElementById('popup-name-input');
             if (ctrl) {
@@ -1033,19 +1049,6 @@
         }
         function closeProfileModal() {
             document.getElementById('modal-profile-edit').classList.replace('flex', 'hidden');
-        }
-
-        // Bổ sung hàm thêm bài hát thủ công vào danh sách nhạc
-        function addNewTrack() {
-            const titleInput = document.getElementById('track-title-input');
-            const urlInput = document.getElementById('track-url-input');
-            const title = titleInput.value.trim();
-            const url = urlInput.value.trim();
-            if (!title || !url) return showToast("Vui lòng nhập đủ thông tin nhạc!", "error");
-            customTracks.push({ title, url });
-            localStorage.setItem('custom_tracks', JSON.stringify(customTracks));
-            titleInput.value = ''; urlInput.value = '';
-            renderTrackList(); showToast("Đã thêm bài hát!");
         }
 
         function uploadPopupAvatar(input) {

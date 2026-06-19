@@ -599,8 +599,8 @@
                 if (iconBox) iconBox.innerText = currentIcon;
                 
                 if (hasConfetti) {
-                    setTimeout(() => { triggerConfetti(); }, 900);
-                    setTimeout(() => { triggerConfetti(); }, 1600);
+                    setTimeout(() => { triggerConfetti(); }, 500);
+                    setTimeout(() => { triggerConfetti(); }, 1200);
                 }
 
                 localStorage.setItem('last_holiday_shown', holidayId);
@@ -775,7 +775,7 @@
             }
         }
 
-        // 🔑 HÀM XỬ LÝ MỞ KHÓA APP CHUẨN XÁC, THÊM TIMEOUT HOÃN HIỂN THỊ ĐỂ KHÔNG BỊ NHANH QUÁ
+        // 🔑 HÀM XỬ LÝ MỞ KHÓA APP CHUẨN XÁC VÀ ĐIỀU PHỐI ĐÚNG VÒNG ĐỜI CỦA INTRO LỜI CHÚC
         function unlockApp() {
             const lockScreen = document.getElementById('lock-screen');
             if (lockScreen) {
@@ -791,16 +791,14 @@
                     
                     if (intro) {
                         if (isHolidayToday) {
-                            // 🟢 THÊM SETTIMEOUT TRÌ HOÃN 400ms: Để lock-screen biến mất xong xuôi, mắt người nhìn quen nhịp mới từ từ hiện Intro lên thơ mộng
+                            // Nếu trúng lễ và chưa xem lần nào, bung màn hình Intro chào mừng ra cho cô ấy đọc
+                            intro.classList.replace('hidden', 'flex');
                             setTimeout(() => {
-                                intro.classList.replace('hidden', 'flex');
-                                setTimeout(() => {
-                                    intro.classList.add('intro-hide');
-                                    setTimeout(() => intro.remove(), 1200);
-                                }, 5000); // Giữ màn hình lời chúc 5 giây trọn vẹn
-                            }, 400);
+                                intro.classList.add('intro-hide');
+                                setTimeout(() => intro.remove(), 1200);
+                            }, 5000); // Hiển thị trọn vẹn 5 giây ngọt ngào
                         } else {
-                            // Ngày bình thường hoặc đã đọc rồi thì xóa Intro luôn
+                            // Ngày bình thường hoặc đã đọc rồi thì xóa Intro luôn, không chặn màn hình máy
                             intro.remove();
                         }
                     }
@@ -1029,6 +1027,7 @@
             document.getElementById('modal-profile-edit').classList.replace('flex', 'hidden');
         }
 
+        // HÀM ĐÔI AVATAR
         function uploadPopupAvatar(input) {
             if (input.files && input.files[0]) {
                 pendingAvatarFile = input.files[0];

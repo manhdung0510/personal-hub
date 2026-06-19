@@ -51,7 +51,7 @@
             border: 1px solid rgba(43, 34, 26, 0.06);
             box-shadow: 0 8px 20px -6px rgba(43, 34, 26, 0.05);
         }
-        body.light-theme input[type="text"], body.light-theme input[type="password"], body.light-theme input[type="tel"], body.light-theme select, body.light-theme textarea {
+        body.light-theme input[type="text"], body.light-theme input[type="password"], body.light-theme input[type="tel"], body.light-theme select {
             background-color: #fcf8f5 !important;
             border-color: #d6ccc2 !important;
             color: #2b221a !important;
@@ -101,7 +101,7 @@
             background: #1c2541 !important; 
             border: 1px solid rgba(255, 255, 255, 0.08); 
         }
-        body.dark-theme input[type="text"], body.dark-theme input[type="password"], body.dark-theme input[type="tel"], body.dark-theme select, body.dark-theme textarea {
+        body.dark-theme input[type="text"], body.dark-theme input[type="password"], body.dark-theme input[type="tel"], body.dark-theme select {
             background-color: rgba(30, 41, 59, 0.7) !important;
             border-color: rgba(255, 255, 255, 0.1) !important;
             color: #f3f4f6 !important;
@@ -342,26 +342,44 @@
         </div>
     </div>
 
+    <div id="modal-love-letter" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-center justify-center p-4 z-[1030] transition-all duration-300">
+        <div class="glass-card w-full max-w-md sm:max-w-sm rounded-[32px] p-6 space-y-4 shadow-2xl flex flex-col overflow-hidden max-h-[80vh]">
+            <div class="text-center space-y-1 shrink-0">
+                <div class="text-4xl animate-pulse">💌</div>
+                <h3 class="text-xl font-black bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent family-playfair">Bức Thư Gửi Kho Báu...</h3>
+                <div class="w-20 h-[1px] bg-pink-500/30 mx-auto mt-2"></div>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto scroll-container text-sm leading-relaxed p-4 bg-pink-500/5 rounded-2xl border border-pink-500/10 text-left space-y-3 font-medium opacity-90">
+                <p>Gửi cô gái tuyệt vời nhất của anh, 💕</p>
+                <p>Anh viết những dòng này và cất giấu nó ở đây, hy vọng một ngày nào đó khi em vô tình chạm vào nút trái tim bí mật này, em sẽ mỉm cười thật hạnh phúc.</p>
+                <p>Cảm ơn em vì đã xuất hiện, mang đến cho cuộc sống của anh những mảng màu rực rỡ và ngọt ngào nhất. Sự dịu dàng, nụ cười và cả những lời dỗi hờn đáng yêu của em đều là báu vật mà anh muốn trân trọng suốt đời.</p>
+                <p>Dù ngày hôm nay của em có bận rộn hay mệt mỏi thế nào, hãy luôn nhớ rằng phía sau em luôn có anh đồng hành, sẵn sàng che chở và yêu thương em vô điều kiện. Mong em một đời bình an, rạng rỡ và luôn là cô công chúa nhỏ của riêng anh nhé! 🌸</p>
+                <p class="text-right italic text-pink-400 mt-4">— Người thương em hết lòng —</p>
+            </div>
+            
+            <button onclick="closeLoveLetter()" class="btn-clickable h-12 w-full bg-gradient-to-r from-pink-500 to-indigo-600 rounded-xl font-bold text-white text-xs shadow-lg shrink-0">Khép lại yêu thương 💖</button>
+        </div>
+    </div>
+
     <main class="flex-1 overflow-y-auto scroll-container px-5 py-6 space-y-8 pb-32">
         <section id="tab-vault" class="tab-content space-y-6">
             
-            <div onclick="openProfileModal()" class="glass-card p-6 rounded-3xl flex items-center gap-5 shadow-md fade-in btn-clickable cursor-pointer">
-                <div class="w-20 h-20 rounded-full bg-gray-950/40 border-2 border-indigo-500/20 flex items-center justify-center overflow-hidden shrink-0 shadow-lg">
-                    <img id="main-avatar-preview" class="w-full h-full object-cover hidden" src="">
-                    <div id="main-avatar-placeholder" class="text-4xl opacity-60">👤</div>
+            <div class="glass-card p-6 rounded-3xl flex items-center justify-between gap-4 shadow-md fade-in">
+                <div onclick="openProfileModal()" class="flex items-center gap-5 btn-clickable cursor-pointer flex-1 min-w-0">
+                    <div class="w-20 h-20 rounded-full bg-gray-950/40 border-2 border-indigo-500/20 flex items-center justify-center overflow-hidden shrink-0 shadow-lg">
+                        <img id="main-avatar-preview" class="w-full h-full object-cover hidden" src="">
+                        <div id="main-avatar-placeholder" class="text-4xl opacity-60">👤</div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-[11px] font-bold uppercase tracking-widest text-indigo-400 opacity-80">Chủ sở hữu (Chạm để sửa) ✨</div>
+                        <div class="text-2xl font-extrabold truncate text-gray-100 tracking-tight mt-1" id="main-profile-name">Kho báu nhỏ</div>
+                    </div>
                 </div>
-                <div class="flex-1 min-w-0">
-                    <div class="text-[11px] font-bold uppercase tracking-widest text-indigo-400 opacity-80">Chủ sở hữu (Chạm để sửa) ✨</div>
-                    <div class="text-2xl font-extrabold truncate text-gray-100 tracking-tight mt-1" id="main-profile-name">Kho báu nhỏ</div>
-                </div>
-            </div>
-
-            <div class="glass-card p-5 rounded-3xl space-y-3 shadow-md border border-white/5">
-                <div class="flex items-center gap-2">
-                    <span class="text-lg">✍️</span>
-                    <span class="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-pink-400 to-indigo-400 bg-clip-text text-transparent">Góc Viết Tâm Thư</span>
-                </div>
-                <textarea id="app-diary-note" oninput="saveDiaryNote()" placeholder="Viết những lời muốn nói, những dòng tâm sự ngọt ngào vào đây nhé... Dữ liệu tự động lưu lại tắp lự!" class="w-full h-28 border rounded-2xl p-4 text-sm outline-none focus:border-pink-500 transition-all resize-none bg-transparent leading-relaxed scroll-container"></textarea>
+                
+                <button onclick="openLoveLetter()" class="btn-clickable w-14 h-14 bg-pink-500/10 border border-pink-500/25 rounded-2xl flex items-center justify-center text-2xl shadow-md shadow-pink-500/5 shrink-0 animate-bounce">
+                    💖
+                </button>
             </div>
             
             <div class="flex justify-between items-end">
@@ -543,32 +561,13 @@
 
         const starMessages = ["Mong ngày hôm nay sẽ dịu dàng với bạn.", "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."];
 
-        // Tải nội dung tâm thư lên giao diện
-        function loadDiaryNote() {
-            const diaryEl = document.getElementById('app-diary-note');
-            if (diaryEl) {
-                diaryEl.value = localStorage.getItem('app_diary_text') || '';
-                setupDiaryInputTheme();
-            }
+        // Hàm điều khiển tâm thư bí mật
+        function openLoveLetter() {
+            triggerConfetti();
+            document.getElementById('modal-love-letter').classList.replace('hidden', 'flex');
         }
-
-        // Tự động lưu tâm thư ngay khi gõ
-        function saveDiaryNote() {
-            const diaryEl = document.getElementById('app-diary-note');
-            if (diaryEl) {
-                localStorage.setItem('app_diary_text', diaryEl.value);
-            }
-        }
-
-        function setupDiaryInputTheme() {
-            const diaryEl = document.getElementById('app-diary-note');
-            if (diaryEl) {
-                if(document.body.classList.contains('light-theme')) {
-                    diaryEl.style.backgroundColor = "#fcf8f5"; diaryEl.style.borderColor = "#d6ccc2"; diaryEl.style.color = "#2b221a";
-                } else {
-                    diaryEl.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; diaryEl.style.borderColor = "rgba(255, 255, 255, 0.05)"; diaryEl.style.color = "#f3f4f6";
-                }
-            }
+        function closeLoveLetter() {
+            document.getElementById('modal-love-letter').classList.replace('flex', 'hidden');
         }
 
         function runHolidayCheckRoutine() {
@@ -681,8 +680,7 @@
                 const dataObj = {
                     app_password: localStorage.getItem('app_password') || "",
                     user_profile: profileData,
-                    local_vault: vaultItems,
-                    app_diary_text: localStorage.getItem('app_diary_text') || ""
+                    local_vault: vaultItems
                 };
                 const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataObj));
                 const dlAnchor = document.createElement('a');
@@ -705,7 +703,6 @@
                     if (parsed.app_password) localStorage.setItem('app_password', parsed.app_password);
                     vaultItems = parsed.local_vault; localStorage.setItem('local_vault', JSON.stringify(vaultItems));
                     if (parsed.user_profile) { profileData = parsed.user_profile; localStorage.setItem('user_profile', JSON.stringify(profileData)); }
-                    if (parsed.app_diary_text) localStorage.setItem('app_diary_text', parsed.app_diary_text);
                     showToast("Khôi phục thành công! Đang tải lại web...");
                     setTimeout(() => window.location.reload(), 1500);
                 } catch (err) { showToast("Không thể đọc tệp này!", "error"); }
@@ -738,7 +735,6 @@
                 }
                 showToast("Đã ép ngược lại Dark Theme!");
             }
-            setupDiaryInputTheme();
             filterVault(currentVaultCategory); 
         }
 
@@ -884,7 +880,6 @@
                     }
                 }
             }
-            setupDiaryInputTheme();
         }
         setInterval(updateTimeAndTheme, 1000);
 
@@ -1304,7 +1299,7 @@
             let database = e.target.result;
             if (!database.objectStoreNames.contains("mediaFiles")) database.createObjectStore("mediaFiles", { keyPath: "id" });
         };
-        dbRequest.onsuccess = function(e) { db = e.target.result; loadVault(); loadProfileImages(); loadDiaryNote(); };
+        dbRequest.onsuccess = function(e) { db = e.target.result; loadVault(); loadProfileImages(); };
 
         function saveMediaToDB(id, blobData, callback) {
             let transaction = db.transaction(["mediaFiles"], "readwrite");

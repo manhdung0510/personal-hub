@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Trợ Lý Cá Nhân</title>
+    
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="apple-touch-icon" sizes="76x76" href="icon.png">
     <link rel="apple-touch-icon" sizes="120x120" href="icon.png">
@@ -959,7 +960,6 @@
             confetti({ particleCount: 125, spread: 75, origin: { y: 0.65 }, colors: ['#f472b6', '#818cf8', '#c084fc'] });
         }
 
-        // Đã đồng bộ sửa tên sub-tab đúng cấu trúc cây thư mục gốc
         function updateSubTabsUI(cat, activeSub) {
             const isLight = document.body.classList.contains('light-theme');
             const activeClass = 'flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate';
@@ -1178,11 +1178,17 @@
                             </div>
                         </div>`;
                     container.appendChild(card);
+                    
+                    // SỬA LỖI TREO BẤT TỬ: Đảm bảo giải phóng div "Đang tải..." nếu không tìm thấy blob dữ liệu
                     getMediaFromDB(item.id, (blob) => {
                         const el = document.getElementById(mediaId);
-                        if (el && blob) {
-                            const url = URL.createObjectURL(blob);
-                            el.outerHTML = item.fileType.startsWith('video/') ? `<video src="${url}" controls class="w-full h-full object-cover" playsinline></video>` : `<img src="${url}" class="w-full h-full object-cover">`;
+                        if (el) {
+                            if (blob) {
+                                const url = URL.createObjectURL(blob);
+                                el.outerHTML = item.fileType.startsWith('video/') ? `<video src="${url}" controls class="w-full h-full object-cover" playsinline></video>` : `<img src="${url}" class="w-full h-full object-cover">`;
+                            } else {
+                                el.innerHTML = `<div class="flex flex-col items-center opacity-40"><span class="text-xl">⚠️</span><span class="text-[9px]">Thiếu file gốc</span></div>`;
+                            }
                         }
                     });
                 } else {
@@ -1272,11 +1278,16 @@
             store.put({ id: id, data: blobData }).onsuccess = callback;
         }
 
+        // Đã tối ưu hóa hàm kiểm tra lỗi bất đồng bộ của IndexedDB
         function getMediaFromDB(id, callback) {
             if (!db) return callback(null);
-            let transaction = db.transaction(["mediaFiles"], "readonly");
-            let store = transaction.objectStore("mediaFiles");
-            store.get(id).onsuccess = function(e) { callback(e.target.result ? e.target.result.data : null); };
+            try {
+                let transaction = db.transaction(["mediaFiles"], "readonly");
+                let store = transaction.objectStore("mediaFiles");
+                let request = store.get(id);
+                request.onsuccess = function(e) { callback(e.target.result ? e.target.result.data : null); };
+                request.onerror = function() { callback(null); };
+            } catch(e) { callback(null); }
         }
 
         function deleteMediaFromDB(id) {

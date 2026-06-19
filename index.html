@@ -51,7 +51,7 @@
             border: 1px solid rgba(43, 34, 26, 0.06);
             box-shadow: 0 8px 20px -6px rgba(43, 34, 26, 0.05);
         }
-        body.light-theme input[type="text"], body.light-theme input[type="password"], body.light-theme input[type="tel"], body.light-theme select, body.light-theme textarea {
+        body.light-theme input[type="text"], body.light-theme input[type="password"], body.light-theme input[type="tel"], body.light-theme select {
             background-color: #fcf8f5 !important;
             border-color: #d6ccc2 !important;
             color: #2b221a !important;
@@ -101,7 +101,7 @@
             background: #1c2541 !important; 
             border: 1px solid rgba(255, 255, 255, 0.08); 
         }
-        body.dark-theme input[type="text"], body.dark-theme input[type="password"], body.dark-theme input[type="tel"], body.dark-theme select, body.dark-theme textarea {
+        body.dark-theme input[type="text"], body.dark-theme input[type="password"], body.dark-theme input[type="tel"], body.dark-theme select {
             background-color: rgba(30, 41, 59, 0.7) !important;
             border-color: rgba(255, 255, 255, 0.1) !important;
             color: #f3f4f6 !important;
@@ -294,15 +294,15 @@
             <div class="flex-1 overflow-y-auto pr-1 space-y-4 text-sm leading-relaxed text-left scroll-container p-2 bg-black/20 rounded-2xl border border-white/5">
                 <div class="space-y-1.5">
                     <h4 class="font-bold text-indigo-400 flex items-center gap-1.5">🔒 1. Cơ chế lưu trữ cục bộ</h4>
-                    <p class="opacity-80 text-xs">Mọi thông tin gồm hình ảnh, video, danh sách shopping, tài liệu học tập và mật mã đều được lưu trữ trực tiếp và duy nhất trên bộ nhớ máy em, hoàn toàn không đẩy lên mạng nên bảo mật an toàn tuyệt đối.</p>
+                    <p class="opacity-80 text-xs">Mọi thông tin gồm hình ảnh, video, danh sách shopping, tài liệu học tập và mật mã đều được lưu trữ trực tiếp và duy nhất trên bộ nhớ máy bạn, hoàn toàn không đẩy lên mạng nên bảo mật an toàn tuyệt đối.</p>
                 </div>
                 <div class="space-y-1.5 border-t border-white/5 pt-3">
                     <h4 class="font-bold text-pink-400 flex items-center gap-1.5">⚠️ 2. Làm thế nào để không mất dữ liệu?</h4>
-                    <p class="opacity-80 text-xs">Vì ứng dụng lưu hoàn toàn trên máy, em **không được** chọn tính năng *"Xóa lịch sử và dữ liệu trang web"* trong cài đặt trình duyệt (Safari/Chrome), nếu không toàn bộ bộ nhớ mật thất sẽ bị dọn sạch vĩnh viễn.</p>
+                    <p class="opacity-80 text-xs">Vì ứng dụng lưu hoàn toàn trên máy, bạn **không được** chọn tính năng *"Xóa lịch sử và dữ liệu trang web"* trong cài đặt trình duyệt (Safari/Chrome), nếu không toàn bộ bộ nhớ mật thất sẽ bị dọn sạch vĩnh viễn.</p>
                 </div>
                 <div class="space-y-1.5 border-t border-white/5 pt-3">
                     <h4 class="font-bold text-emerald-400 flex items-center gap-1.5">📱 3. Cách sao lưu dữ liệu khi thay máy</h4>
-                    <p class="opacity-80 text-xs">Khi em chuẩn bị đổi điện thoại mới hoặc muốn phòng hờ mất dữ liệu, hãy làm theo các bước sau:</p>
+                    <p class="opacity-80 text-xs">Khi bạn chuẩn bị đổi điện thoại mới hoặc muốn phòng hờ mất dữ liệu, hãy làm theo các bước sau:</p>
                     <ol class="list-decimal pl-4 text-xs opacity-70 space-y-1">
                         <li>Mở phần Cài đặt (⚙️) của ứng dụng này lên.</li>
                         <li>Chạm vào nút **"📤 Xuất Sao Lưu"** để tải file dữ liệu về máy, chọn lưu file vào app Tệp hoặc iCloud/Drive.</li>
@@ -318,7 +318,7 @@
         <div class="glass-card w-full max-w-md sm:max-w-sm rounded-[32px] p-6 space-y-5 text-center shadow-2xl">
             <div class="text-center space-y-1">
                 <h3 class="text-lg font-bold text-gray-100">🌸 Chỉnh Sửa Hồ Sơ</h3>
-                <p class="text-xs text-indigo-400">Cá nhân hóa trợ lý nhỏ của em</p>
+                <p class="text-xs text-indigo-400">Cá nhân hóa trợ lý nhỏ của bạn</p>
             </div>
 
             <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-4 flex flex-col items-center text-left">
@@ -330,8 +330,8 @@
                 <span class="text-[11px] text-pink-400 font-bold uppercase tracking-wider -mt-2">Chạm để thay ảnh đại diện</span>
 
                 <div class="w-full">
-                    <label class="text-[11px] text-gray-400 font-bold block mb-1">Quý danh của em</label>
-                    <input type="text" id="popup-name-input" placeholder="Tôi có thể gọi em là..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
+                    <label class="text-[11px] text-gray-400 font-bold block mb-1">Quý danh của bạn</label>
+                    <input type="text" id="popup-name-input" placeholder="Chúng tôi có thể gọi bạn là..." class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
                 </div>
             </div>
 
@@ -360,18 +360,6 @@
             </div>
             
             <button onclick="closeLoveLetter()" class="btn-clickable h-12 w-full bg-gradient-to-r from-pink-500 to-indigo-600 rounded-xl font-bold text-white text-xs shadow-lg shrink-0">Đóng thư 💖</button>
-        </div>
-    </div>
-
-    <div id="modal-explain" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-center justify-center p-4 z-[1040] transition-all duration-300">
-        <div class="glass-card w-full max-w-md sm:max-w-sm rounded-[32px] p-6 space-y-4 shadow-2xl flex flex-col overflow-hidden max-h-[70vh]">
-            <div class="text-center space-y-1 shrink-0">
-                <div class="text-3xl">💡</div>
-                <h3 id="explain-title-text" class="text-lg font-bold text-gray-100">Lý do mục này tồn tại</h3>
-                <div class="w-16 h-[1px] bg-indigo-500/30 mx-auto mt-2"></div>
-            </div>
-            <div id="explain-content-text" class="flex-1 overflow-y-auto scroll-container text-sm leading-relaxed p-4 bg-indigo-500/5 rounded-2xl border border-indigo-500/10 text-left font-medium opacity-90 whitespace-pre-wrap"></div>
-            <button onclick="closeExplainModal()" class="btn-clickable h-12 w-full bg-indigo-600 rounded-xl font-bold text-white text-xs shadow-lg shrink-0">Đã rõ rồi! 🥰</button>
         </div>
     </div>
 
@@ -567,7 +555,7 @@
         let pendingAvatarFile = null;
         let isHolidayGreetingActive = false; 
 
-        const starMessages = ["Mong ngày hôm nay sẽ dịu dàng với em.", "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."];
+        const starMessages = ["Mong ngày hôm nay sẽ dịu dàng với bạn.", "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."];
 
         function openLoveLetter() {
             triggerConfetti();
@@ -575,18 +563,6 @@
         }
         function closeLoveLetter() {
             document.getElementById('modal-love-letter').classList.replace('flex', 'hidden');
-        }
-
-        // HÀM ĐIỀU KHIỂN POPUP XEM LỜI GIẢI THÍCH
-        function openExplainModal(id) {
-            const item = vaultItems.find(x => x.id === id);
-            if (!item) return;
-            document.getElementById('explain-title-text').innerText = `Lý do lưu: ${item.title}`;
-            document.getElementById('explain-content-text').innerText = item.description && item.description.trim() !== "" ? item.description : "Mục này hiện tại chưa có lời giải thích cụ thể nào từ bạn... 💕";
-            document.getElementById('modal-explain').classList.replace('hidden', 'flex');
-        }
-        function closeExplainModal() {
-            document.getElementById('modal-explain').classList.replace('flex', 'hidden');
         }
 
         function runHolidayCheckRoutine() {
@@ -867,9 +843,6 @@
         }
         setInterval(updateTimeAndTheme, 1000);
 
-        // Đóng mở modal giải thích
-        document.getElementById('modal-explain').addEventListener('click', function(e) { if (e.target === this) closeExplainModal(); });
-
         function loadProfileImages() {
             if (!db) return;
             getMediaFromDB("user_avatar_blob", function(blobFile) {
@@ -978,11 +951,11 @@
             });
         }
 
-        // HÀM BẮN PHÁO HOA ĂN MỪNG RELEASING
         function triggerConfetti() {
             confetti({ particleCount: 125, spread: 75, origin: { y: 0.65 }, colors: ['#f472b6', '#818cf8', '#c084fc'] });
         }
 
+        // Đã đồng bộ sửa tên sub-tab đúng cấu trúc cây thư mục gốc
         function updateSubTabsUI(cat, activeSub) {
             const isLight = document.body.classList.contains('light-theme');
             const activeClass = 'flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate';
@@ -1027,12 +1000,12 @@
         function openFormModal(type, editId = null) {
             currentFormType = type; currentEditId = editId;
             const fields = document.getElementById('form-fields'); fields.innerHTML = '';
-            let defName = '', defUrl = '', defDesc = '';
-            if (editId) { const v = vaultItems.find(x => x.id === editId); defName = v?.title || ''; defUrl = v?.url || ''; defDesc = v?.description || ''; }
+            let defName = '', defUrl = '';
+            if (editId) { const v = vaultItems.find(x => x.id === editId); defName = v?.title || ''; defUrl = v?.url || ''; }
 
             let wishlistTitlePlaceholder = "Tên món đồ...";
             let wishlistUrlPlaceholder = "Link sản phẩm...";
-            let wishlistFormDesc = "Em muốn lưu món đồ gì?";
+            let wishlistFormDesc = "Bạn muốn lưu món đồ gì?";
 
             if (currentWishlistSubTab === 'ticket') {
                 wishlistTitlePlaceholder = "Tên phim / Chuyến bay / Show diễn...";
@@ -1073,16 +1046,12 @@
                 secondInputHTML = `<input type="text" id="add-vault-url" value="${defUrl}" placeholder="${c.l}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">`;
             }
 
-            // TÍCH HỢP THÊM Ô NHẬP LỜI GIẢI THÍCH (TEXTAREA) TRONG FORM MODAL
             fields.innerHTML = `
                 <input type="text" id="add-vault-title" value="${defName}" placeholder="${c.p}" class="w-full h-16 border rounded-2xl px-5 text-base outline-none focus:border-indigo-500 shadow-inner transition-all">
                 ${secondInputHTML}
-                <textarea id="add-vault-desc" placeholder="Lời giải thích từ anh về mục này (Lý do tồn tại, kỷ niệm hoặc ứng dụng...)... 💕" class="w-full h-24 border rounded-2xl p-4 text-base outline-none focus:border-indigo-500 shadow-inner transition-all resize-none"></textarea>
                 ${studyFileUpload}${fileUpload}`;
 
-            if(document.getElementById('add-vault-desc')) document.getElementById('add-vault-desc').value = defDesc;
-
-            fields.querySelectorAll('input, textarea').forEach(inp => {
+            fields.querySelectorAll('input').forEach(inp => {
                 if(document.body.classList.contains('light-theme')) {
                     inp.style.backgroundColor = "#fcf8f5"; inp.style.borderColor = "#d6ccc2"; inp.style.color = "#2b221a";
                 } else {
@@ -1103,7 +1072,6 @@
         function submitForm() {
             const title = document.getElementById('add-vault-title').value.trim();
             if (!title) return showToast("Tiêu đề trống!", "error");
-            const explanation = document.getElementById('add-vault-desc') ? document.getElementById('add-vault-desc').value.trim() : '';
             const uuid = () => Math.random().toString(36).substring(2, 15);
 
             if (currentVaultCategory === 'braindump' && !currentEditId) {
@@ -1111,7 +1079,7 @@
                 if (!file) return showToast("Chưa chọn file!", "error");
                 const itemId = uuid();
                 saveMediaToDB(itemId, file, () => {
-                    vaultItems.push({ id: itemId, title, description: explanation, isIndexedDB: true, fileType: file.type, category: 'braindump', secretType: currentBraindumpSubTab });
+                    vaultItems.push({ id: itemId, title, isIndexedDB: true, fileType: file.type, category: 'braindump', secretType: currentBraindumpSubTab });
                     finalizeSubmit();
                 });
             } else if (currentVaultCategory === 'study' && !currentEditId) {
@@ -1119,12 +1087,12 @@
                 if (sFile) {
                     const itemId = uuid();
                     saveMediaToDB(itemId, sFile, () => {
-                        vaultItems.push({ id: itemId, title, description: explanation, isIndexedDB: true, fileType: sFile.type, fileName: sFile.name, category: 'study', studyType: currentStudySubTab });
+                        vaultItems.push({ id: itemId, title, isIndexedDB: true, fileType: sFile.type, fileName: sFile.name, category: 'study', studyType: currentStudySubTab });
                         finalizeSubmit();
                     });
                 } else {
                     const url = document.getElementById('add-vault-url').value.trim();
-                    vaultItems.push({ id: uuid(), title, url, description: explanation, category: 'study', studyType: currentStudySubTab });
+                    vaultItems.push({ id: uuid(), title, url, category: 'study', studyType: currentStudySubTab });
                     finalizeSubmit();
                 }
             } else {
@@ -1132,12 +1100,11 @@
                     const idx = vaultItems.findIndex(v => v.id === currentEditId);
                     if (idx > -1) {
                         vaultItems[idx].title = title;
-                        vaultItems[idx].description = explanation;
                         if (currentVaultCategory !== 'braindump') vaultItems[idx].url = document.getElementById('add-vault-url').value.trim();
                     }
                 } else {
                     const url = document.getElementById('add-vault-url').value.trim();
-                    let itemObj = { id: uuid(), title, url, description: explanation, category: currentVaultCategory };
+                    let itemObj = { id: uuid(), title, url, category: currentVaultCategory };
                     if (currentVaultCategory === 'wishlist') itemObj.wishlistType = currentWishlistSubTab;
                     if (currentVaultCategory === 'media') itemObj.mediaType = currentMediaSubTab;
                     if (currentVaultCategory === 'social') itemObj.socialType = currentSocialSubTab;
@@ -1216,16 +1183,12 @@
                     });
                 } else {
                     card.className = 'glass-card p-5 rounded-3xl flex flex-col gap-4';
-                    
-                    // THÊM NÚT CƠ CHẾ XEM GIẢI THÍCH (💡) RA NGOÀI ACTION BAR MÀN HÌNH CHÍNH
                     let buttonsHTML = `
-                        <button onclick="openExplainModal('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-indigo-500/10 rounded-xl text-indigo-400" title="Xem giải thích">💡</button>
                         <button onclick="openFormModal('vault', '${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl">✏️</button>
                         <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-red-400">✕</button>`;
                     
                     if (item.isIndexedDB) {
                         buttonsHTML = `
-                            <button onclick="openExplainModal('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-indigo-500/10 rounded-xl text-indigo-400" title="Xem giải thích">💡</button>
                             <button onclick="downloadMediaItem('${item.id}', '${item.fileName||item.title}', '${item.fileType}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl text-indigo-400">📥</button>
                             <button onclick="openFormModal('vault', '${item.id}')" class="w-11 h-11 flex items-center justify-center bg-gray-500/10 rounded-xl font-bold text-white">✏️</button>
                             <button onclick="deleteVaultItem('${item.id}')" class="w-11 h-11 flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl">✕</button>`;
@@ -1251,7 +1214,7 @@
                                     ${actionLinkHTML}
                                 </div>
                             </div>
-                            <div class="flex items-center gap-2 shrink-0">${buttonsHTML}</div>
+                            <div class="flex items-center gap-3 shrink-0">${buttonsHTML}</div>
                         </div>`;
                     container.appendChild(card);
                 }

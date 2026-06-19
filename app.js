@@ -160,15 +160,41 @@ function importAppDataBackup(input) {
 }
 
 function forceToggleThemeTesting() {
-    // Luôn khóa ở chế độ sáng lãng mạn theo yêu cầu mới của ông
-    showToast("Đang kích hoạt giao diện sáng lãng mạn!");
+    isForceTestingTheme = true;
+    const body = document.body;
+    const clockIcon = document.getElementById('clock-status-icon');
+    const clockParent = document.getElementById('clock-parent-box');
+
+    if (body.classList.contains('dark-theme')) {
+        body.classList.remove('dark-theme');
+        body.classList.add('light-theme');
+        if (clockIcon) clockIcon.innerText = "☀️";
+        if (clockParent) {
+            clockParent.classList.remove('bg-black/10', 'border-white/5');
+            clockParent.classList.add('bg-white/80', 'border-purple-100/50');
+        }
+        showToast("Đã ép sang Light Theme!");
+    } else {
+        body.classList.remove('light-theme');
+        body.classList.add('dark-theme');
+        if (clockIcon) clockIcon.innerText = "🌙";
+        if (clockParent) {
+            clockParent.classList.remove('bg-white/80', 'border-purple-100/50');
+            clockParent.classList.add('bg-black/10', 'border-white/5');
+        }
+        showToast("Đã ép ngược lại Dark Theme!");
+    }
+    filterVault(currentVaultCategory); 
 }
 
 function setupPopupInputsTheme() {
-    // Chuẩn hóa màu input modal sáng
     const ctrl = document.getElementById('popup-name-input');
     if (ctrl) {
-        ctrl.style.backgroundColor = "rgba(255, 255, 255, 0.9)"; ctrl.style.borderColor = "#e5e7eb"; ctrl.style.color = "#1f2937";
+        if(document.body.classList.contains('light-theme')) {
+            ctrl.style.backgroundColor = "rgba(255, 255, 255, 0.9)"; ctrl.style.borderColor = "#e5e7eb"; ctrl.style.color = "#1f2937";
+        } else {
+            ctrl.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; ctrl.style.borderColor = "rgba(255, 255, 255, 0.05)"; ctrl.style.color = "#f3f4f6";
+        }
     }
 }
 
@@ -211,9 +237,11 @@ function initPasswordScreen() {
 
     const inputs = container.querySelectorAll('input');
     inputs.forEach(inp => {
-        inp.style.backgroundColor = "rgba(255, 255, 255, 0.8)"; 
-        inp.style.borderColor = "rgba(219, 234, 254, 0.8)"; 
-        inp.style.color = "#1f2937";
+        if(document.body.classList.contains('light-theme')) {
+            inp.style.backgroundColor = "rgba(255, 255, 255, 0.8)"; inp.style.borderColor = "rgba(219, 234, 254, 0.8)"; inp.style.color = "#1f2937";
+        } else {
+            inp.style.backgroundColor = "rgba(255, 255, 255, 0.5)"; inp.style.borderColor = "rgba(255, 255, 255, 0.8)"; inp.style.color = "#5c4d41";
+        }
     });
 }
 
@@ -278,13 +306,45 @@ function updateTimeAndTheme() {
     
     const clockEl = document.getElementById('realtime-clock');
     if (clockEl) clockEl.innerText = `${hours}:${minutes}:${seconds} - ${day}/${month}/${year}`;
+    if (isForceTestingTheme) return;
+
+    const currentHour = now.getHours();
+    const body = document.body;
+    const clockIcon = document.getElementById('clock-status-icon');
+    const clockParent = document.getElementById('clock-parent-box');
+    
+    if (currentHour >= 6 && currentHour < 18) {
+        if (!body.classList.contains('light-theme')) {
+            body.classList.add('light-theme');
+            body.classList.remove('dark-theme');
+            if (clockIcon) clockIcon.innerText = "☀️";
+            if (clockParent) {
+                clockParent.classList.remove('bg-black/10', 'border-white/5');
+                clockParent.classList.add('bg-white/80', 'border-purple-100/50');
+            }
+        }
+    } else {
+        if (!body.classList.contains('dark-theme')) {
+            body.classList.add('dark-theme');
+            body.classList.remove('light-theme');
+            if (clockIcon) clockIcon.innerText = "🌙";
+            if (clockParent) {
+                clockParent.classList.remove('bg-white/80', 'border-purple-100/50');
+                clockParent.classList.add('bg-black/10', 'border-white/5');
+            }
+        }
+    }
 }
 setInterval(updateTimeAndTheme, 1000);
 
 function openMusicModal() {
     const inputs = document.querySelectorAll('#modal-music input[type="text"]');
     inputs.forEach(inp => {
-        inp.style.backgroundColor = "rgba(255, 255, 255, 0.9)"; inp.style.borderColor = "#e5e7eb"; inp.style.color = "#1f2937";
+        if(document.body.classList.contains('light-theme')) {
+            inp.style.backgroundColor = "rgba(255, 255, 255, 0.9)"; inp.style.borderColor = "#e5e7eb"; inp.style.color = "#1f2937";
+        } else {
+            inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; inp.style.borderColor = "rgba(255, 255, 255, 0.05)"; inp.style.color = "#f3f4f6";
+        }
     });
     renderTrackList();
     const m = document.getElementById('modal-music'); m.classList.remove('hidden'); m.classList.add('flex');
@@ -305,20 +365,21 @@ function renderTrackList() {
     
     if (searchKeyword) allTracks = allTracks.filter(t => t.title.toLowerCase().includes(searchKeyword));
     if (allTracks.length === 0) {
-        container.innerHTML = `<div class="py-8 text-center text-xs text-gray-400 italic font-medium">Kho nhạc hiện đang trống...</div>`;
+        container.innerHTML = `<div class="py-8 text-center text-xs opacity-40 italic font-medium">Kho nhạc hiện đang trống...</div>`;
         return;
     }
 
     allTracks.forEach(track => {
         const isCurrent = (audio.src === track.url && !audio.paused);
         const item = document.createElement('div');
-        item.className = 'w-full h-14 bg-white/80 border border-purple-100 rounded-2xl flex items-center justify-between px-4 gap-2 shrink-0 shadow-sm';
+        const isLight = document.body.classList.contains('light-theme');
+        item.className = `w-full h-14 border rounded-2xl flex items-center justify-between px-4 gap-2 shrink-0 shadow-sm ${isLight ? 'bg-white/80 border-purple-100' : 'bg-gray-500/5 border-white/5'}`;
         item.innerHTML = `
             <div onclick="playTrack('${track.url}', '${track.title}')" class="flex-1 min-w-0 h-full flex items-center cursor-pointer text-left">
-                <span class="text-sm font-bold truncate ${isCurrent ? 'text-purple-600' : 'text-gray-700'}">${track.title}</span>
+                <span class="text-sm font-bold truncate ${isCurrent ? (isLight ? 'text-purple-600' : 'text-indigo-400') : ''}">${track.title}</span>
             </div>
             <div class="flex items-center gap-1.5 shrink-0">
-                <button onclick="playTrack('${track.url}', '${track.title}')" class="btn-clickable w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-base border border-purple-100">
+                <button onclick="playTrack('${track.url}', '${track.title}')" class="btn-clickable w-10 h-10 rounded-xl flex items-center justify-center text-base border ${isLight ? 'bg-purple-50 border-purple-100' : 'bg-indigo-600/10 border-indigo-500/20'}">
                     ${isCurrent ? '⏸️' : '▶️'}
                 </button>
             </div>`;
@@ -336,26 +397,32 @@ function playTrack(url, name) {
     const quickClearBtn = document.getElementById('quick-clear-btn');
     const miniPlayer = document.getElementById('header-mini-player');
     const wave = document.getElementById('mini-audio-wave');
+    const isLight = document.body.classList.contains('light-theme');
     
     if (audio.src === url && !audio.paused) {
-        audio.pause(); btn.innerText = "🎵"; btn.classList.remove('spin-slow', 'bg-purple-100');
+        audio.pause(); btn.innerText = "🎵"; btn.classList.remove('spin-slow', 'bg-indigo-500/30', 'bg-purple-100');
         if (wave) wave.classList.replace('flex', 'hidden'); 
         statusLabel.innerText = "Trạng thái: Đang dừng phát"; quickStopBtn.innerText = "▶️";
     } else if (audio.src === url && audio.paused) {
         audio.play().then(() => {
-            btn.innerText = "💿"; btn.classList.add('spin-slow', 'bg-purple-100');
+            btn.innerText = "💿"; btn.classList.add('spin-slow', isLight ? 'bg-purple-100' : 'bg-indigo-500/30');
             if (wave) wave.classList.replace('hidden', 'flex'); 
             statusLabel.innerText = `Đang phát: ${name}`; quickStopBtn.innerText = "⏸️";
         });
     } else {
         audio.src = url; savedTrackName = name;
         audio.play().then(() => {
-            btn.innerText = "💿"; btn.classList.add('spin-slow', 'bg-purple-100');
+            btn.innerText = "💿"; btn.classList.add('spin-slow', isLight ? 'bg-purple-100' : 'bg-indigo-500/30');
             if (wave) wave.classList.replace('hidden', 'flex'); 
             statusLabel.innerText = `Đang phát: ${name}`; headerTitle.innerText = name;
             quickStopBtn.innerText = "⏸️"; quickStopBtn.classList.remove('hidden');
             quickMuteBtn.classList.remove('hidden'); quickClearBtn.classList.remove('hidden');
-            miniPlayer.classList.add('bg-purple-50', 'border-purple-200');
+            
+            if (isLight) {
+                miniPlayer.classList.add('bg-purple-50', 'border-purple-200');
+            } else {
+                miniPlayer.classList.add('bg-indigo-500/10', 'border-indigo-500/20');
+            }
         }).catch(() => { showToast("Hãy chạm màn hình rồi chọn lại nhạc nhé!", "error"); });
     }
     renderTrackList();
@@ -368,14 +435,15 @@ function handleQuickPlayPause(event) {
     const statusLabel = document.getElementById('current-track-name');
     const quickStopBtn = document.getElementById('quick-stop-btn');
     const wave = document.getElementById('mini-audio-wave');
+    const isLight = document.body.classList.contains('light-theme');
 
     if (!audio.paused) {
-        audio.pause(); btn.innerText = "🎵"; btn.classList.remove('spin-slow', 'bg-purple-100');
+        audio.pause(); btn.innerText = "🎵"; btn.classList.remove('spin-slow', 'bg-indigo-500/30', 'bg-purple-100');
         if (wave) wave.classList.replace('flex', 'hidden');
         statusLabel.innerText = "Trạng thái: Đang dừng phát"; quickStopBtn.innerText = "▶️";
     } else {
         audio.play().then(() => {
-            btn.innerText = "💿"; btn.classList.add('spin-slow', 'bg-purple-100');
+            btn.innerText = "💿"; btn.classList.add('spin-slow', isLight ? 'bg-purple-100' : 'bg-indigo-500/30');
             if (wave) wave.classList.replace('hidden', 'flex');
             statusLabel.innerText = `Đang phát: ${savedTrackName}`; quickStopBtn.innerText = "⏸️";
         });
@@ -387,8 +455,13 @@ function handleQuickMute(event) {
     if (event) event.stopPropagation(); 
     const audio = document.getElementById('bg-audio');
     const muteBtn = document.getElementById('quick-mute-btn');
-    if (audio.muted) { audio.muted = false; muteBtn.innerText = "🔊"; muteBtn.classList.remove('bg-red-50', 'text-red-500', 'border-red-200'); } 
-    else { audio.muted = true; muteBtn.innerText = "🔇"; muteBtn.classList.add('bg-red-50', 'text-red-500', 'border-red-200'); }
+    if (audio.muted) { 
+        audio.muted = false; muteBtn.innerText = "🔊"; 
+        muteBtn.className = "hidden text-xs w-9 h-9 flex items-center justify-center bg-gray-500/20 text-gray-400 border border-white/10 rounded-xl font-bold active:scale-75 transition shadow-md";
+    } else { 
+        audio.muted = true; muteBtn.innerText = "🔇"; 
+        muteBtn.className = "hidden text-xs w-9 h-9 flex items-center justify-center bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl font-bold active:scale-75 transition shadow-md";
+    }
 }
 
 function handleQuickClear(event) {
@@ -404,11 +477,11 @@ function handleQuickClear(event) {
     const wave = document.getElementById('mini-audio-wave');
 
     audio.pause(); audio.removeAttribute('src'); audio.load();
-    btn.innerText = "🎵"; btn.classList.remove('spin-slow', 'bg-purple-100');
+    btn.innerText = "🎵"; btn.classList.remove('spin-slow', 'bg-indigo-500/30', 'bg-purple-100');
     if (wave) wave.classList.replace('flex', 'hidden');
     statusLabel.innerText = "Trạng thái: Đang dừng phát"; headerTitle.innerText = "Giai điệu không gian";
     quickStopBtn.classList.add('hidden'); quickMuteBtn.classList.add('hidden'); quickClearBtn.classList.add('hidden');
-    miniPlayer.classList.remove('bg-purple-50', 'border-purple-200');
+    miniPlayer.className = "flex items-center gap-2 mt-1.5 bg-black/10 px-3 py-2 rounded-2xl border border-white/5 w-fit shadow-inner max-w-full overflow-hidden transition-all duration-300 cursor-pointer active:scale-95";
     renderTrackList();
 }
 
@@ -497,9 +570,14 @@ function closeSettings() { document.getElementById('modal-settings').classList.r
 function showToast(message, type = 'success') {
     const container = document.getElementById('toast-container'); if (!container) return;
     const toast = document.createElement('div');
-    let colorClass = 'bg-white/95 border-emerald-400 text-emerald-700'; let icon = '✅';
-    if (type === 'error') { colorClass = 'bg-white/95 border-red-400 text-red-600'; icon = '❌'; }
-    toast.className = `${colorClass} border-2 px-6 py-4 rounded-2xl text-sm font-bold flex items-center gap-3 shadow-xl backdrop-blur-md toast-enter pointer-events-auto`;
+    const isLight = document.body.classList.contains('light-theme');
+    let colorClass = isLight ? 'bg-white/95 border-emerald-400 text-emerald-700' : 'bg-emerald-500 border-emerald-400 text-white'; 
+    let icon = '✅';
+    if (type === 'error') { 
+        colorClass = isLight ? 'bg-white/95 border-red-400 text-red-600' : 'bg-red-500 border-red-400 text-white'; 
+        icon = '❌'; 
+    }
+    toast.className = `${colorClass} border-2 px-6 py-4 rounded-2xl text-sm font-bold flex items-center gap-3 shadow-2xl backdrop-blur-md toast-enter pointer-events-auto`;
     toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
     container.appendChild(toast);
     setTimeout(() => { toast.classList.replace('toast-enter', 'toast-leave'); setTimeout(() => toast.remove(), 400); }, 3000);
@@ -523,8 +601,9 @@ function changeMediaSubTab(subtype) { currentMediaSubTab = subtype; updateSubTab
 function changeSocialSubTab(subtype) { currentSocialSubTab = subtype; updateSubTabsUI('social', subtype); loadVault(); }
 
 function updateSubTabsUI(cat, activeSub) {
-    const activeClass = 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all bg-purple-600/10 text-purple-700 border border-purple-200 shadow-sm';
-    const inactiveClass = 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all text-gray-500 sub-tab-inactive-etc';
+    const isLight = document.body.classList.contains('light-theme');
+    const activeClass = isLight ? 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all bg-purple-600/10 text-purple-700 border border-purple-200 shadow-sm' : 'flex-1 py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20';
+    const inactiveClass = `flex-1 py-2.5 rounded-lg text-xs font-bold transition-all ${isLight ? 'text-gray-500 sub-tab-inactive-etc' : 'text-gray-400'}`;
 
     if (cat === 'study') {
         document.getElementById('sub-study-learn').className = activeSub === 'learn' ? activeClass : inactiveClass;
@@ -591,7 +670,11 @@ function openFormModal(type, editId = null) {
         ${studyFileUpload}${fileUpload}`;
 
     fields.querySelectorAll('input[type="text"]').forEach(inp => {
-        inp.style.backgroundColor = "rgba(255, 255, 255, 0.9)"; inp.style.borderColor = "#e5e7eb"; inp.style.color = "#1f2937";
+        if(document.body.classList.contains('light-theme')) {
+            inp.style.backgroundColor = "rgba(255, 255, 255, 0.9)"; inp.style.borderColor = "#e5e7eb"; inp.style.color = "#1f2937";
+        } else {
+            inp.style.backgroundColor = "rgba(17, 24, 39, 0.6)"; inp.style.borderColor = "rgba(255, 255, 255, 0.05)"; inp.style.color = "#f3f4f6";
+        }
     });
 
     const m = document.getElementById('modal-form'); m.classList.remove('hidden'); m.classList.add('flex');
@@ -654,6 +737,7 @@ function loadVault() {
     if (!db) return;
     const container = document.getElementById('vault-list'); container.innerHTML = '';
     const search = document.getElementById('vault-search').value.toLowerCase();
+    const isLight = document.body.classList.contains('light-theme');
     
     let items = vaultItems.filter(i => i.category === currentVaultCategory);
     if (currentVaultCategory === 'study') items = items.filter(i => (i.studyType || 'learn') === currentStudySubTab);
@@ -695,7 +779,7 @@ function loadVault() {
                     <div id="${mediaId}" class="absolute inset-0 flex items-center justify-center text-[11px] text-purple-400 font-bold italic opacity-60">⌛ Đang tải...</div>
                 </div>
                 <div class="flex flex-col gap-2 min-w-0 px-0.5 mt-1">
-                    <h4 class="font-bold text-xs truncate text-gray-800">${item.title}</h4>
+                    <h4 class="font-bold text-xs truncate h4-title-text">${item.title}</h4>
                     
                     <div class="flex items-center w-full pt-2 border-t border-purple-50 gap-2">
                         <button onclick="downloadMediaItem('${item.id}', '${item.title}', '${item.fileType}')" class="btn-clickable flex-1 h-10 flex items-center justify-center bg-purple-100 text-purple-600 rounded-xl font-bold">📥</button>
@@ -733,7 +817,7 @@ function loadVault() {
                     <div class="flex-1 overflow-hidden pr-2 flex items-start gap-2.5">
                         <div class="w-6 h-6 flex items-center justify-center shrink-0 mt-0.5">${iconType}</div>
                         <div class="flex-1 min-w-0">
-                            <h4 class="font-bold text-base truncate text-gray-800">${item.title}</h4>
+                            <h4 class="font-bold text-base truncate h4-title-text">${item.title}</h4>
                             ${item.url ? `<a href="${item.url}" target="_blank" class="text-xs text-purple-600 font-bold mt-1 inline-block bg-purple-50 px-2 py-0.5 rounded-md border border-purple-100/50">🔗 Mở liên kết</a>` : ''}
                         </div>
                     </div>
@@ -746,8 +830,17 @@ function loadVault() {
 
 function filterVault(cat) { 
     currentVaultCategory = cat; 
-    document.querySelectorAll('.vault-filter-btn').forEach(b => { b.classList.remove('bg-pink-600', 'text-white'); b.classList.add('bg-white/70', 'text-gray-600'); });
-    if(document.getElementById(`vbtn-${cat}`)) { document.getElementById(`vbtn-${cat}`).classList.replace('bg-white/70', 'bg-pink-600'); document.getElementById(`vbtn-${cat}`).classList.add('text-white'); }
+    const isLight = document.body.classList.contains('light-theme');
+    
+    document.querySelectorAll('.vault-filter-btn').forEach(b => { 
+        b.classList.remove('bg-pink-600', 'text-white'); 
+        b.classList.add(isLight ? 'bg-white/70' : 'bg-gray-900/60', isLight ? 'text-gray-600' : 'text-gray-400'); 
+    });
+    
+    if(document.getElementById(`vbtn-${cat}`)) { 
+        const btn = document.getElementById(`vbtn-${cat}`);
+        btn.className = "vault-filter-btn h-14 bg-pink-600 rounded-xl flex flex-col items-center justify-center gap-1 active:scale-[0.93] transition-transform text-white font-medium";
+    }
     
     document.getElementById('study-sub-tabs').classList.add('hidden');
     document.getElementById('media-sub-tabs').classList.add('hidden');

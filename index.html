@@ -272,9 +272,9 @@
         <div class="flex flex-col max-w-[75%]">
             <h1 class="text-2xl font-bold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Infinite Vault ✨</h1>
             
-            <div id="clock-parent-box" class="flex items-center gap-1.5 mt-1 bg-black/10 px-2.5 py-1 rounded-xl border border-white/5 w-fit shadow-inner">
-                <span id="clock-status-icon" class="text-xs">🌙</span>
-                <span id="realtime-clock" class="text-[11px] font-bold tracking-wider opacity-80">00:00:00 - 01/01/2026</span>
+            <div id="clock-parent-box" class="flex items-center gap-1 mt-1 bg-black/10 px-2 py-0.5 rounded-lg border border-white/5 w-fit shadow-inner">
+                <span id="clock-status-icon" class="text-[10px]">🌙</span>
+                <span id="realtime-clock" class="text-[9px] font-bold tracking-tight opacity-80">00:00:00 - 01/01/2026</span>
             </div>
         </div>
         
@@ -499,10 +499,6 @@
             </div>
 
             <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-4 text-left flex flex-col items-center">
-                <button onclick="forceToggleThemeTesting()" class="btn-clickable setting-btn-custom w-full h-11 rounded-xl text-xs text-center mb-2">
-                    🛠️ Đổi Giao Diện Nhanh (Đang Test)
-                </button>
-
                 <div class="w-full grid grid-cols-2 gap-2 border-b border-white/5 pb-3">
                     <button onclick="exportAppDataBackup()" class="btn-clickable setting-btn-custom h-10 rounded-xl text-xs flex items-center justify-center">
                         📤 Xuất Sao Lưu
@@ -556,7 +552,6 @@
         let currentBraindumpSubTab = 'image'; 
         let currentFormType = '', currentEditId = null;
         let currentAvatarUrl = null;
-        let isForceTestingTheme = false; 
         let pendingAvatarFile = null;
         let isHolidayGreetingActive = false; 
 
@@ -704,34 +699,6 @@
             reader.readAsText(input.files[0]);
         }
 
-        function forceToggleThemeTesting() {
-            isForceTestingTheme = true;
-            const body = document.body;
-            const clockIcon = document.getElementById('clock-status-icon');
-            const clockParent = document.getElementById('clock-parent-box');
-
-            if (body.classList.contains('dark-theme')) {
-                body.classList.remove('dark-theme');
-                body.classList.add('light-theme');
-                if (clockIcon) clockIcon.innerText = "☀️";
-                if (clockParent) {
-                    clockParent.classList.remove('bg-black/10', 'border-white/5');
-                    clockParent.classList.add('bg-white/60', 'border-black/5');
-                }
-                showToast("Đã ép sang Light Theme!");
-            } else {
-                body.classList.remove('light-theme');
-                body.classList.add('dark-theme');
-                if (clockIcon) clockIcon.innerText = "🌙";
-                if (clockParent) {
-                    clockParent.classList.remove('bg-white/60', 'border-black/5');
-                    clockParent.classList.add('bg-black/10', 'border-white/5');
-                }
-                showToast("Đã ép ngược lại Dark Theme!");
-            }
-            filterVault(currentVaultCategory); 
-        }
-
         function setupPopupInputsTheme() {
             const ctrl = document.getElementById('popup-name-input');
             if (ctrl) {
@@ -846,7 +813,6 @@
             
             const clockEl = document.getElementById('realtime-clock');
             if (clockEl) clockEl.innerText = `${hours}:${minutes}:${seconds} - ${day}/${month}/${year}`;
-            if (isForceTestingTheme) return;
 
             const currentHour = now.getHours();
             const body = document.body;
@@ -989,6 +955,7 @@
             confetti({ particleCount: 125, spread: 75, origin: { y: 0.65 }, colors: ['#f472b6', '#818cf8', '#c084fc'] });
         }
 
+        // Đã đồng bộ sửa tên sub-tab đúng cấu trúc cây thư mục gốc
         function updateSubTabsUI(cat, activeSub) {
             const isLight = document.body.classList.contains('light-theme');
             const activeClass = 'flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate';
@@ -1006,7 +973,7 @@
                     document.getElementById(`sub-media-${t}`).className = t === activeSub ? activeClass : inactiveClass;
                 });
             } else if (cat === 'social') {
-                ['threads', 'indigo-instagram', 'facebook'].forEach(t => {
+                ['threads', 'instagram', 'facebook'].forEach(t => {
                     document.getElementById(`sub-social-${t}`).className = t === activeSub ? activeClass : inactiveClass;
                 });
             } else if (cat === 'braindump') {

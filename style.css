@@ -1,72 +1,79 @@
-/* 🧁 CẤU HÌNH TONE MÀU SÁNG CHỦ ĐẠO (BRIGHT AESTHETIC PRINCESS) */
-body, body.dark-theme, body.light-theme {
+/* 🧁 CẤU HÌNH TONE MÀU SÁNG CHỦ ĐẠO MẶT ĐỊNH (BRIGHT AESTHETIC PRINCESS) */
+body {
     font-family: 'Plus Jakarta Sans', sans-serif; 
     -webkit-tap-highlight-color: transparent; 
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
     font-size: 16px;
-    /* Nền gradient chuyển màu pastel sáng dịu mắt ngọt ngào */
-    background: linear-gradient(135deg, #fef2f2 0%, #f5f3ff 50%, #ecfdf5 100%) !important;
+    transition: background-color 1.5s ease-in-out, color 0.4s ease-in-out; 
+}
+
+/* 🍦 TONE NỀN SÁNG MÀU KEM HỒNG PASTEL DỊU MẮT */
+body.light-theme {
+    background: linear-gradient(135deg, #fef2f2 0%, #f5f3ff 50%, #fdf2f8 100%) !important;
     color: #374151 !important;
-    transition: background 1s ease-in-out;
 }
-
-/* Ép tất cả các nhãn chữ lớn sang màu tối thanh lịch để dễ đọc trên nền sáng */
-h1, h2, h3, h4, .h4-title-text, .text-gray-100, .text-gray-200 {
-    color: #1f2937 !important;
+body.light-theme .text-gray-100,
+body.light-theme .text-gray-200,
+body.light-theme .h4-title-text,
+body.light-theme h1, body.light-theme h2, body.light-theme h3, body.light-theme h4 { 
+    color: #1f2937 !important; 
 }
-
-p, .text-gray-400, .text-gray-500 {
-    color: #4b5563 !important;
+body.light-theme .text-gray-400,
+body.light-theme .text-gray-500,
+body.light-theme p { 
+    color: #4b5563 !important; 
 }
-
-/* 🤍 KÍNH MỜ TRÊN NỀN SÁNG (LIGHT GLASSMORPHISM) */
-.glass {
+body.light-theme .glass {
     background: rgba(255, 255, 255, 0.75) !important;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
+    border-bottom: 1px solid rgba(219, 234, 254, 0.5);
 }
-
-.glass-card {
+body.light-theme .glass-card {
     background: rgba(255, 255, 255, 0.65) !important;
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid rgba(255, 255, 255, 0.7);
-    border-radius: 28px;
     box-shadow: 0 10px 30px -10px rgba(159, 122, 234, 0.12);
 }
-
-/* CÁC THANH TAB CON ĐỂ LỌC NỘI DUNG */
-#study-sub-tabs, #media-sub-tabs, #social-sub-tabs {
-    background: rgba(255, 255, 255, 0.8) !important;
-    border: 1px solid rgba(219, 234, 254, 0.7);
-    box-shadow: inner 0 2px 4px rgba(0,0,0,0.02);
-}
-
-.sub-tab-inactive-etc {
-    color: #6b7280 !important;
-}
-
-/* Ô NHẬP LIỆU SÁNG TRONG SUỐT */
-input[type="text"], input[type="password"], select {
+body.light-theme input[type="text"], body.light-theme input[type="password"], body.light-theme select {
     background-color: rgba(255, 255, 255, 0.9) !important;
-    border: 1px solid #e5e7eb !important;
+    border-color: #e5e7eb !important;
     color: #1f2937 !important;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
 }
-input[type="text"]:focus, input[type="password"]:focus {
-    border-color: #a78bfa !important;
-    background-color: #ffffff !important;
-}
-
-/* BỘ FILTER KHO LƯU TRỮ */
-.vault-filter-btn:not(.bg-pink-600) {
+body.light-theme .vault-filter-btn:not(.bg-pink-600) {
     background: rgba(255, 255, 255, 0.7) !important;
     color: #4b5563 !important;
     border: 1px solid rgba(229, 231, 235, 0.5);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
+}
+body.light-theme #study-sub-tabs, 
+body.light-theme #media-sub-tabs, 
+body.light-theme #social-sub-tabs {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border-color: rgba(219, 234, 254, 0.5);
+}
+body.light-theme .sub-tab-inactive-etc {
+    color: #6b7280 !important;
+}
+
+/* 🕶️ CHẾ ĐỘ TỐI GỐC KHI ÔNG BẤM TEST THỬ */
+body.dark-theme {
+    background-color: #05070a !important;
+    color: #f3f4f6 !important;
+}
+body.dark-theme .glass { 
+    background: rgba(255, 255, 255, 0.02) !important; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
+}
+body.dark-theme .glass-card { 
+    background: rgba(255, 255, 255, 0.04) !important; 
+    border: 1px solid rgba(255, 255, 255, 0.1); 
+}
+body.dark-theme input[type="text"], body.dark-theme input[type="password"], body.dark-theme select {
+    background-color: rgba(17, 24, 39, 0.6) !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    color: #f3f4f6 !important;
 }
 
 .active-tab { 
@@ -75,24 +82,23 @@ input[type="text"]:focus, input[type="password"]:focus {
     border: 1px solid rgba(139, 92, 246, 0.3) !important; 
 }
 
-/* HIỆU ỨNG CHUYỂN ĐỘNG MƯỢT MÀ */
 .tab-slide-fade {
-    animation: tabSlideFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: tabSlideFade 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 @keyframes tabSlideFade {
-    from { opacity: 0; transform: translateY(12px); }
+    from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-.fade-in { animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fadeIn 0.8s ease-out forwards; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 .intro-hide { opacity: 0; pointer-events: none; transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
 
-.toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15) forwards; }
+.toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 .toast-leave { animation: fadeOut 0.3s ease forwards; }
 
-@keyframes slideInUp { from { transform: translateY(120%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes slideInUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
 
 ::-webkit-scrollbar { width: 0px; }
@@ -102,36 +108,35 @@ input[type="text"]:focus, input[type="password"]:focus {
 }
 
 input, select, textarea { font-size: 16px !important; }
-.spin-slow { animation: spin 7s linear infinite; }
+.spin-slow { animation: spin 6s linear infinite; }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 .wave-bar {
-    width: 2.5px;
+    width: 2px;
     height: 3px;
     background-color: #8b5cf6;
     animation: bounceWave 0.6s ease-in-out infinite alternate;
 }
 .wave-bar:nth-child(2) { animation-delay: 0.15s; }
 .wave-bar:nth-child(3) { animation-delay: 0.3s; }
-@keyframes bounceWave { from { height: 3px; } to { height: 14px; } }
+@keyframes bounceWave { from { height: 3px; } to { height: 12px; } }
 
 /* ✨ NỀN PASTEL THƠ MỘNG DÀNH RIÊNG CHO TRANG KHÓA VÀ CHÀO MỪNG */
 #lock-screen, #intro-screen {
     background-color: #fff1f2; 
     background-image: radial-gradient(at 10% 20%, #ffe4e6 0px, transparent 50%), 
-                      radial-gradient(at 85% 15%, #f3e8ff 0px, transparent 50%), 
-                      radial-gradient(at 90% 85%, #e0f2fe 0px, transparent 50%), 
-                      radial-gradient(at 15% 85%, #fdf2f8 0px, transparent 50%);
+                      radial-gradient(at 80% 10%, #f3e8ff 0px, transparent 50%), 
+                      radial-gradient(at 90% 80%, #e0f2fe 0px, transparent 50%), 
+                      radial-gradient(at 10% 90%, #fdf2f8 0px, transparent 50%);
 }
 
 #lock-screen .glass-card, #intro-screen .glass-card {
     background: rgba(255, 255, 255, 0.5) !important;
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    border-radius: 36px; 
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 40px; 
     color: #4b5563 !important; 
-    box-shadow: 0 25px 50px -12px rgba(159, 122, 234, 0.15);
 }
 
 #lock-screen h2, #intro-screen h2 {
@@ -141,21 +146,22 @@ input, select, textarea { font-size: 16px !important; }
 
 .star-dust {
     position: absolute;
-    width: 3px; height: 3px;
+    width: 2px; height: 2px;
     background: #f472b6;
     border-radius: 50%;
     animation: blink-dust 3s infinite ease-in-out;
-    opacity: 0.4;
+    opacity: 0.5;
 }
 @keyframes blink-dust {
-    0%, 100% { transform: scale(0.6); opacity: 0.3; }
-    50% { transform: scale(1.4); opacity: 0.8; box-shadow: 0 0 6px #f472b6; }
+    0%, 100+ { transform: scale(0.5); opacity: 0.3; }
+    50+ { transform: scale(1.5); opacity: 0.9; box-shadow: 0 0 5px #f472b6; }
 }
 
 .btn-clickable {
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .btn-clickable:active {
-    transform: scale(0.96);
-    filter: brightness(0.92);
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(0,0,0,0) !important;
+    filter: brightness(0.85);
 }

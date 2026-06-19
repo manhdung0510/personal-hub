@@ -25,78 +25,80 @@
             transition: background-color 1.5s ease-in-out, color 0.4s ease-in-out; 
         }
 
-        /* 🌸 CẬP NHẬT: GIAO DIỆN TƯƠI SÁNG, TRONG TRẺO VÀ RẠNG RỠ HƠN (GAM MÀU SÁNG PASTEL) */
+        /* 🍦 CHẾ ĐỘ SÁNG: MÀU BE ĐƯỢC NÂNG TÔNG SÁNG HƠN, TƯƠI TẮN VÀ TRONG TRẺO */
         body.light-theme {
-            background-color: #f8fafc !important; /* Nền trắng xanh Slate siêu sáng và sạch sẽ */
-            background-image: radial-gradient(at 0% 0%, #fff1f2 0px, transparent 50%), 
-                              radial-gradient(at 100% 100%, #f0fdf4 0px, transparent 50%); /* Phớt hồng và xanh lá pastel cực nhẹ tạo độ tươi tắn */
-            color: #1e293b !important; /* Chữ màu xám than sang trọng, không bị gắt */
+            background-color: #faf5f0 !important; /* Tông Be-Cream sáng, mịn và không bị trắng xóa */
+            color: #2b221a !important;
         }
         body.light-theme .text-gray-100,
         body.light-theme .text-gray-200,
         body.light-theme .h4-title-text,
         body.light-theme h1, body.light-theme h2, body.light-theme h3, body.light-theme h4 { 
-            color: #0f172a !important; 
+            color: #2b221a !important; 
         }
         body.light-theme .text-gray-400,
         body.light-theme .text-gray-500,
         body.light-theme p { 
-            color: #475569 !important; 
+            color: #5c4d41 !important; 
         }
         body.light-theme .glass {
-            background: rgba(255, 255, 255, 0.85) !important; /* Thanh header trắng trong suốt tinh khôi */
+            background: rgba(250, 245, 240, 0.85) !important;
             backdrop-blur: 16px;
-            border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+            border-bottom: 1px solid rgba(43, 34, 26, 0.08);
         }
         body.light-theme .glass-card {
-            background: #ffffff !important; /* Thẻ màu trắng tuyết sang trọng */
-            border: 1px solid rgba(15, 23, 42, 0.05);
-            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 16px -6px rgba(15, 23, 42, 0.02); /* Đổ bóng mờ nhẹ êm ái */
+            background: #f1e7dd !important; /* Thẻ card màu be ấm, tương phản nhẹ nhàng mượt mà với nền */
+            border: 1px solid rgba(43, 34, 26, 0.06);
+            box-shadow: 0 8px 20px -6px rgba(43, 34, 26, 0.05);
         }
         body.light-theme input[type="text"], body.light-theme input[type="password"], body.light-theme select {
-            background-color: #f8fafc !important;
-            border-color: #e2e8f0 !important;
-            color: #0f172a !important;
+            background-color: #fcf8f5 !important;
+            border-color: #d6ccc2 !important;
+            color: #2b221a !important;
         }
         body.light-theme .vault-filter-btn:not(.bg-pink-600) {
-            background-color: #f1f5f9 !important; /* Nền nút filter xám sáng dịu mắt */
-            color: #475569 !important;
-            border: 1px solid rgba(15, 23, 42, 0.03);
+            background-color: #e8ded4 !important;
+            color: #5c4d41 !important;
+            border: 1px solid rgba(0, 0, 0, 0.02);
         }
         body.light-theme #study-sub-tabs, 
         body.light-theme #media-sub-tabs, 
         body.light-theme #social-sub-tabs {
-            background-color: #f1f5f9 !important;
-            border-color: rgba(15, 23, 42, 0.06);
+            background-color: #e8ded4 !important;
+            border-color: rgba(43, 34, 26, 0.08);
         }
         body.light-theme .sub-tab-inactive-etc {
-            color: #64748b !important;
+            color: #5c4d41 !important;
         }
-        
         body.light-theme .header-action-btn {
-            background-color: rgba(15, 23, 42, 0.04) !important;
-            border-color: rgba(15, 23, 42, 0.1) !important;
+            background-color: rgba(43, 34, 26, 0.06) !important;
+            border-color: rgba(43, 34, 26, 0.15) !important;
         }
 
-        /* ----------------------------------------- */
-
+        /* 🌌 CHẾ ĐỘ TỐI: ĐỔI SANG TÔNG XANH NAVY SÂU THẲM HIỆN ĐẠI VÀ SANG TRỌNG */
         body.dark-theme {
-            background-color: #05070a !important;
+            background-color: #0b132b !important; /* Màu xanh đêm đậm cực mướt */
             color: #f3f4f6 !important;
         }
         body.dark-theme .glass { 
-            background: rgba(255, 255, 255, 0.02); 
+            background: rgba(11, 19, 43, 0.85) !important; 
             border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
         }
         body.dark-theme .glass-card { 
-            background: rgba(255, 255, 255, 0.04); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
+            background: #1c2541 !important; /* Thẻ card xanh Navy sáng hơn để nổi bật thông tin */
+            border: 1px solid rgba(255, 255, 255, 0.08); 
         }
         body.dark-theme input[type="text"], body.dark-theme input[type="password"], body.dark-theme select {
-            background-color: rgba(17, 24, 39, 0.6) !important;
-            border-color: rgba(255, 255, 255, 0.05) !important;
+            background-color: rgba(30, 41, 59, 0.7) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
             color: #f3f4f6 !important;
         }
+        body.dark-theme .vault-filter-btn:not(.bg-pink-600) {
+            background-color: #232d4b !important;
+            color: #94a3b8 !important;
+        }
+
+        /* ----------------------------------------- */
 
         .active-tab { 
             background: rgba(99, 102, 241, 0.2); 
@@ -558,7 +560,7 @@
             // Kiểm tra mốc ngày lễ
             if (date === 19 && month === 6) { // Ngày test hôm nay của ông
                 holidayId = `test_holiday_${year}`;
-                currentTitle = "Ngày Lễ Kỷ Niệm Ngọt Ngào! 🌸";
+                currentTitle = "Ngày Lễ Kỷ Niệm Ngọc Ngào! 🌸";
                 currentMsg = "Chúc mừng ngày đặc biệt của hai chúng mình! Cảm ơn em vì đã luôn đồng hành, chịu đựng và mang đến cho anh những điều tuyệt vời nhất thế gian này. Thương em nhiều lắm! 💕";
                 currentIcon = "💝";
                 hasConfetti = true;
@@ -709,19 +711,6 @@
                 showToast("Đã ép ngược lại Dark Theme!");
             }
             filterVault(currentVaultCategory); 
-        }
-
-        // Bổ sung hàm thêm bài hát thủ công vào danh sách nhạc
-        function addNewTrack() {
-            const titleInput = document.getElementById('track-title-input');
-            const urlInput = document.getElementById('track-url-input');
-            const title = titleInput.value.trim();
-            const url = urlInput.value.trim();
-            if (!title || !url) return showToast("Vui lòng nhập đủ thông tin nhạc!", "error");
-            customTracks.push({ title, url });
-            localStorage.setItem('custom_tracks', JSON.stringify(customTracks));
-            titleInput.value = ''; urlInput.value = '';
-            renderTrackList(); showToast("Đã thêm bài hát!");
         }
 
         function setupPopupInputsTheme() {
@@ -888,6 +877,19 @@
             renderTrackList();
             const m = document.getElementById('modal-music'); m.classList.remove('hidden'); m.classList.add('flex');
             setTimeout(() => document.getElementById('music-card').classList.remove('translate-y-full'), 10);
+        }
+
+        // Bổ sung hàm thêm bài hát thủ công vào danh sách nhạc
+        function addNewTrack() {
+            const titleInput = document.getElementById('track-title-input');
+            const urlInput = document.getElementById('track-url-input');
+            const title = titleInput.value.trim();
+            const url = urlInput.value.trim();
+            if (!title || !url) return showToast("Vui lòng nhập đủ thông tin nhạc!", "error");
+            customTracks.push({ title, url });
+            localStorage.setItem('custom_tracks', JSON.stringify(customTracks));
+            titleInput.value = ''; urlInput.value = '';
+            renderTrackList(); showToast("Đã thêm bài hát!");
         }
 
         function closeMusicModal() {

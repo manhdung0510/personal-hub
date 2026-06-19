@@ -669,40 +669,69 @@
         }
         document.getElementById('modal-info').addEventListener('click', function(e) { if (e.target === this) closeInfoModal(); });
 
-        function exportAppDataBackup() {
-            try {
-                const dataObj = {
-                    app_password: localStorage.getItem('app_password') || "",
-                    user_profile: profileData,
-                    local_vault: vaultItems
-                };
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataObj));
-                const dlAnchor = document.createElement('a');
-                dlAnchor.setAttribute("href", dataStr);
-                dlAnchor.setAttribute("download", `infinite_vault_backup_${new Date().toISOString().slice(0,10)}.json`);
-                document.body.appendChild(dlAnchor);
-                dlAnchor.click();
-                dlAnchor.remove();
-                showToast("Đã xuất file! Hãy chọn lưu tệp vào ứng dụng Tệp/iCloud.");
-            } catch (err) { showToast("Lỗi hệ thống khi sao lưu!", "error"); }
-        }
+        async function exportAppDataBackup() {
+    try {
+        showToast("Đang gom dữ liệu, vui lòng chờ...");
+        const transaction = db.transaction(["mediaFiles"], "readonly");
+        const store = transaction.objectStore("mediaFiles");
+        const allMedia = await new Promise(resolve => {
+            store.getAll().onsuccess = (e) => resolve(e.target.result);
+        });
+
+        // Chuyển Blob sang Base64 để lưu vào JSON
+        const mediaPromises = allMedia.map(item => {
+            return new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve({ id: item.id, data: reader.result });
+                reader.readAsDataURL(item.data);
+            });
+        });
+
+        const encodedMedia = await Promise.all(mediaPromises);
+        const dataObj = {
+            app_password: localStorage.getItem('app_password') || "",
+            user_profile: profileData,
+            local_vault: vaultItems,
+            media_files: encodedMedia // Đây là "kho báu" chứa ảnh/video
+        };
+
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataObj));
+        const dlAnchor = document.createElement('a');
+        dlAnchor.setAttribute("href", dataStr);
+        dlAnchor.setAttribute("download", `vault_backup_full.json`);
+        document.body.appendChild(dlAnchor);
+        dlAnchor.click();
+        dlAnchor.remove();
+        showToast("Sao lưu đầy đủ thành công!");
+    } catch (err) { showToast("Lỗi khi gom dữ liệu!", "error"); }
+}
 
         function importAppDataBackup(input) {
-            if (!input.files || !input.files[0]) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const parsed = JSON.parse(e.target.result);
-                    if (!parsed.local_vault || !Array.isArray(parsed.local_vault)) return showToast("File không đúng định dạng!", "error");
-                    if (parsed.app_password) localStorage.setItem('app_password', parsed.app_password);
-                    vaultItems = parsed.local_vault; localStorage.setItem('local_vault', JSON.stringify(vaultItems));
-                    if (parsed.user_profile) { profileData = parsed.user_profile; localStorage.setItem('user_profile', JSON.stringify(profileData)); }
-                    showToast("Khôi phục thành công! Đang tải lại web...");
-                    setTimeout(() => window.location.reload(), 1500);
-                } catch (err) { showToast("Không thể đọc tệp này!", "error"); }
-            };
-            reader.readAsText(input.files[0]);
-        }
+    if (!input.files || !input.files[0]) return;
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        try {
+            const parsed = JSON.parse(e.target.result);
+            // 1. Lưu lại Text
+            if (parsed.app_password) localStorage.setItem('app_password', parsed.app_password);
+            vaultItems = parsed.local_vault; localStorage.setItem('local_vault', JSON.stringify(vaultItems));
+            if (parsed.user_profile) { profileData = parsed.user_profile; localStorage.setItem('user_profile', JSON.stringify(profileData)); }
+            
+            // 2. Khôi phục Ảnh/Video vào IndexedDB
+            if (parsed.media_files) {
+                for (const item of parsed.media_files) {
+                    const response = await fetch(item.data);
+                    const blob = await response.blob();
+                    await new Promise(resolve => saveMediaToDB(item.id, blob, resolve));
+                }
+            }
+            
+            showToast("Khôi phục hoàn tất! Tải lại trang...");
+            setTimeout(() => window.location.reload(), 1500);
+        } catch (err) { showToast("File bị lỗi hoặc định dạng cũ!", "error"); }
+    };
+    reader.readAsText(input.files[0]);
+}
 
         function setupPopupInputsTheme() {
             const ctrl = document.getElementById('popup-name-input');

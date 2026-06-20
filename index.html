@@ -1224,6 +1224,55 @@
         window.addEventListener('DOMContentLoaded', () => { 
             updateTimeAndTheme(); initPasswordScreen(); filterVault('wishlist'); 
         });
+        let appLogOutTimer = null;
+
+// TỰ ĐỘNG KHÓA MÀN HÌNH CÓ THỜI GIAN CHỜ (1 PHÚT)
+document.addEventListener('visibilitychange', () => {
+    const hasPassword = localStorage.getItem('app_password');
+    if (!hasPassword) return; // Nếu chưa cài pass thì bỏ qua
+
+    if (document.visibilityState === 'hidden') {
+        // Khi cô ấy thoát ra ngoài, bắt đầu đếm ngược 60 giây (60000 ms)
+        appLogOutTimer = setTimeout(() => {
+            // Nếu quá 1 phút mà chưa quay lại, tiến hành dựng màn hình khóa
+            if (!document.getElementById('lock-screen')) {
+                const lockDiv = document.createElement('div');
+                lockDiv.id = 'lock-screen';
+                lockDiv.className = 'fixed inset-0 z-[1005] flex flex-col items-center justify-center text-center px-4 transition-all duration-500';
+                lockDiv.innerHTML = `
+                    <div class="star-dust" style="top:10%; left:20%;"></div>
+                    <div class="star-dust" style="top:25%; right:15%; animation-delay: 0.5s;"></div>
+                    <div class="star-dust" style="top:70%; left:10%; animation-delay: 1.2s;"></div>
+                    <div class="star-dust" style="top:85%; right:25%; animation-delay: 0.8s;"></div>
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div class="w-80 h-80 bg-pink-500/10 rounded-full blur-[100px] -translate-x-10 -translate-y-10"></div>
+                        <div class="w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px] translate-x-10 translate-y-10"></div>
+                    </div>
+                    <div class="glass-card w-full max-w-md sm:max-w-sm p-8 space-y-6 shadow-2xl relative z-10 fade-in flex flex-col items-center">
+                        <div class="text-5xl drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">🔒</div>
+                        <div class="space-y-1.5">
+                            <h2 id="lock-title" class="text-2xl font-black bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Không Gian Bảo Mật</h2>
+                            <p id="lock-desc" class="text-xs text-gray-700 font-medium">Vui lòng nhập mật mã để truy cập mật thất</p>
+                        </div>
+                        <div class="w-full space-y-3 pt-2" id="lock-inputs-container"></div>
+                        <button onclick="checkOrSetPassword()" class="h-14 w-full bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white rounded-2xl font-extrabold text-sm shadow-xl shadow-indigo-600/20 active:scale-[0.96] transition-all">
+                            Xác Nhận Nhập 🔑
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(lockDiv);
+            }
+            initPasswordScreen();
+        }, 60000); // 60000 mili-giây = 1 phút. Ông có thể sửa thành 30000 nếu muốn đổi thành 30 giây.
+        
+    } else if (document.visibilityState === 'visible') {
+        // Nếu cô ấy quay lại app TRƯỚC 1 phút, hủy lệnh đếm ngược, không khóa nữa
+        if (appLogOutTimer) {
+            clearTimeout(appLogOutTimer);
+            appLogOutTimer = null;
+        }
+    }
+});
     </script>
 </body>
 </html>

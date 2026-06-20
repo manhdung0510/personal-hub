@@ -337,7 +337,7 @@
         </div>
     </div>
 
-    <main class="flex-1 overflow-y-auto scroll-container px-5 py-6 space-y-8 pb-32">
+    <main id="main-scroll-wrapper" class="flex-1 overflow-y-auto scroll-container px-5 py-6 space-y-8 pb-32">
         <section id="tab-vault" class="tab-content space-y-6">
             
             <div class="glass-card p-6 rounded-3xl flex items-center justify-between gap-4 shadow-md fade-in">
@@ -366,7 +366,7 @@
             </div>
             
             <div class="relative">
-                <input type="text" id="vault-search" oninput="loadVault()" placeholder="🔍 Tìm nhanh trong kho..." class="w-full h-14 border rounded-2xl px-5 text-sm outline-none focus:border-pink-500 transition-all shadow-inner">
+                <input type="text" id="vault-search" oninput="resetPaginationAndLoad()" placeholder="🔍 Tìm nhanh trong kho..." class="w-full h-14 border rounded-2xl px-5 text-sm outline-none focus:border-pink-500 transition-all shadow-inner">
             </div>
             
             <div class="grid grid-cols-5 gap-1">
@@ -519,6 +519,11 @@
         let pendingAvatarFile = null;
         let isHolidayGreetingActive = false; 
 
+        // BIẾN CHO PHÂN TRANG (PAGINATION / LAZY LOAD) TOÀN DIỆN KHÔNG LAG
+        let currentPageItemLimit = 12; // Mỗi lần load tối đa 12 mục
+        let currentLoadedCount = 12;
+        let trackedBlobUrls = {}; // Theo dõi và giải phóng bộ nhớ đệm ảo
+
         const starMessages = ["Mong ngày hôm nay sẽ dịu dàng với bạn.", "Đừng lo lắng quá, mọi chuyện rồi sẽ ổn thôi mà."];
 
         function openLoveLetter() {
@@ -637,6 +642,10 @@
         }
 
         function initPasswordScreen() {
+            if(document.getElementById('lock-pwd-1')) document.getElementById('lock-pwd-1').value = "";
+            if(document.getElementById('lock-pwd-2')) document.getElementById('lock-pwd-2').value = "";
+            if(document.getElementById('lock-pwd-input')) document.getElementById('lock-pwd-input').value = "";
+
             const hasPassword = localStorage.getItem('app_password');
             const container = document.getElementById('lock-inputs-container');
             const title = document.getElementById('lock-title');
@@ -693,13 +702,13 @@
         function unlockApp() {
             const lockScreen = document.getElementById('lock-screen');
             if (lockScreen) {
-                const isHolidayToday = runHolidayRoutineInternal();
-                loadProfileImages();
                 lockScreen.classList.add('opacity-0', 'pointer-events-none');
                 setTimeout(() => {
                     lockScreen.remove();
                     const intro = document.getElementById('intro-screen');
                     if (intro) {
+                        const isHolidayToday = runHolidayCheckRoutine();
+                        loadProfileImages();
                         if (isHolidayToday) {
                             setTimeout(() => {
                                 intro.classList.replace('hidden', 'flex');
@@ -711,13 +720,11 @@
                         } else {
                             intro.remove();
                         }
+                    } else {
+                        loadProfileImages();
                     }
                 }, 500);
             }
-        }
-
-        function runHolidayRoutineInternal() {
-            return runHolidayCheckRoutine();
         }
 
         function updateTimeAndTheme() {
@@ -854,11 +861,11 @@
             closeSettings();
         }
 
-        function changeWishlistSubTab(subtype) { currentWishlistSubTab = subtype; updateSubTabsUI('wishlist', subtype); loadVault(); }
-        function changeStudySubTab(subtype) { currentStudySubTab = subtype; updateSubTabsUI('study', subtype); loadVault(); }
-        function changeMediaSubTab(subtype) { currentMediaSubTab = subtype; updateSubTabsUI('media', subtype); loadVault(); }
-        function changeSocialSubTab(subtype) { currentSocialSubTab = subtype; updateSubTabsUI('social', subtype); loadVault(); }
-        function changeBraindumpSubTab(subtype) { currentBraindumpSubTab = subtype; updateSubTabsUI('braindump', subtype); loadVault(); }
+        function changeWishlistSubTab(subtype) { currentWishlistSubTab = subtype; updateSubTabsUI('wishlist', subtype); resetPaginationAndLoad(); }
+        function changeStudySubTab(subtype) { currentStudySubTab = subtype; updateSubTabsUI('study', subtype); resetPaginationAndLoad(); }
+        function changeMediaSubTab(subtype) { currentMediaSubTab = subtype; updateSubTabsUI('media', subtype); resetPaginationAndLoad(); }
+        function changeSocialSubTab(subtype) { currentSocialSubTab = subtype; updateSubTabsUI('social', subtype); resetPaginationAndLoad(); }
+        function changeBraindumpSubTab(subtype) { currentBraindumpSubTab = subtype; updateSubTabsUI('braindump', subtype); resetPaginationAndLoad(); }
 
         function openSettings() {
             document.getElementById('modal-settings').classList.replace('hidden', 'flex'); 
@@ -1010,22 +1017,31 @@
             if (currentVaultCategory === 'braindump' && !currentEditId) {
                 const file = document.getElementById('add-vault-file').files[0];
                 if (!file) return showToast("Chưa chọn file!", "error");
+                
+                // GIỚI HẠN AN TOÀN TRÁNH TRÀN BỘ NHỚ LÚC UP: 40MB
+                if (file.size > 40 * 1024 * 1024) {
+                    return showToast("Tệp quá lớn (Tối đa 40MB) để tránh lỗi trình duyệt!", "error");
+                }
+
                 const itemId = uuid();
                 saveMediaToDB(itemId, file, () => {
-                    vaultItems.push({ id: itemId, title, isIndexedDB: true, fileType: file.type, category: 'braindump', secretType: currentBraindumpSubTab });
+                    vaultItems.unshift({ id: itemId, title, isIndexedDB: true, fileType: file.type, category: 'braindump', secretType: currentBraindumpSubTab });
                     finalizeSubmit();
                 });
             } else if (currentVaultCategory === 'study' && !currentEditId) {
                 const sFile = document.getElementById('add-study-file').files[0];
                 if (sFile) {
+                    if (sFile.size > 40 * 1024 * 1024) {
+                        return showToast("Tệp quá lớn (Tối đa 40MB) để bảo mật hệ thống!", "error");
+                    }
                     const itemId = uuid();
                     saveMediaToDB(itemId, sFile, () => {
-                        vaultItems.push({ id: itemId, title, isIndexedDB: true, fileType: sFile.type, fileName: sFile.name, category: 'study', studyType: currentStudySubTab });
+                        vaultItems.unshift({ id: itemId, title, isIndexedDB: true, fileType: sFile.type, fileName: sFile.name, category: 'study', studyType: currentStudySubTab });
                         finalizeSubmit();
                     });
                 } else {
                     const url = document.getElementById('add-vault-url').value.trim();
-                    vaultItems.push({ id: uuid(), title, url, category: 'study', studyType: currentStudySubTab });
+                    vaultItems.unshift({ id: uuid(), title, url, category: 'study', studyType: currentStudySubTab });
                     finalizeSubmit();
                 }
             } else {
@@ -1041,17 +1057,41 @@
                     if (currentVaultCategory === 'wishlist') itemObj.wishlistType = currentWishlistSubTab;
                     if (currentVaultCategory === 'media') itemObj.mediaType = currentMediaSubTab;
                     if (currentVaultCategory === 'social') itemObj.socialType = currentSocialSubTab;
-                    vaultItems.push(itemObj);
+                    vaultItems.unshift(itemObj);
                 }
                 finalizeSubmit();
             }
         }
 
-        function finalizeSubmit() { localStorage.setItem('local_vault', JSON.stringify(vaultItems)); loadVault(); closeFormModal(); showToast("Đã ghi nhớ!"); }
+        // SỬA LẠI HÀM NÀY: Reset phân trang khi thêm mới dữ liệu
+        function finalizeSubmit() { 
+            localStorage.setItem('local_vault', JSON.stringify(vaultItems)); 
+            resetPaginationAndLoad();
+            closeFormModal(); 
+            showToast("Đã ghi nhớ!"); 
+        }
 
+        // CHỨC NĂNG MỚI: Reset bộ đếm phân trang khi chuyển tab hoặc tìm kiếm
+        function resetPaginationAndLoad() {
+            currentLoadedCount = currentPageItemLimit;
+            
+            // Giải phóng toàn bộ Blob URL cũ tránh rò rỉ dung lượng RAM của máy
+            for (let key in trackedBlobUrls) {
+                if (trackedBlobUrls[key]) {
+                    URL.revokeObjectURL(trackedBlobUrls[key]);
+                }
+            }
+            trackedBlobUrls = {};
+            
+            loadVault();
+            // Cuộn mượt lên trên đầu
+            document.getElementById('main-scroll-wrapper').scrollTop = 0;
+        }
+
+        // SỬA ĐỔI TOÀN DIỆN: Hàm load dữ liệu áp dụng Infinite Scroll & Lazy Load cấu trúc cực khỏe
         function loadVault() {
             if (!db) return;
-            const container = document.getElementById('vault-list'); container.innerHTML = '';
+            const container = document.getElementById('vault-list');
             const search = document.getElementById('vault-search').value.toLowerCase();
             
             let items = vaultItems.filter(i => i.category === currentVaultCategory);
@@ -1064,6 +1104,7 @@
             if(search) items = items.filter(i => i.title.toLowerCase().includes(search));
             
             if(items.length === 0) {
+                container.innerHTML = '';
                 container.removeAttribute('class'); container.className = 'space-y-4 tab-slide-fade';
                 let msg = "CHƯA LƯU LIÊN KẾT NÀO";
                 if (currentVaultCategory === 'wishlist') {
@@ -1085,10 +1126,17 @@
                 return;
             }
 
+            // CHỈ LẤY ĐÚNG SỐ LƯỢNG PHÂN TRANG (Ví dụ 12 cái đầu tiên)
+            let paginatedItems = items.slice(0, currentLoadedCount);
+
+            // Giữ cấu trúc Grid cho Secret và List cho các tab khác
             container.removeAttribute('class');
             container.className = (currentVaultCategory === 'braindump') ? 'grid grid-cols-2 gap-3 tab-slide-fade' : 'space-y-4 tab-slide-fade';
 
-            items.forEach(item => {
+            // Tạo fragment để cập nhật DOM 1 lần duy nhất, tránh lag giật giao diện
+            let fragment = document.createDocumentFragment();
+
+            paginatedItems.forEach(item => {
                 let card = document.createElement('div');
                 if (currentVaultCategory === 'braindump') {
                     card.className = 'glass-card p-3 rounded-2xl flex flex-col justify-between gap-3 relative overflow-hidden group shadow-md';
@@ -1106,19 +1154,29 @@
                                 <button onclick="deleteVaultItem('${item.id}')" class="flex-1 h-10 flex items-center justify-center bg-red-500/10 text-red-400 rounded-xl font-bold active:scale-95 transition">✕</button>
                             </div>
                         </div>`;
-                    container.appendChild(card);
+                    fragment.appendChild(card);
                     
-                    getMediaFromDB(item.id, (blob) => {
-                        const el = document.getElementById(mediaId);
-                        if (el) {
-                            if (blob) {
-                                const url = URL.createObjectURL(blob);
-                                el.outerHTML = item.fileType.startsWith('video/') ? `<video src="${url}" controls class="w-full h-full object-cover" playsinline></video>` : `<img src="${url}" class="w-full h-full object-cover">`;
-                            } else {
-                                el.innerHTML = `<div class="flex flex-col items-center opacity-40"><span class="text-xl">⚠️</span><span class="text-[9px]">Thiếu file gốc</span></div>`;
+                    // CHỈ LẤY FILE KHI ĐƯỢC HIỂN THỊ (LAZY LOAD FILE TỪ DATABASE)
+                    setTimeout(() => {
+                        if (!trackedBlobUrls[item.id]) {
+                            getMediaFromDB(item.id, (blob) => {
+                                const el = document.getElementById(mediaId);
+                                if (el && blob) {
+                                    const url = URL.createObjectURL(blob);
+                                    trackedBlobUrls[item.id] = url; // Lưu vết để xóa sau
+                                    el.outerHTML = item.fileType.startsWith('video/') ? `<video src="${url}" controls class="w-full h-full object-cover" playsinline preload="metadata"></video>` : `<img src="${url}" class="w-full h-full object-cover" loading="lazy">`;
+                                } else if (el) {
+                                    el.innerHTML = `<div class="flex flex-col items-center opacity-40"><span class="text-xl">⚠️</span><span class="text-[9px]">Thiếu file gốc</span></div>`;
+                                }
+                            });
+                        } else {
+                            const el = document.getElementById(mediaId);
+                            if (el) {
+                                el.outerHTML = item.fileType.startsWith('video/') ? `<video src="${trackedBlobUrls[item.id]}" controls class="w-full h-full object-cover" playsinline></video>` : `<img src="${trackedBlobUrls[item.id]}" class="w-full h-full object-cover">`;
                             }
                         }
-                    });
+                    }, 50);
+
                 } else {
                     card.className = 'glass-card p-5 rounded-3xl flex flex-col gap-4';
                     let buttonsHTML = `
@@ -1154,11 +1212,52 @@
                             </div>
                             <div class="flex items-center gap-3 shrink-0">${buttonsHTML}</div>
                         </div>`;
-                    container.appendChild(card);
+                    fragment.appendChild(card);
                 }
             });
+
+            container.innerHTML = '';
+            container.appendChild(fragment);
+
+            // THÊM NÚT TẢI THÊM NẾU CÒN PHẦN TỬ PHÍA SAU
+            if (items.length > currentLoadedCount) {
+                let loadMoreDiv = document.createElement('div');
+                loadMoreDiv.className = 'col-span-2 pt-4 pb-2 text-center w-full';
+                loadMoreDiv.innerHTML = `
+                    <button onclick="triggerLoadNextPage()" class="w-full py-3.5 bg-gray-500/10 border border-white/5 rounded-2xl text-xs font-bold opacity-80 active:scale-95 transition-all">
+                        Xem Thêm Khoảnh Khắc Phía Trước 📜
+                    </button>
+                `;
+                container.appendChild(loadMoreDiv);
+            }
         }
 
+        // CHỨC NĂNG MỚI: Kích hoạt tải trang tiếp theo khi cô ấy ấn nút hoặc cuộn
+        function triggerLoadNextPage() {
+            currentLoadedCount += currentPageItemLimit;
+            loadVault();
+        }
+
+        // LẮNG NGHE SỰ KIỆN CUỘN TỰ ĐỘNG (INFINITE SCROLL) CỰC KỲ THÔNG MINH
+        document.getElementById('main-scroll-wrapper').addEventListener('scroll', function() {
+            // Khi cuộn gần sát đáy 80px, tự động gọi xem thêm dữ liệu
+            if (this.scrollTop + this.clientHeight >= this.scrollHeight - 80) {
+                const search = document.getElementById('vault-search').value.toLowerCase();
+                let items = vaultItems.filter(i => i.category === currentVaultCategory);
+                if (currentVaultCategory === 'wishlist') items = items.filter(i => (i.wishlistType || 'online') === currentWishlistSubTab);
+                if (currentVaultCategory === 'study') items = items.filter(i => (i.studyType || 'learn') === currentStudySubTab);
+                if (currentVaultCategory === 'media') items = items.filter(i => (i.mediaType || 'movie') === currentMediaSubTab);
+                if (currentVaultCategory === 'social') items = items.filter(i => (i.socialType || 'threads') === currentSocialSubTab);
+                if (currentVaultCategory === 'braindump') items = items.filter(i => (i.secretType || 'image') === currentBraindumpSubTab);
+                if(search) items = items.filter(i => i.title.toLowerCase().includes(search));
+
+                if (items.length > currentLoadedCount) {
+                    triggerLoadNextPage();
+                }
+            }
+        });
+
+        // SỬA LẠI HÀM NÀY: Gọi reset để tối ưu RAM hoàn chỉnh khi chuyển danh mục chính
         function filterVault(cat) { 
             currentVaultCategory = cat; 
             document.querySelectorAll('.vault-filter-btn').forEach(b => { b.classList.replace('bg-pink-600', 'bg-gray-900/60'); b.classList.add('text-gray-400'); });
@@ -1176,13 +1275,20 @@
             else if (cat === 'social') { document.getElementById('social-sub-tabs').classList.replace('hidden', 'flex'); updateSubTabsUI('social', currentSocialSubTab); }
             else if (cat === 'braindump') { document.getElementById('braindump-sub-tabs').classList.replace('hidden', 'flex'); updateSubTabsUI('braindump', currentBraindumpSubTab); }
             
-            loadVault(); 
+            resetPaginationAndLoad();
         }
 
         let confirmCallback = null;
         function deleteVaultItem(id) {
             confirmCallback = () => {
                 if (vaultItems.find(i => i.id === id)?.isIndexedDB) deleteMediaFromDB(id);
+                
+                // Giải phóng bộ nhớ đệm ảo của file bị xóa ngay lập tức
+                if (trackedBlobUrls[id]) {
+                    URL.revokeObjectURL(trackedBlobUrls[id]);
+                    delete trackedBlobUrls[id];
+                }
+
                 vaultItems = vaultItems.filter(i => i.id !== id); localStorage.setItem('local_vault', JSON.stringify(vaultItems));
                 loadVault(); showToast("Đã xóa vĩnh viễn!");
             };
@@ -1198,7 +1304,7 @@
             let database = e.target.result;
             if (!database.objectStoreNames.contains("mediaFiles")) database.createObjectStore("mediaFiles", { keyPath: "id" });
         };
-        dbRequest.onsuccess = function(e) { db = e.target.result; loadVault(); loadProfileImages(); };
+        dbRequest.onsuccess = function(e) { db = e.target.result; resetPaginationAndLoad(); loadProfileImages(); };
 
         function saveMediaToDB(id, blobData, callback) {
             let transaction = db.transaction(["mediaFiles"], "readwrite");
@@ -1224,55 +1330,56 @@
         window.addEventListener('DOMContentLoaded', () => { 
             updateTimeAndTheme(); initPasswordScreen(); filterVault('wishlist'); 
         });
+        
         let appLogOutTimer = null;
 
-// TỰ ĐỘNG KHÓA MÀN HÌNH CÓ THỜI GIAN CHỜ (1 PHÚT)
-document.addEventListener('visibilitychange', () => {
-    const hasPassword = localStorage.getItem('app_password');
-    if (!hasPassword) return; // Nếu chưa cài pass thì bỏ qua
+        // TỰ ĐỘNG KHÓA MÀN HÌNH CÓ THỜI GIAN CHỜ (1 PHÚT)
+        document.addEventListener('visibilitychange', () => {
+            const hasPassword = localStorage.getItem('app_password');
+            if (!hasPassword) return; // Nếu chưa cài pass thì bỏ qua
 
-    if (document.visibilityState === 'hidden') {
-        // Khi cô ấy thoát ra ngoài, bắt đầu đếm ngược 60 giây (60000 ms)
-        appLogOutTimer = setTimeout(() => {
-            // Nếu quá 1 phút mà chưa quay lại, tiến hành dựng màn hình khóa
-            if (!document.getElementById('lock-screen')) {
-                const lockDiv = document.createElement('div');
-                lockDiv.id = 'lock-screen';
-                lockDiv.className = 'fixed inset-0 z-[1005] flex flex-col items-center justify-center text-center px-4 transition-all duration-500';
-                lockDiv.innerHTML = `
-                    <div class="star-dust" style="top:10%; left:20%;"></div>
-                    <div class="star-dust" style="top:25%; right:15%; animation-delay: 0.5s;"></div>
-                    <div class="star-dust" style="top:70%; left:10%; animation-delay: 1.2s;"></div>
-                    <div class="star-dust" style="top:85%; right:25%; animation-delay: 0.8s;"></div>
-                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div class="w-80 h-80 bg-pink-500/10 rounded-full blur-[100px] -translate-x-10 -translate-y-10"></div>
-                        <div class="w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px] translate-x-10 translate-y-10"></div>
-                    </div>
-                    <div class="glass-card w-full max-w-md sm:max-w-sm p-8 space-y-6 shadow-2xl relative z-10 fade-in flex flex-col items-center">
-                        <div class="text-5xl drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">🔒</div>
-                        <div class="space-y-1.5">
-                            <h2 id="lock-title" class="text-2xl font-black bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Không Gian Bảo Mật</h2>
-                            <p id="lock-desc" class="text-xs text-gray-700 font-medium">Vui lòng nhập mật mã để truy cập mật thất</p>
-                        </div>
-                        <div class="w-full space-y-3 pt-2" id="lock-inputs-container"></div>
-                        <button onclick="checkOrSetPassword()" class="h-14 w-full bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white rounded-2xl font-extrabold text-sm shadow-xl shadow-indigo-600/20 active:scale-[0.96] transition-all">
-                            Xác Nhận Nhập 🔑
-                        </button>
-                    </div>
-                `;
-                document.body.appendChild(lockDiv);
+            if (document.visibilityState === 'hidden') {
+                // Khi cô ấy thoát ra ngoài, bắt đầu đếm ngược 60 giây (60000 ms)
+                appLogOutTimer = setTimeout(() => {
+                    // Nếu quá 1 phút mà chưa quay lại, tiến hành dựng màn hình khóa
+                    if (!document.getElementById('lock-screen')) {
+                        const lockDiv = document.createElement('div');
+                        lockDiv.id = 'lock-screen';
+                        lockDiv.className = 'fixed inset-0 z-[1005] flex flex-col items-center justify-center text-center px-4 transition-all duration-500';
+                        lockDiv.innerHTML = `
+                            <div class="star-dust" style="top:10%; left:20%;"></div>
+                            <div class="star-dust" style="top:25%; right:15%; animation-delay: 0.5s;"></div>
+                            <div class="star-dust" style="top:70%; left:10%; animation-delay: 1.2s;"></div>
+                            <div class="star-dust" style="top:85%; right:25%; animation-delay: 0.8s;"></div>
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <div class="w-80 h-80 bg-pink-500/10 rounded-full blur-[100px] -translate-x-10 -translate-y-10"></div>
+                                <div class="w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px] translate-x-10 translate-y-10"></div>
+                            </div>
+                            <div class="glass-card w-full max-w-md sm:max-w-sm p-8 space-y-6 shadow-2xl relative z-10 fade-in flex flex-col items-center">
+                                <div class="text-5xl drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">🔒</div>
+                                <div class="space-y-1.5">
+                                    <h2 id="lock-title" class="text-2xl font-black bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Không Gian Bảo Mật</h2>
+                                    <p id="lock-desc" class="text-xs text-gray-700 font-medium">Vui lòng nhập mật mã để truy cập mật thất</p>
+                                </div>
+                                <div class="w-full space-y-3 pt-2" id="lock-inputs-container"></div>
+                                <button onclick="checkOrSetPassword()" class="h-14 w-full bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white rounded-2xl font-extrabold text-sm shadow-xl shadow-indigo-600/20 active:scale-[0.96] transition-all">
+                                    Xác Nhận Nhập 🔑
+                                </button>
+                            </div>
+                        `;
+                        document.body.appendChild(lockDiv);
+                    }
+                    initPasswordScreen();
+                }, 60000); 
+                
+            } else if (document.visibilityState === 'visible') {
+                // Nếu cô ấy quay lại app TRƯỚC 1 phút, hủy lệnh đếm ngược, không khóa nữa
+                if (appLogOutTimer) {
+                    clearTimeout(appLogOutTimer);
+                    appLogOutTimer = null;
+                }
             }
-            initPasswordScreen();
-        }, 60000); // 60000 mili-giây = 1 phút. Ông có thể sửa thành 30000 nếu muốn đổi thành 30 giây.
-        
-    } else if (document.visibilityState === 'visible') {
-        // Nếu cô ấy quay lại app TRƯỚC 1 phút, hủy lệnh đếm ngược, không khóa nữa
-        if (appLogOutTimer) {
-            clearTimeout(appLogOutTimer);
-            appLogOutTimer = null;
-        }
-    }
-});
+        });
     </script>
 </body>
 </html>

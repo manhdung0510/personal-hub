@@ -284,40 +284,9 @@
         </div>
         
         <div class="flex items-center gap-2 shrink-0">
-            <button onclick="openInfoModal()" class="header-action-btn w-11 h-11 flex items-center justify-center text-xl bg-white/5 border border-white/10 rounded-xl active:scale-90 transition-transform">💡</button>
             <button onclick="openSettings()" class="header-action-btn w-11 h-11 flex items-center justify-center text-2xl bg-white/5 border border-white/10 rounded-xl active:scale-90 transition-transform">⚙️</button>
         </div>
     </header>
-
-    <div id="modal-info" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-end justify-center z-[1020] transition-all duration-300">
-        <div class="glass-card w-full rounded-t-[40px] p-6 pb-12 space-y-5 shadow-2xl transform translate-y-full transition-transform max-h-[85vh] flex flex-col overflow-hidden" id="info-card">
-            <div class="w-12 h-1.5 bg-gray-700 rounded-full mx-auto mb-1 shrink-0"></div>
-            <div class="text-center space-y-1 shrink-0">
-                <h3 class="text-xl font-bold text-gray-100">Cẩm Nang Sử Dụng 💡</h3>
-                <p class="text-xs text-indigo-400 italic font-medium">Hướng dẫn bảo vệ dữ liệu trên thiết bị</p>
-            </div>
-            <div class="flex-1 overflow-y-auto pr-1 space-y-4 text-sm leading-relaxed text-left scroll-container p-2 bg-black/20 rounded-2xl border border-white/5">
-                <div class="space-y-1.5">
-                    <h4 class="font-bold text-indigo-400 flex items-center gap-1.5">🔒 1. Cơ chế lưu trữ cục bộ</h4>
-                    <p class="opacity-80 text-xs">Mọi thông tin gồm hình ảnh, video, danh sách shopping, tài liệu học tập và mật mã đều được lưu trữ trực tiếp và duy nhất trên bộ nhớ máy bạn, hoàn toàn không đẩy lên mạng nên bảo mật an toàn tuyệt đối.</p>
-                </div>
-                <div class="space-y-1.5 border-t border-white/5 pt-3">
-                    <h4 class="font-bold text-pink-400 flex items-center gap-1.5">⚠️ 2. Làm thế nào để không mất dữ liệu?</h4>
-                    <p class="opacity-80 text-xs">Vì ứng dụng lưu hoàn toàn trên máy, bạn **không được** chọn tính năng *"Xóa lịch sử và dữ liệu trang web"* trong cài đặt trình duyệt (Safari/Chrome), nếu không toàn bộ bộ nhớ mật thất sẽ bị dọn sạch vĩnh viễn.</p>
-                </div>
-                <div class="space-y-1.5 border-t border-white/5 pt-3">
-                    <h4 class="font-bold text-emerald-400 flex items-center gap-1.5">📱 3. Cách sao lưu dữ liệu khi thay máy</h4>
-                    <p class="opacity-80 text-xs">Khi bạn chuẩn bị đổi điện thoại mới hoặc muốn phòng hờ mất dữ liệu, hãy làm theo các bước sau:</p>
-                    <ol class="list-decimal pl-4 text-xs opacity-70 space-y-1">
-                        <li>Mở phần Cài đặt (⚙️) của ứng dụng này lên.</li>
-                        <li>Chạm vào nút **"📤 Xuất Sao Lưu"** để tải file dữ liệu về máy, chọn lưu file vào app Tệp hoặc iCloud/Drive.</li>
-                        <li>Trên thiết bị mới, mở ứng dụng lên, truy cập vào Cài đặt (⚙️) -> nhấn nút **"📥 Khôi Phục"** và chọn tệp tin `.json` vừa lưu lên là mọi kỷ niệm sẽ quay trở lại 100%!</li>
-                    </ol>
-                </div>
-            </div>
-            <button onclick="closeInfoModal()" class="h-12 w-full bg-indigo-600 rounded-2xl font-bold text-white text-sm active:scale-95 transition shrink-0 shadow-lg">Đã hiểu rõ! 👌</button>
-        </div>
-    </div>
 
     <div id="modal-profile-edit" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 z-[1010] transition-all duration-300">
         <div class="glass-card w-full max-w-md sm:max-w-sm rounded-[32px] p-6 space-y-5 text-center shadow-2xl">
@@ -504,24 +473,14 @@
             </div>
 
             <div class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-4 text-left flex flex-col items-center">
-                <div class="w-full grid grid-cols-2 gap-2 border-b border-white/5 pb-3">
-                    <button onclick="exportAppDataBackup()" class="btn-clickable setting-btn-custom h-10 rounded-xl text-xs flex items-center justify-center">
-                        📤 Xuất Sao Lưu
-                    </button>
-                    <div class="btn-clickable relative setting-btn-custom h-10 rounded-xl text-xs flex items-center justify-center cursor-pointer">
-                        <input type="file" id="import-backup-file-picker" accept=".json" class="absolute inset-0 opacity-0 cursor-pointer" onchange="importAppDataBackup(this)">
-                        📥 Khôi Phục
-                    </div>
-                </div>
-
                 <div class="w-full mt-2 space-y-2">
                     <label class="text-[11px] text-pink-400 font-bold block">Mật mã bảo mật mới</label>
                     <div class="relative w-full">
-                        <input type="password" id="change-app-password" placeholder="Nhập mật mã mới..." class="w-full h-12 border rounded-xl pl-4 pr-10 text-sm outline-none focus:border-pink-500 transition-all bg-transparent">
+                        <input type="password" id="change-app-password" autocomplete="new-password" placeholder="Nhập mật mã mới..." class="w-full h-12 border rounded-xl pl-4 pr-10 text-sm outline-none focus:border-pink-500 transition-all bg-transparent">
                         <button onclick="toggleInputVisibility('change-app-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-sm opacity-80 active:scale-75 transition-transform" type="button">🙈</button>
                     </div>
                     <div class="relative w-full">
-                        <input type="password" id="change-app-password-confirm" placeholder="Xác nhận lại..." class="w-full h-12 border rounded-xl pl-4 pr-10 text-sm outline-none focus:border-pink-500 transition-all bg-transparent">
+                        <input type="password" id="change-app-password-confirm" autocomplete="new-password" placeholder="Xác nhận lại..." class="w-full h-12 border rounded-xl pl-4 pr-10 text-sm outline-none focus:border-pink-500 transition-all bg-transparent">
                         <button onclick="toggleInputVisibility('change-app-password-confirm', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-sm opacity-80 active:scale-75 transition-transform" type="button">🙈</button>
                     </div>
                 </div>
@@ -656,52 +615,6 @@
                     starText.innerText = starMessages[Math.floor(Math.random() * starMessages.length)];
                 }
             }
-        }
-
-        function openInfoModal() {
-            const m = document.getElementById('modal-info');
-            m.classList.remove('hidden'); m.classList.add('flex');
-            setTimeout(() => document.getElementById('info-card').classList.remove('translate-y-full'), 10);
-        }
-        function closeInfoModal() {
-            document.getElementById('info-card').classList.add('translate-y-full');
-            setTimeout(() => document.getElementById('modal-info').classList.replace('flex', 'hidden'), 300);
-        }
-        document.getElementById('modal-info').addEventListener('click', function(e) { if (e.target === this) closeInfoModal(); });
-
-        function exportAppDataBackup() {
-            try {
-                const dataObj = {
-                    app_password: localStorage.getItem('app_password') || "",
-                    user_profile: profileData,
-                    local_vault: vaultItems
-                };
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataObj));
-                const dlAnchor = document.createElement('a');
-                dlAnchor.setAttribute("href", dataStr);
-                dlAnchor.setAttribute("download", `infinite_vault_backup_${new Date().toISOString().slice(0,10)}.json`);
-                document.body.appendChild(dlAnchor);
-                dlAnchor.click();
-                dlAnchor.remove();
-                showToast("Đã xuất file! Hãy chọn lưu tệp vào ứng dụng Tệp/iCloud.");
-            } catch (err) { showToast("Lỗi hệ thống khi sao lưu!", "error"); }
-        }
-
-        function importAppDataBackup(input) {
-            if (!input.files || !input.files[0]) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const parsed = JSON.parse(e.target.result);
-                    if (!parsed.local_vault || !Array.isArray(parsed.local_vault)) return showToast("File không đúng định dạng!", "error");
-                    if (parsed.app_password) localStorage.setItem('app_password', parsed.app_password);
-                    vaultItems = parsed.local_vault; localStorage.setItem('local_vault', JSON.stringify(vaultItems));
-                    if (parsed.user_profile) { profileData = parsed.user_profile; localStorage.setItem('user_profile', JSON.stringify(profileData)); }
-                    showToast("Khôi phục thành công! Đang tải lại web...");
-                    setTimeout(() => window.location.reload(), 1500);
-                } catch (err) { showToast("Không thể đọc tệp này!", "error"); }
-            };
-            reader.readAsText(input.files[0]);
         }
 
         function setupPopupInputsTheme() {
@@ -921,7 +834,23 @@
         }
 
         function saveProfile() {
-            showToast("Đã cập nhật cấu hình hệ thống!");
+            const newPass = document.getElementById('change-app-password').value.trim();
+            const confirmPass = document.getElementById('change-app-password-confirm').value.trim();
+
+            if (newPass !== "") {
+                if (newPass === confirmPass) {
+                    localStorage.setItem('app_password', newPass);
+                    showToast("Đã cập nhật mật khẩu mới thành công!");
+                    
+                    document.getElementById('change-app-password').value = "";
+                    document.getElementById('change-app-password-confirm').value = "";
+                } else {
+                    showToast("Mật khẩu xác nhận không khớp!", "error");
+                    return;
+                }
+            } else {
+                showToast("Đã cập nhật cấu hình hệ thống!");
+            }
             closeSettings();
         }
 
@@ -1179,7 +1108,6 @@
                         </div>`;
                     container.appendChild(card);
                     
-                    // SỬA LỖI TREO BẤT TỬ: Đảm bảo giải phóng div "Đang tải..." nếu không tìm thấy blob dữ liệu
                     getMediaFromDB(item.id, (blob) => {
                         const el = document.getElementById(mediaId);
                         if (el) {
@@ -1278,7 +1206,6 @@
             store.put({ id: id, data: blobData }).onsuccess = callback;
         }
 
-        // Đã tối ưu hóa hàm kiểm tra lỗi bất đồng bộ của IndexedDB
         function getMediaFromDB(id, callback) {
             if (!db) return callback(null);
             try {

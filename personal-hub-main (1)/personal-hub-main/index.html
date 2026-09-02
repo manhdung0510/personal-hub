@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full overflow-hidden">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Trợ Lý Cá Nhân</title>
+
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="icon.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="icon.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Trợ Lý Nhỏ">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="h-full flex flex-col justify-between overflow-hidden select-none pt-safe pb-safe dark-theme">
+
+    <div id="lock-screen"
+        class="fixed inset-0 z-[1005] flex flex-col items-center justify-center text-center px-4 transition-all duration-500">
+        <div class="star-dust" style="top:10%; left:20%;"></div>
+        <div class="star-dust" style="top:25%; right:15%; animation-delay: 0.5s;"></div>
+        <div class="star-dust" style="top:70%; left:10%; animation-delay: 1.2s;"></div>
+        <div class="star-dust" style="top:85%; right:25%; animation-delay: 0.8s;"></div>
+
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="w-80 h-80 bg-pink-500/10 rounded-full blur-[100px] -translate-x-10 -translate-y-10"></div>
+            <div class="w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px] translate-x-10 translate-y-10"></div>
+        </div>
+
+        <div
+            class="glass-card w-full max-w-md sm:max-w-sm p-8 space-y-6 shadow-2xl relative z-10 fade-in flex flex-col items-center">
+            <div class="text-5xl drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">🔒</div>
+            <div class="space-y-1.5">
+                <h2 id="lock-title"
+                    class="text-2xl font-black bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                    Không Gian Bảo Mật</h2>
+                <p id="lock-desc" class="text-xs text-gray-700 font-medium">Vui lòng nhập mật mã để truy cập mật thất
+                </p>
+            </div>
+
+            <div class="w-full space-y-3 pt-2" id="lock-inputs-container"></div>
+
+            <button onclick="checkOrSetPassword()"
+                class="h-14 w-full bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white rounded-2xl font-extrabold text-sm shadow-xl shadow-indigo-600/20 active:scale-[0.96] transition-all">
+                Xác Nhận Nhập 🔑
+            </button>
+        </div>
+    </div>
+
+    <div id="intro-screen"
+        class="hidden fixed inset-0 z-[1000] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+        <div class="star-dust" style="top:20%; left:15%;"></div>
+        <div class="star-dust" style="top:35%; right:20%; animation-delay: 0.5s;"></div>
+        <div class="star-dust" style="top:70%; left:25%; animation-delay: 1.2s;"></div>
+        <div class="star-dust" style="top:80%; right:15%; animation-delay: 0.8s;"></div>
+
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="w-85 h-85 bg-indigo-500/15 rounded-full blur-[90px]"></div>
+            <div class="w-85 h-85 bg-pink-500/10 rounded-full blur-[90px] absolute translate-y-14"></div>
+        </div>
+
+        <div
+            class="glass-card w-full max-w-md sm:max-w-sm p-8 space-y-6 shadow-2xl relative z-10 fade-in flex flex-col items-center">
+            <div id="intro-avatar-box"
+                class="w-24 h-24 rounded-full border-2 border-indigo-400 overflow-hidden shadow-[0_0_20px_rgba(99,102,241,0.4)] bg-gray-900 hidden">
+                <img id="intro-avatar-img" class="w-full h-full object-cover" src="">
+            </div>
+            <div id="intro-star-icon" class="text-6xl animate-bounce drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]">✨
+            </div>
+
+            <div class="space-y-3 w-full">
+                <h2 id="intro-welcome-text"
+                    class="text-2xl font-black text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
+                    Xin chào kho báu...
+                </h2>
+                <p id="star-message"
+                    class="text-sm text-gray-700 font-bold italic leading-relaxed pt-3 border-t border-white/10"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="fixed bottom-24 right-6 left-6 z-[1010] flex flex-col gap-3 pointer-events-none">
+    </div>
+
+    <header
+        class="glass class-header-border-fix px-6 py-4 flex justify-between items-center z-10 sticky top-0 shrink-0 pt-8">
+        <div class="flex flex-col max-w-[75%]">
+            <h1
+                class="text-2xl font-bold tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                Infinite Vault ✨</h1>
+
+            <div id="clock-parent-box"
+                class="flex items-center gap-1 mt-1 bg-black/10 px-2 py-0.5 rounded-lg border border-white/5 w-fit shadow-inner">
+                <span id="clock-status-icon" class="text-[10px]">🌙</span>
+                <span id="realtime-clock" class="text-[9px] font-bold tracking-tight opacity-80">00:00:00 -
+                    01/01/2026</span>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+            <button onclick="openSettings()"
+                class="header-action-btn w-11 h-11 flex items-center justify-center text-2xl bg-white/5 border border-white/10 rounded-xl active:scale-90 transition-transform">⚙️</button>
+        </div>
+    </header>
+
+    <div id="modal-profile-edit"
+        class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 z-[1010] transition-all duration-300">
+        <div class="glass-card w-full max-w-md sm:max-w-sm rounded-[32px] p-6 space-y-5 text-center shadow-2xl">
+            <div class="text-center space-y-1">
+                <h3 class="text-lg font-bold text-gray-100">🌸 Chỉnh Sửa Hồ Sơ</h3>
+                <p class="text-xs text-indigo-400">Cá nhân hóa trợ lý nhỏ của đại ka</p>
+            </div>
+
+            <div
+                class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-4 flex flex-col items-center text-left">
+                <div
+                    class="relative w-24 h-24 rounded-full bg-gray-900 border-2 border-pink-400/50 overflow-hidden group cursor-pointer shadow-xl btn-clickable">
+                    <img id="popup-avatar-preview" class="w-full h-full object-cover hidden" src="">
+                    <div id="popup-avatar-placeholder"
+                        class="absolute inset-0 flex items-center justify-center text-3xl opacity-60">👤</div>
+                    <input type="file" id="popup-avatar-input" accept="image/*"
+                        class="absolute inset-0 opacity-0 cursor-pointer" onchange="uploadPopupAvatar(this)">
+                </div>
+                <span class="text-[11px] text-pink-400 font-bold uppercase tracking-wider -mt-2">Chạm để thay ảnh đại
+                    diện</span>
+
+                <div class="w-full">
+                    <label class="text-[11px] text-gray-400 font-bold block mb-1">Quý danh của đại ka</label>
+                    <input type="text" id="popup-name-input" placeholder="Tôi có thể gọi đại ka là..."
+                        class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all">
+                </div>
+                <div class="w-full mt-2">
+                    <label class="text-[11px] text-gray-400 font-bold block mb-1">Ngày sinh của đại ka</label>
+                    <input type="date" id="popup-birthday-input"
+                        class="w-full h-12 border rounded-xl px-4 text-sm outline-none focus:border-indigo-500 transition-all bg-transparent text-gray-200"
+                        style="color-scheme: dark;">
+                </div>
+
+                <div class="w-full mt-4 flex gap-2">
+                    <button onclick="exportDataZip()"
+                        class="flex-1 bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 h-10 rounded-xl text-[11px] font-bold shadow-sm active:scale-95 transition-all">📦
+                        Tải Backup (.zip)</button>
+                    <button onclick="document.getElementById('import-zip-input').click()"
+                        class="flex-1 bg-pink-600/20 text-pink-400 border border-pink-500/30 h-10 rounded-xl text-[11px] font-bold shadow-sm active:scale-95 transition-all">🔄
+                        Khôi Phục (.zip)</button>
+                    <input type="file" id="import-zip-input" accept=".zip" class="hidden"
+                        onchange="importDataZip(this)">
+                </div>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="closeProfileModal()"
+                    class="btn-clickable h-12 flex-1 bg-gray-900 border border-gray-800 rounded-xl font-bold text-xs text-gray-400">Đóng</button>
+                <button onclick="savePopupProfile()"
+                    class="btn-clickable h-12 flex-1 bg-indigo-600 rounded-xl font-bold text-white text-xs shadow-lg shadow-indigo-600/20">Lưu
+                    thay đổi</button>
+            </div>
+        </div>
+    </div>
+
+
+    <main id="main-scroll-wrapper" class="flex-1 overflow-y-auto scroll-container px-5 py-6 space-y-8 pb-32">
+        <section id="tab-vault" class="tab-content space-y-6">
+
+            <div class="glass-card p-6 rounded-3xl flex items-center justify-between gap-4 shadow-md fade-in">
+                <div onclick="openProfileModal()"
+                    class="flex items-center gap-5 btn-clickable cursor-pointer flex-1 min-w-0">
+                    <div
+                        class="w-20 h-20 rounded-full bg-gray-950/40 border-2 border-indigo-500/20 flex items-center justify-center overflow-hidden shrink-0 shadow-lg">
+                        <img id="main-avatar-preview" class="w-full h-full object-cover hidden" src="">
+                        <div id="main-avatar-placeholder" class="text-4xl opacity-60">👤</div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-[11px] font-bold uppercase tracking-widest text-indigo-400 opacity-80">Chủ sở
+                            hữu (Chạm để sửa) ✨</div>
+                        <div class="text-2xl font-extrabold truncate text-gray-100 tracking-tight mt-1"
+                            id="main-profile-name">Cô gái nhỏ bé</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="flex justify-between items-end">
+                <div class="space-y-1">
+                    <h2 id="vault-title-text" class="text-xl font-bold text-gray-100">Kho Lưu Trữ</h2>
+                    <p id="vault-desc-text" class="text-sm text-gray-400 font-medium">Bảo mật tuyệt đối trên máy</p>
+                </div>
+                <button onclick="openFormModal('vault')"
+                    class="h-12 px-6 bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-900 rounded-2xl font-extrabold text-sm shadow-lg shadow-emerald-400/20 active:scale-95 transition-all">+
+                    Thêm</button>
+            </div>
+
+            <div class="relative">
+                <input type="text" id="vault-search" oninput="resetPaginationAndLoad()"
+                    placeholder="🔍 Tìm nhanh trong kho..."
+                    class="w-full h-14 border rounded-2xl px-5 text-sm outline-none focus:border-pink-500 transition-all shadow-inner">
+            </div>
+
+            <div class="grid grid-cols-5 gap-1">
+                <button onclick="filterVault('wishlist')" id="vbtn-wishlist"
+                    class="vault-filter-btn h-14 bg-pink-600 rounded-xl flex flex-col items-center justify-center gap-1 active:scale-[0.93] transition-transform text-white font-medium">
+                    <span class="text-sm">🛍️</span>
+                    <span class="text-[7px] font-bold uppercase tracking-wider">Shop</span>
+                </button>
+                <button onclick="filterVault('media')" id="vbtn-media"
+                    class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-[0.93] transition-transform">
+                    <span class="text-sm">🎬</span>
+                    <span class="text-[7px] font-bold uppercase tracking-wider">Media</span>
+                </button>
+                <button onclick="filterVault('social')" id="vbtn-social"
+                    class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-[0.93] transition-transform">
+                    <span class="text-sm">📱</span>
+                    <span class="text-[7px] font-bold uppercase tracking-wider">Social</span>
+                </button>
+                <button onclick="filterVault('study')" id="vbtn-study"
+                    class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-[0.93] transition-transform">
+                    <span class="text-sm">📚</span>
+                    <span class="text-[7px] font-bold uppercase tracking-wider">Study</span>
+                </button>
+                <button onclick="filterVault('braindump')" id="vbtn-braindump"
+                    class="vault-filter-btn h-14 bg-gray-900/60 border border-gray-800 rounded-xl flex flex-col items-center justify-center gap-1 text-gray-400 active:scale-[0.93] transition-transform">
+                    <span class="text-sm">🔒</span>
+                    <span class="text-[7px] font-bold uppercase tracking-wider">Secret</span>
+                </button>
+            </div>
+
+            <div id="wishlist-sub-tabs" class="hidden gap-1 bg-black/20 p-1 rounded-xl border border-white/5 w-full">
+                <button onclick="changeWishlistSubTab('online')" id="sub-wishlist-online"
+                    class="flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate active:scale-[0.96]">
+                    🛍️ Mua sắm Online
+                </button>
+                <button onclick="changeWishlistSubTab('ticket')" id="sub-wishlist-ticket"
+                    class="sub-tab-inactive-etc flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate active:scale-[0.96]">
+                    🎫 Đặt vé sự kiện
+                </button>
+                <button onclick="changeWishlistSubTab('hotel')" id="sub-wishlist-hotel"
+                    class="sub-tab-inactive-etc flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate active:scale-[0.96]">
+                    🏨 Phòng khách sạn
+                </button>
+            </div>
+
+            <div id="study-sub-tabs" class="hidden gap-2 bg-black/20 p-1 rounded-xl border border-white/5 w-full">
+                <button onclick="changeStudySubTab('learn')" id="sub-study-learn"
+                    class="flex-1 py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 active:scale-[0.96]">
+                    📖 Nghiên cứu / Tự học
+                </button>
+                <button onclick="changeStudySubTab('teach')" id="sub-study-teach"
+                    class="sub-tab-inactive-etc flex-1 py-2.5 rounded-lg text-xs font-bold transition-all text-gray-400 active:scale-[0.96]">
+                    🏫 Tài liệu giảng dạy
+                </button>
+            </div>
+
+            <div id="media-sub-tabs" class="hidden gap-1 bg-black/20 p-1 rounded-xl border border-white/5 w-full">
+                <button onclick="changeMediaSubTab('movie')" id="sub-media-movie"
+                    class="flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate active:scale-[0.96]">
+                    🎬 Phim
+                </button>
+                <button onclick="changeMediaSubTab('youtube')" id="sub-media-youtube"
+                    class="sub-tab-inactive-etc flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate active:scale-[0.96]">
+                    📺 YouTube
+                </button>
+                <button onclick="changeMediaSubTab('tiktok')" id="sub-media-tiktok"
+                    class="sub-tab-inactive-etc flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate active:scale-[0.96]">
+                    🎵 TikTok
+                </button>
+            </div>
+
+            <div id="social-sub-tabs" class="hidden gap-1 bg-black/20 p-1 rounded-xl border border-white/5 w-full">
+                <button onclick="changeSocialSubTab('threads')" id="sub-social-threads"
+                    class="flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 truncate active:scale-[0.96]">
+                    🧵 Threads
+                </button>
+                <button onclick="changeSocialSubTab('instagram')" id="sub-social-instagram"
+                    class="sub-tab-inactive-etc flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate active:scale-[0.96]">
+                    📸 Instagram
+                </button>
+                <button onclick="changeSocialSubTab('facebook')" id="sub-social-facebook"
+                    class="sub-tab-inactive-etc flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all text-gray-400 truncate active:scale-[0.96]">
+                    👥 Facebook
+                </button>
+            </div>
+
+            <div id="braindump-sub-tabs" class="hidden gap-2 bg-black/20 p-1 rounded-xl border border-white/5 w-full">
+                <button onclick="changeBraindumpSubTab('image')" id="sub-braindump-image"
+                    class="flex-1 py-2.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/30 text-indigo-400 border border-indigo-500/20 active:scale-[0.96]">
+                    📸 Ảnh Bí Mật
+                </button>
+                <button onclick="changeBraindumpSubTab('video')" id="sub-braindump-video"
+                    class="sub-tab-inactive-etc flex-1 py-2.5 rounded-lg text-xs font-bold transition-all text-gray-400 active:scale-[0.96]">
+                    🎬 Video Bí Mật
+                </button>
+            </div>
+
+            <div id="vault-list" class="space-y-4 tab-slide-fade"></div>
+        </section>
+    </main>
+
+    <div id="modal-form"
+        class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-end justify-center z-50 transition-all duration-300">
+        <div class="glass-card w-full rounded-t-[40px] p-8 pb-12 space-y-6 shadow-2xl transform translate-y-full transition-transform"
+            id="form-card">
+            <div class="w-12 h-1.5 bg-gray-700 rounded-full mx-auto mb-2"></div>
+            <div class="text-center space-y-2">
+                <h3 id="form-title" class="text-xl font-bold text-gray-100">Thêm mục mới</h3>
+                <p id="form-desc" class="text-xs text-gray-400"></p>
+            </div>
+            <div id="form-fields" class="space-y-4"></div>
+            <div class="flex gap-3 pt-4">
+                <button onclick="closeFormModal()"
+                    class="h-16 flex-1 bg-gray-900 border border-gray-800 rounded-3xl font-bold text-gray-300 active:scale-95 transition">Hủy</button>
+                <button onclick="submitForm()"
+                    class="h-16 flex-1 bg-indigo-600 rounded-3xl font-bold text-white shadow-xl shadow-indigo-600/20 active:scale-95 transition">Xác
+                    nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-settings"
+        class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden items-center justify-center p-4 z-[60]">
+        <div
+            class="glass-card w-full max-w-md sm:max-w-sm rounded-[32px] p-6 space-y-5 text-center shadow-2xl overflow-y-auto max-h-[90vh]">
+            <div class="text-center space-y-1">
+                <h3 class="text-lg font-bold text-gray-100">⚙️ Hệ Thống Bảo Mật</h3>
+                <p class="text-xs text-gray-400">Tùy chỉnh cấu hình riêng tư</p>
+            </div>
+
+            <div
+                class="p-4 bg-gray-500/5 rounded-2xl border border-white/5 space-y-4 text-left flex flex-col items-center">
+                <div class="w-full mt-2 space-y-2">
+                    <label class="text-[11px] text-pink-400 font-bold block">Mật mã bảo mật mới</label>
+                    <div class="relative w-full">
+                        <input type="password" id="change-app-password" autocomplete="new-password"
+                            placeholder="Nhập mật mã mới..."
+                            class="w-full h-12 border rounded-xl pl-4 pr-10 text-sm outline-none focus:border-pink-500 transition-all bg-transparent">
+                        <button onclick="toggleInputVisibility('change-app-password', this)"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-sm opacity-80 active:scale-75 transition-transform"
+                            type="button">🙈</button>
+                    </div>
+                    <div class="relative w-full">
+                        <input type="password" id="change-app-password-confirm" autocomplete="new-password"
+                            placeholder="Xác nhận lại..."
+                            class="w-full h-12 border rounded-xl pl-4 pr-10 text-sm outline-none focus:border-pink-500 transition-all bg-transparent">
+                        <button onclick="toggleInputVisibility('change-app-password-confirm', this)"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-sm opacity-80 active:scale-75 transition-transform"
+                            type="button">🙈</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="triggerConfetti()"
+                    class="btn-clickable setting-btn-custom h-14 flex-1 rounded-2xl text-xs">Niềm vui ✨</button>
+                <button onclick="saveProfile()"
+                    class="btn-clickable setting-btn-custom h-14 flex-1 rounded-2xl text-xs">Lưu lại</button>
+            </div>
+            <button onclick="closeSettings()"
+                class="btn-clickable setting-btn-custom h-12 w-full rounded-xl text-sm mt-1">Đóng</button>
+        </div>
+    </div>
+
+    <div id="modal-confirm"
+        class="fixed inset-0 bg-black/95 backdrop-blur-sm hidden items-center justify-center p-4 z-[100] opacity-0 transition-opacity duration-300">
+        <div class="glass-card w-full max-w-md sm:max-w-xs rounded-[32px] p-8 space-y-6 text-center">
+            <div class="text-5xl">⚠️</div>
+            <h3 class="text-lg font-bold text-gray-100" id="confirm-msg">Xác nhận xóa mục này?</h3>
+            <div class="flex flex-col gap-3">
+                <button id="btn-confirm-action"
+                    class="h-14 w-full bg-red-600 hover:bg-red-500 rounded-2xl font-bold shadow-xl shadow-red-600/20 text-white active:scale-95 transition-all">Xóa
+                    vĩnh viễn</button>
+                <button onclick="closeConfirmModal()"
+                    class="h-14 w-full bg-gray-900 border border-gray-800 rounded-2xl font-bold text-gray-400 active:scale-95 transition-all">Quay
+                    lại</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

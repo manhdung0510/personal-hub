@@ -954,24 +954,35 @@ async function importDataZip(input) {
 
         // 2. Phục hồi IndexedDB Blobs
         if (db) {
-            const transaction = db.transaction(["mediaFiles"], "readwrite");
-            const store = transaction.objectStore("mediaFiles");
-
+            let extractedBlobs = [];
             const mediaFolder = loadedZip.folder("mediaFiles");
             if (mediaFolder) {
-                const fileNames = Object.keys(mediaFolder.files).filter(k => !mediaFolder.files[k].dir);
-                for (const fileName of fileNames) {
-                    const blobData = await mediaFolder.files[fileName].async("blob");
-                    const id = fileName.replace("mediaFiles/", "");
-                    store.put({ id: id, data: blobData });
-                }
+                mediaFolder.forEach((relativePath, file) => {
+                    if (!file.dir) {
+                        extractedBlobs.push({ id: relativePath, file: file });
+                    }
+                });
+            }
+
+            // Đọc blob data TRƯỚC KHI mở transaction để tránh lỗi Transaction Inactive
+            for (let item of extractedBlobs) {
+                item.data = await item.file.async("blob");
+            }
+
+            if (extractedBlobs.length > 0) {
+                const transaction = db.transaction(["mediaFiles"], "readwrite");
+                const store = transaction.objectStore("mediaFiles");
+                extractedBlobs.forEach(item => {
+                    store.put({ id: item.id, data: item.data });
+                });
             }
         }
 
         showToast("Khôi phục thành công! Tải lại trang...", "success");
         setTimeout(() => location.reload(), 1500);
     } catch (e) {
-        showToast("Lỗi giải nén: File ZIP hỏng hoặc sai định dạng", "error");
+        console.error("Lỗi import:", e);
+        showToast("Lỗi: " + (e.message || e), "error");
     }
     input.value = "";
 }

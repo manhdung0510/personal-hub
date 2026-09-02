@@ -1,7 +1,7 @@
 {
   "name": "Personal Hub",
   "short_name": "My Hub",
-  "start_url": "/index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#090d16",
   "theme_color": "#090d16",
